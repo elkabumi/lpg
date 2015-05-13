@@ -25,17 +25,17 @@ background-color: #515EA6;
                             <div class="small-box bg-aqua">
                                 <div class="inner">
                                     <h3>
-                                        150
+                                        13/05/2015
                                     </h3>
                                     <p>
-                                        New Orders
+                                        Tanggal
                                     </p>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-bag"></i>
                                 </div>
                                 <a href="#" class="small-box-footer">
-                                    More info <i class="fa fa-arrow-circle-right"></i>
+                                   
                                 </a>
                             </div>
                         </div><!-- ./col -->
@@ -45,17 +45,17 @@ background-color: #515EA6;
                             <div class="small-box bg-green">
                                 <div class="inner">
                                     <h3>
-                                        53<sup style="font-size: 20px">%</sup>
+                                        <sup style="font-size: 16px">Rp </sup>6.468.000
                                     </h3>
                                     <p>
-                                        Bounce Rate
+                                        Setoran
                                     </p>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-stats-bars"></i>
                                 </div>
                                 <a href="#" class="small-box-footer">
-                                    More info <i class="fa fa-arrow-circle-right"></i>
+                                    
                                 </a>
                             </div>
                         </div><!-- ./col -->
@@ -64,17 +64,17 @@ background-color: #515EA6;
                             <div class="small-box bg-yellow">
                                 <div class="inner">
                                     <h3>
-                                        44
+                                        <sup style="font-size: 16px">Rp </sup>19.473
                                     </h3>
                                     <p>
-                                        User Registrations
+                                        Pajak
                                     </p>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-person-add"></i>
                                 </div>
                                 <a href="#" class="small-box-footer">
-                                    More info <i class="fa fa-arrow-circle-right"></i>
+                                   
                                 </a>
                             </div>
                         </div><!-- ./col -->
@@ -83,17 +83,17 @@ background-color: #515EA6;
                             <div class="small-box bg-red">
                                 <div class="inner">
                                     <h3>
-                                        65
+                                       <sup style="font-size: 16px">Rp </sup>6.487.479
                                     </h3>
                                     <p>
-                                        Unique Visitors
+                                        Tebusan
                                     </p>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-pie-graph"></i>
                                 </div>
                                 <a href="#" class="small-box-footer">
-                                    More info <i class="fa fa-arrow-circle-right"></i>
+                                   
                                 </a>
                             </div>
                         </div><!-- ./col -->
@@ -102,12 +102,13 @@ background-color: #515EA6;
  <div class="row">
 <div class="col-lg-12 col-xs-12">                   
 <div class="otbox">
-<div class="otcontent">
 
+<div class="otcontent">
+<img src="<?=base_url()?>storage/home.jpg" style="width:100%;"/>
 <form id="id_form_nya">
 <div class="form_area">
 <div class="form_area_frame">
-<table class="form_layout" cellspacing="10" style="border-spacing:10px !important; padding:50px;" >
+<table class="form_layout" cellspacing="10" style="border-spacing:10px !important; padding:50px;" cellpadding="5" >
 	<tr>
 	<td><img src="<?=base_url()?>assets/images/smicon_person.png" align="left" /></td>
      <td width="150"><b>Nama pengguna</b></td>
