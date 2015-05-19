@@ -19,8 +19,16 @@ class truck_model extends CI_Model{
 
 		
 		$columns['truck_nopol'] 		= 'truck_nopol';
-		 
+		$columns['truck_stnk'] 			= 'truck_stnk'; 
+		$columns['truck_owner'] 		= 'truck_owner';
+		$columns['truck_color'] 		= 'truck_color'; 
+		$columns['truck_manufacture_date'] 	= 'truck_manufacture_date';
+		$columns['truck_merk'] 			= 'truck_merk'; 
+		$columns['truck_type_name'] 	= 'truck_type_name';
+		$columns['driver_name'] 		= 'b.employee_name'; 
+		$columns['co_driver_name'] 		= 'c.employee_name'; 
 		
+
 		$sort_column_index = $params['sort_column'];
 		$sort_dir = $params['sort_dir'];
 		
@@ -56,7 +64,7 @@ class truck_model extends CI_Model{
 		join employees b on b.employee_id = a.driver_id
 		join employees c on c.employee_id = a.co_driver_id
 		join truck_types d on d.truck_type_id = a.truck_type_id
-		$where  $order_by
+		 $where   $order_by
 			
 			";
 
@@ -105,13 +113,13 @@ class truck_model extends CI_Model{
 		$this->db->trans_start();
 		$this->db->insert('trucks', $data);
 		$id = $this->db->insert_id();
-		
+		/*
 		$data_market['market_id'] = $id;
 		$data_market['market_code'] = $data['truck_code'];
 		$data_market['market_name'] = $data['truck_name'];
 		$this->db->insert('markets', $data_market);
-		
-		$this->access->log_insert($id, "Cabang [".$data['truck_name']."]");
+		*/
+		$this->access->log_insert($id, "Cabang [".$data['truck_nopol']."]");
 		$this->db->trans_complete();
 		return $this->db->trans_status();
 	}
@@ -120,14 +128,15 @@ class truck_model extends CI_Model{
 		$this->db->trans_start();
 		$this->db->where('truck_id', $id);
 		$this->db->update('trucks', $data);
-		
+	
+		/*
 		$data_market['market_code'] = $data['truck_code'];
 		$data_market['market_name'] = $data['truck_name'];
 		
 		$this->db->where('market_id', $id);
 		$this->db->update('markets', $data_market);
-		
-		$this->access->log_update($id, "Cabang[".$data['truck_name']."]");
+		*/
+		$this->access->log_update($id, "Cabang[".$data['truck_nopol']."]");
 		
 		$this->db->trans_complete();
 		return $this->db->trans_status();
@@ -136,10 +145,10 @@ class truck_model extends CI_Model{
 		$this->db->trans_start();
 		$this->db->where('truck_id', $id);
 		$this->db->delete('trucks');
-		
+		/*
 		$this->db->where('market_id', $id);
 		$this->db->delete('markets');
-		
+		*/
 		$this->access->log_delete($id, 'truck');
 		$this->db->trans_complete();
 		return $this->db->trans_status();

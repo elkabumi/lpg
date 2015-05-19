@@ -2,21 +2,29 @@
 $(function(){
 	createForm({
 		id 				: "#id_form_nya", 
-		actionTarget	: "truck/form_action",
-		backPage		: "truck",
-		nextPage		: "truck"
+		actionTarget	: "route/form_action",
+		backPage		: "route",
+		nextPage		: "route"
 	});
 	
 	createLookUp({
-		table_id		: "#lookup_table_employee",
+		table_id		: "#lookup_table_location_from",
 		table_width		: 400,
-		listSource 		: "lookup/employee_table_control/",
-		dataSource		: "lookup/employee_lookup_id",
+		listSource 		: "lookup/location_table_control/",
+		dataSource		: "lookup/location_lookup_id",
 		column_id 		: 0,
-		component_id	: "#lookup_employee",
-		filter_by		: [{id : "p1", label : "Kode"},{id : "p2", label : "Nama"}]
+		component_id	: "#lookup_location_from",
+		filter_by		: [{id : "p1", label : "Nama"},{id : "p2", label : "Alamat"}]
 	});
-	
+	createLookUp({
+		table_id		: "#lookup_table_location_to",
+		table_width		: 400,
+		listSource 		: "lookup/location_table_control/",
+		dataSource		: "lookup/location_lookup_id",
+		column_id 		: 0,
+		component_id	: "#lookup_location_to",
+		filter_by		: [{id : "p1", label : "Nama"},{id : "p2", label : "Alamat"}]
+	});
 	createDatePicker();
 });
 
@@ -26,38 +34,34 @@ $(function(){
 <div class="form_area">
 <div class="form_area_frame">
 <table  width="100%" cellpadding="4" class="form_layout">
-	<tr>
-     <td width="196">Kode</td>
-     <td width="651"><input name="i_code" type="text" id="i_code" value="<?=$truck_code ?>" />
-     <input type="hidden" name="row_id" value="<?=$row_id?>" /></td>
-   </tr>
-   
-    <tr>
-     <td width="196">Nama</td>
-     <td width="651"><input name="i_name" type="text" id="i_name" value="<?=$truck_name ?>" size="10"/></td>
-     </tr>
+
      <tr>
-     <td req= "req">Leader</td>
-        <td><span class="lookup" id="lookup_employee">
-				<input type="hidden" name="i_leader" class="com_id" value="<?=$truck_leader?>" />
+     <td req= "req">Dari Lokasi</td>
+        <td><span class="lookup" id="lookup_location_from">
+				<input type="hidden" name="i_from_id" class="com_id" value="<?=$location_from_id?>" />
 				<input type="text" class="com_input" name="i_employee_name"/>
+          	   <input type="hidden" name="row_id" value="<?=$row_id?>" />	
 				<div class="iconic_base iconic_search com_popup"></div>
-				</span>	
+				<span class="com_desc"></span>
+                </span>	
        </td>
      </tr>
- <tr>
-   <tr>
-     <td width="196">Telepon</td>
-     <td width="651"><input name="i_phone" type="text" id="i_phone" value="<?=$truck_phone ?>" size="10"/></td>
-     </tr>
-   
-   
-     <td width="196">Alamat</td>
-     <td width="651"><textarea name="i_address" id="i_address" cols="45" rows="5"><?= $truck_address ?></textarea></td>
-     </tr>
-  <tr>
-    <td width="196">Keterangan</td>
-    <td width="651"><textarea name="i_description" id="i_description" cols="45" rows="5"><?= $truck_description ?></textarea></td>
+     <tr>
+     <td req= "req">Ke Lokasi</td>
+        <td><span class="lookup" id="lookup_location_to">
+				<input type="hidden" name="i_to_id" class="com_id" value="<?=$location_to_id?>" />
+				<input type="text" class="com_input" name="i_employee_name"/>
+				<div class="iconic_base iconic_search com_popup"></div>
+				<span class="com_desc"></span>
+                </span>	
+       </td>
+     <!--</tr>
+		 <td width="196">Total Biaya</td>
+     	 <td width="651"><input name="i_total" type="text" id="i_total" value="<?//=$location_total_cost ?>" size="10"/></td>
+     </tr>-->
+  	<tr>
+    	<td width="196">Keterangan</td>
+    	<td width="651"><textarea name="i_description" id="i_description" cols="45" rows="5"><?= $location_desc ?></textarea></td>
     </tr>
 
 </table>
@@ -71,13 +75,30 @@ $(function(){
 </form>
 
 <div id="">
-	<table id="lookup_table_employee" cellpadding="0" cellspacing="0" border="0" class="display" > 
+	<table id="lookup_table_location_from" cellpadding="0" cellspacing="0" border="0" class="display" > 
 		<thead>
 			<tr>
 			<th>ID</th>
-				<th>NIK </th>
-				<th>Nama</th>
-            
+				<th>Lokasi</th>
+				<th>Alamat</th>
+			</tr> 
+		</thead> 
+		<tbody> 	
+		</tbody>
+	</table>
+	<div id="panel">
+		<input type="button" id="choose" value="Pilih Data"/>
+		<input type="button" id="refresh" value="Refresh"/>
+		<input type="button" id="cancel" value="Cancel" />
+	</div>	
+</div>
+<div id="">
+	<table id="lookup_table_location_to" cellpadding="0" cellspacing="0" border="0" class="display" > 
+		<thead>
+			<tr>
+			<th>ID</th>
+				<th>Lokasi</th>
+				<th>Alamat</th>
 			</tr> 
 		</thead> 
 		<tbody> 	

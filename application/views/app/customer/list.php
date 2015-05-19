@@ -8,12 +8,13 @@ $(function(){
 		column_id	: 0,
 		
 		filter_by 	: [ 
-		{id : "Nama SPBE", label : "Kode"}, 
-
-		{id : "customer_name", label : "Nama"}, 
-		{id : "customer_leader", label : "Leader"},
-		{id : "customer_phone", label : "Telepon"},
-        {id : "customer_address", label : "Alamat"}],
+		{id : "location_name", label : "Nama"},
+		{id : "location_address", label : "Alamat"},
+		{id : "location_phone", label : "Telepon"},
+		{id : "location_rt_rw", label : "RT/RW"},
+		{id : "location_kelurahan", label : "Kelurahan"},
+        {id : "location_kecamatan", label : "Kecamatan"},
+        {id : "location_kota", label : "Kota"}],
 		"aLengthMenu"		: [[50, 100, 250, 500], [50, 100, 250, 500]],
 	});
 	otable.fnSetColumnVis(0, false, false);

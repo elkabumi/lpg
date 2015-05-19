@@ -160,7 +160,17 @@ class Global_model extends CI_Model
 		}
 		return $data;
 	}
-	
+	function get_truck_type()
+	{		
+		$this->db->select('truck_type_id,truck_type_name');
+		$query = $this->db->get('truck_types');	
+		$data = array();
+		foreach($query->result_array() as $row)
+		{
+				$data[$row['truck_type_id']] = $row['truck_type_name'];
+		}
+		return $data;
+	}
 	
 	function get_stand()
 	{		

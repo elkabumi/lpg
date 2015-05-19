@@ -27,12 +27,13 @@ class supplier extends CI_Controller{
 		if($id==0){
 			$data['row_id']				= '';
 			//$data['supplier_code']			= format_code('suppliers','supplier_code','S',7);
-			$data['supplier_name']			= '';
-			$data['supplier_leader']		= '';
-			$data['supplier_description']	= '';
-			$data['supplier_address']	= '';
-			$data['supplier_phone']	= '';
-	
+			$data['location_name']			= '';
+			$data['location_phone']			= '';
+			$data['location_address']		= '';
+			$data['location_rt_rw']			= '';
+			$data['location_kelurahan']		= '';
+			$data['location_kecamatan']		= '';
+			$data['location_kota']			= '';
 		
 		}else{
 			$result = $this->supplier_model->read_id($id);
@@ -44,8 +45,8 @@ class supplier extends CI_Controller{
 
 		$this->load->helper('form');
 		$this->render->add_form('app/supplier/form', $data);
-		$this->render->build('Cabang');
-		$this->render->show('Cabang');
+		$this->render->build('SPBE');
+		$this->render->show('SPBE');
 		//$this->access->generate_log_view($id);
 	}
 	
@@ -60,24 +61,18 @@ class supplier extends CI_Controller{
 		
 		$this->load->library('form_validation');
 		
-		$this->form_validation->set_rules('i_code','Kode', 'trim|required');
-		$this->form_validation->set_rules('i_name','Nama', 'trim|required|max_length[200]');
-		$this->form_validation->set_rules('i_leader','Leader', 'trim|required|max_length[200]');
-		$this->form_validation->set_rules('i_phone','telepon', 'trim|required');
+		$this->form_validation->set_rules('i_name','Nama SPBE', 'trim|required');
+		$this->form_validation->set_rules('i_phone','No.Telpn SPBE', 'trim|required');
 		$this->form_validation->set_rules('i_address','Alamat', 'trim|required');
 		
 		if($this->form_validation->run() == FALSE) send_json_validate();
 		
-		$data['supplier_code'] 				= $this->input->post('i_code');
-		$data['supplier_name'] 				= $this->input->post('i_name');
-		$data['supplier_leader'] 				= $this->input->post('i_leader');
-		$data['supplier_description'] 			= $this->input->post('i_description');
-		$data['supplier_phone'] 				= $this->input->post('i_phone');
-		$data['supplier_address'] 				= $this->input->post('i_address');
+			$data['location_name'] 				= $this->input->post('i_name');
+			$data['location_phone'] 			= $this->input->post('i_phone');
+			$data['location_address'] 			= $this->input->post('i_address');
 		
 		if(empty($id)){
-			$data['supplier_status'] 					= 1;
-			$data['supplier_code']			= format_code('suppliers','supplier_code','S',7);
+			$data['location_category_id'] 		= 1;
 			$error = $this->supplier_model->create($data);
 			send_json_action($error, "Data telah ditambah", "Data gagal ditambah");
 		}else{

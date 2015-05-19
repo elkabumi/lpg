@@ -47,6 +47,19 @@ class Lookup extends CI_Controller
 		$this->dtc->employee_get();
 	}
 	
+	# lookup data location
+	function location_table_control()
+	{
+		$this->load->library('dtc');
+		$this->dtc->location_control();
+	}
+	
+	function location_lookup_id()
+	{
+		$this->load->library('dtc');
+		$this->dtc->location_get();
+	}
+	
 	# lookup data Transaction Type
 	function transaction_type_table_control()
 	{

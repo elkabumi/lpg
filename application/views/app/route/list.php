@@ -8,12 +8,10 @@ $(function(){
 		column_id	: 0,
 		
 		filter_by 	: [ 
-		{id : "Nama SPBE", label : "Kode"}, 
-
-		{id : "supplier_name", label : "Nama"}, 
-		{id : "supplier_leader", label : "Leader"},
-		{id : "supplier_phone", label : "Telepon"},
-        {id : "supplier_address", label : "Alamat"}],
+		{id : "location_from", label : "Dari Lokasi"}, 
+		{id : "location_to", label : "Ke Lokasi"},
+		{id : "location_total_cost", label : "Bisya"},
+        {id : "location_desc", label : "Keterangan"}],
 		"aLengthMenu"		: [[50, 100, 250, 500], [50, 100, 250, 500]],
 	});
 	otable.fnSetColumnVis(0, false, false);

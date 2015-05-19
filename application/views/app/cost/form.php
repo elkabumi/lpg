@@ -2,9 +2,9 @@
 $(function(){
 	createForm({
 		id 				: "#id_form_nya", 
-		actionTarget	: "supplier/form_action",
-		backPage		: "supplier",
-		nextPage		: "supplier"
+		actionTarget	: "cost/form_action",
+		backPage		: "cost",
+		nextPage		: "cost"
 	});
 	
 	
@@ -19,21 +19,21 @@ $(function(){
 <div class="form_area_frame">
 <table  width="100%" cellpadding="4" class="form_layout">
 	<tr>
-     <td width="196">Nama SPBE</td>
-     <td width="651"><input name="i_name" type="text" id="i_name" value="<?=$location_name ?>" />
+     <td width="196">Harg Beli</td>
+     <td width="651"><input name="i_purchase" type="text" id="i_purchase" value="<?=$cost_purchase ?>" />
      <input type="hidden" name="row_id" value="<?=$row_id?>" /></td>
    </tr>
    
   <tr>
-     <td width="196">No.Telpn SPBE</td>
-     <td width="651"><input name="i_phone" type="text" id="i_phone" value="<?=$location_phone ?>" size="10"/></td>
+     <td width="196">Gaji Sopir</td>
+     <td width="651"><input name="i_cost_driver" type="text" id="i_cost_driver" value="<?=$cost_driver ?>" size="10"/></td>
      </tr>
   
  <tr>
-  	 <td width="196">Alamat</td>
-     <td width="651"><textarea name="i_address" id="i_address" cols="45" rows="5"><?= $location_address ?></textarea></td>
- </tr>
-
+  	 <td width="196">Gaji Kernet</td>
+  	 <td width="651"><input name="i_cost_co_driver" type="text" id="i_cost_co_driver" value="<?=$cost_co_driver ?>" size="10"/></td>
+  </tr>
+  
 </table>
 </div>
 <div class="command_bar">

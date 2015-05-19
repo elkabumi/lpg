@@ -207,7 +207,30 @@ class Dtc
 		
 		if ($result) 
 		{ 
-			send_json_lookup_feedback($result['employee_id'], $result['employee_nip']." - ".$result['employee_name'], $result['employee_name']);
+			send_json_lookup_feedback($result['employee_id'], $result['employee_nip']." - ".$result['employee_name'], $result['employee_position_name']);
+		}
+		else send_json_error_feedback();
+	}
+	
+	# lookup data loaction
+	function location_control()
+	{
+		$ci = & get_instance();
+		$data = $ci->dtc_model->location_control(get_datatables_control());
+		send_json($data); 
+	}
+	
+	function location_get()
+	{
+		$ci = & get_instance();
+		$mode = $ci->input->post('mode');
+		$data = $ci->input->post('data');
+
+		$result = $ci->dtc_model->location_get($data, $mode);
+		
+		if ($result) 
+		{ 
+			send_json_lookup_feedback($result['location_id'], $result['location_name'], $result['location_address']);
 		}
 		else send_json_error_feedback();
 	}

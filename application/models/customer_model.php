@@ -18,22 +18,27 @@ class customer_model extends CI_Model{
 		// daftar kolom yang valid
 
 		
-		$columns['customer_nopol'] 		= 'customer_nopol';
+		$columns['location_name'] 		= 'location_name';
+		$columns['location_address'] 		= 'location_address';
+		$columns['location_phone'] 		= 'location_phone';
+		$columns['location_rt_rw'] 		= 'location_rt_rw';
+		$columns['location_kelurahan'] 		= 'location_kelurahan';
+		$columns['location_kecamatan'] 		= 'location_kecamatan';
+		$columns['location_kota'] 		= 'location_kota';
 		 
 		
 		$sort_column_index = $params['sort_column'];
 		$sort_dir = $params['sort_dir'];
 		
 		$order_by_column[] = 'location_id';
-		$order_by_column[] = 'customer_nopol';
-		$order_by_column[] = 'customer_stnk';
-		$order_by_column[] = 'customer_owner';
-		$order_by_column[] = 'customer_color';
-		$order_by_column[] = 'customer_manufacture_date';
-		$order_by_column[] = 'customer_merk';
-		$order_by_column[] = 'customer_type_id';
-		$order_by_column[] = 'driver_id';
-		$order_by_column[] = 'co_driver_id';
+		$order_by_column[] = 'location_name';
+		$order_by_column[] = 'location_address';
+		$order_by_column[] = 'location_phone';
+		$order_by_column[] = 'location_rt_rw';
+		$order_by_column[] = 'location_kelurahan';
+		$order_by_column[] = 'location_kecamatan';
+		$order_by_column[] = 'location_kota';
+		
         
 		$order_by = " order by ".$order_by_column[$sort_column_index] . $sort_dir;
 		if (array_key_exists($category, $columns) && strlen($keyword) > 0) 
@@ -85,8 +90,8 @@ class customer_model extends CI_Model{
 	
 	function read_id($id){
 		$this->db->select('*', 1);
-		$this->db->where('customer_id', $id);
-		$query = $this->db->get('customers', 1);
+		$this->db->where('location_id', $id);
+		$query = $this->db->get('locations', 1);
 		$result = null;
 		foreach($query->result_array() as $row)
 		{
@@ -97,44 +102,43 @@ class customer_model extends CI_Model{
 	
 	function create($data){
 		$this->db->trans_start();
-		$this->db->insert('customers', $data);
+		$this->db->insert('locations', $data);
 		$id = $this->db->insert_id();
-		
+		/*
 		$data_market['market_id'] = $id;
 		$data_market['market_code'] = $data['customer_code'];
 		$data_market['market_name'] = $data['customer_name'];
 		$this->db->insert('markets', $data_market);
-		
-		$this->access->log_insert($id, "Cabang [".$data['customer_name']."]");
+		*/
+		$this->access->log_insert($id, "Pangakalan [".$data['location_name']."]");
 		$this->db->trans_complete();
 		return $this->db->trans_status();
 	}
-	
 	function update($id, $data){
 		$this->db->trans_start();
-		$this->db->where('customer_id', $id);
-		$this->db->update('customers', $data);
-		
+		$this->db->where('location_id', $id);
+		$this->db->update('locations', $data);
+		/*
 		$data_market['market_code'] = $data['customer_code'];
 		$data_market['market_name'] = $data['customer_name'];
 		
 		$this->db->where('market_id', $id);
 		$this->db->update('markets', $data_market);
-		
-		$this->access->log_update($id, "Cabang[".$data['customer_name']."]");
+		*/
+		$this->access->log_update($id, "Pangakalan[".$data['location_name']."]");
 		
 		$this->db->trans_complete();
 		return $this->db->trans_status();
 	}
 	function delete($id){
 		$this->db->trans_start();
-		$this->db->where('customer_id', $id);
-		$this->db->delete('customers');
-		
+		$this->db->where('location_id', $id);
+		$this->db->delete('locations');
+		/*
 		$this->db->where('market_id', $id);
 		$this->db->delete('markets');
-		
-		$this->access->log_delete($id, 'customer');
+		*/
+		$this->access->log_delete($id, 'Pangakalan');
 		$this->db->trans_complete();
 		return $this->db->trans_status();
 	}

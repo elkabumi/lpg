@@ -2,20 +2,12 @@
 $(function(){
 	createForm({
 		id 				: "#id_form_nya", 
-		actionTarget	: "truck/form_action",
-		backPage		: "truck",
-		nextPage		: "truck"
+		actionTarget	: "customer/form_action",
+		backPage		: "customer",
+		nextPage		: "customer"
 	});
 	
-	createLookUp({
-		table_id		: "#lookup_table_employee",
-		table_width		: 400,
-		listSource 		: "lookup/employee_table_control/",
-		dataSource		: "lookup/employee_lookup_id",
-		column_id 		: 0,
-		component_id	: "#lookup_employee",
-		filter_by		: [{id : "p1", label : "Kode"},{id : "p2", label : "Nama"}]
-	});
+	
 	
 	createDatePicker();
 });
@@ -27,39 +19,40 @@ $(function(){
 <div class="form_area_frame">
 <table  width="100%" cellpadding="4" class="form_layout">
 	<tr>
-     <td width="196">Kode</td>
-     <td width="651"><input name="i_code" type="text" id="i_code" value="<?=$truck_code ?>" />
+     <td width="196">Nama Pangkalan</td>
+     <td width="651"><input name="i_name" type="text" id="i_name" value="<?=$location_name ?>" />
      <input type="hidden" name="row_id" value="<?=$row_id?>" /></td>
    </tr>
    
-    <tr>
-     <td width="196">Nama</td>
-     <td width="651"><input name="i_name" type="text" id="i_name" value="<?=$truck_name ?>" size="10"/></td>
+  <tr>
+     <td width="196">No.Telpn Pangakalan</td>
+     <td width="651"><input name="i_phone" type="text" id="i_phone" value="<?=$location_phone ?>" size="10"/></td>
      </tr>
-     <tr>
-     <td req= "req">Leader</td>
-        <td><span class="lookup" id="lookup_employee">
-				<input type="hidden" name="i_leader" class="com_id" value="<?=$truck_leader?>" />
-				<input type="text" class="com_input" name="i_employee_name"/>
-				<div class="iconic_base iconic_search com_popup"></div>
-				</span>	
-       </td>
+  
+ <tr>
+  	 <td width="196">Alamat</td>
+     <td width="651"><textarea name="i_address" id="i_address" cols="45" rows="5"><?= $location_address ?></textarea></td>
+ </tr>
+  <tr>
+     <td width="196">RT/RW</td>
+     <td width="651"><input name="i_rt" type="text" id="i_rt" value="<?=$location_rt_rw ?>" size="10"/></td>
+     </tr>
+  
+ <tr>
+  <tr>
+     <td width="196">Kelurahan</td>
+     <td width="651"><input name="i_kel" type="text" id="i_kel" value="<?=$location_kelurahan ?>" size="10"/></td>
      </tr>
  <tr>
    <tr>
-     <td width="196">Telepon</td>
-     <td width="651"><input name="i_phone" type="text" id="i_phone" value="<?=$truck_phone ?>" size="10"/></td>
+     <td width="196">Kecamatan</td>
+     <td width="651"><input name="i_kec" type="text" id="i_kec" value="<?=$location_kecamatan ?>" size="10"/></td>
      </tr>
-   
-   
-     <td width="196">Alamat</td>
-     <td width="651"><textarea name="i_address" id="i_address" cols="45" rows="5"><?= $truck_address ?></textarea></td>
-     </tr>
-  <tr>
-    <td width="196">Keterangan</td>
-    <td width="651"><textarea name="i_description" id="i_description" cols="45" rows="5"><?= $truck_description ?></textarea></td>
-    </tr>
-
+ <tr>
+ <tr>
+   	 <td width="196">Kota</td>
+     <td width="651"><input name="i_city" type="text" id="i_city" value="<?=$location_kota ?>" size="10"/></td>
+ </tr>
 </table>
 </div>
 <div class="command_bar">
@@ -69,23 +62,3 @@ $(function(){
 </div>
 </div>
 </form>
-
-<div id="">
-	<table id="lookup_table_employee" cellpadding="0" cellspacing="0" border="0" class="display" > 
-		<thead>
-			<tr>
-			<th>ID</th>
-				<th>NIK </th>
-				<th>Nama</th>
-            
-			</tr> 
-		</thead> 
-		<tbody> 	
-		</tbody>
-	</table>
-	<div id="panel">
-		<input type="button" id="choose" value="Pilih Data"/>
-		<input type="button" id="refresh" value="Refresh"/>
-		<input type="button" id="cancel" value="Cancel" />
-	</div>	
-</div>

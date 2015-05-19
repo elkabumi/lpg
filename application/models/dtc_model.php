@@ -586,13 +586,14 @@ class Dtc_model extends CI_Model
 		$order_by_column[] = 'employee_id';
 		$order_by_column[] = 'employee_nip';
 		$order_by_column[] = 'employee_name';
+		$order_by_column[] = 'employee_position_name';
 		
 		$order_by = $order_by_column[$sort_column_index] . $sort_dir;
 		# order define column end
 		
 		$column['p1']			= 'employee_nip';
 		$column['p2']			= 'employee_name';
-		
+		$column['p3']			= 'employee_position_name';
 		$this->db->start_cache();
 		
 		if(array_key_exists($category, $column) && strlen($keyword) > 0)
@@ -603,17 +604,19 @@ class Dtc_model extends CI_Model
 		
 		// hitung total record
 		$this->db->select('COUNT(1) AS total', 1); // pastikan ada AS total nya, 1 bila isinya adalah function (dalam hal ini COUNT)
+		$this->db->join('employee_positions b','a.employee_position_id = b.employee_position_id');
 		$this->db->where('employee_id <> ', 11111);
-		$query	= $this->db->get('employees'); 
+		$query	= $this->db->get('employees a'); 
 		$row 	= $query->row_array(); // fungsi ci untuk mengambil 1 row saja dari query
 		$total 	= $row['total'];	
 				
 		
 		// proses query sesuai dengan parameter
-		$this->db->select('*', 1); // ambil seluruh data
+		$this->db->select('a.*,b.employee_position_name', 1); // ambil seluruh data
+		$this->db->join('employee_positions b','a.employee_position_id = b.employee_position_id','left');
 		$this->db->where('employee_id <> ', 11111);				
 		$this->db->order_by($order_by);
-		$query = $this->db->get('employees', $limit, $offset);
+		$query = $this->db->get('employees a', $limit, $offset);
 		
 		$data = array(); // inisialisasi variabel. biasakanlah, untuk mencegah warning dari php.
 		foreach($query->result_array() as $row) {
@@ -624,7 +627,8 @@ class Dtc_model extends CI_Model
 			$data[] = array(
 				$row['employee_id'], 
 				$row['employee_nip'], 
-				$row['employee_name']
+				$row['employee_name'],
+				$row['employee_position_name']
 			); 
 		}
 		
@@ -638,15 +642,110 @@ class Dtc_model extends CI_Model
 		
 		$result = NULL;
 		
-		if ($mode == 1)
-			$query = $this->db->get_where('employees', array('employee_id' => $id), 1);
-		else
+		if ($mode == 1){
+			
+			$sql = "
+		select a.*, b.employee_position_name
+		from employees a
+		join employee_positions b on b.employee_position_id = a.employee_position_id
+		where a.employee_id = '$id'
+		
+			
+			";
+
+		
+		
+		$query = $this->db->query($sql);
+		//query();
+		}else{
 			$query = $this->db->get_where('employees', array('employee_nip' => $id), 1);
+		}
+		foreach($query->result_array() as $row)	$result = format_html($row);
+		
+		return $result;
+	}
+	
+	
+	
+	
+	## Data location
+	function location_control($param)
+	{
+		// map parameter ke variable biasa agar mudah digunakan
+		$limit 		= $param['limit'];
+		$offset	 	= $param['offset'];
+		$category 	= $param['category'];
+		$keyword 	= $param['keyword'];
+		
+		# order define columns start
+		$sort_column_index				= $param['sort_column'];
+		$sort_dir						= $param['sort_dir'];
+		
+		$order_by_column[] = 'location_id';
+		$order_by_column[] = 'location_name';
+		$order_by_column[] = 'location_address';
+		
+		$order_by = $order_by_column[$sort_column_index] . $sort_dir;
+		# order define column end
+		
+		$column['p1']			= 'location_name';
+		$column['p2']			= 'location_address';
+		
+		$this->db->start_cache();
+		
+		if(array_key_exists($category, $column) && strlen($keyword) > 0)
+		{
+			$this->db->like($column[$category], $keyword);
+		}// end if
+		$this->db->stop_cache();
+		
+		// hitung total record
+		$this->db->select('COUNT(1) AS total', 1); // pastikan ada AS total nya, 1 bila isinya adalah function (dalam hal ini COUNT)
+		$query	= $this->db->get('locations'); 
+		$row 	= $query->row_array(); // fungsi ci untuk mengambil 1 row saja dari query
+		$total 	= $row['total'];	
+				
+		
+		// proses query sesuai dengan parameter
+		$this->db->select('*', 1); // ambil seluruh data			
+		$this->db->order_by($order_by);
+		$query = $this->db->get('locations', $limit, $offset);
+		
+		$data = array(); // inisialisasi variabel. biasakanlah, untuk mencegah warning dari php.
+		foreach($query->result_array() as $row) {
+			
+			
+			$row = format_html($row);
+			
+			$data[] = array(
+				$row['location_id'], 
+				$row['location_name'], 
+				$row['location_address']
+			); 
+		}
+		
+		// kembalikan nilai dalam format datatables_control
+		return make_datatables_control($param, $data, $total);
+	}
+	
+	function location_get($id, $mode)
+	{
+		if (empty($id) || !$id || !$mode) return NULL;
+		
+		$result = NULL;
+		
+		if ($mode == 1)
+			$query = $this->db->get_where('locations', array('location_id' => $id), 1);
+		else
+			$query = $this->db->get_where('locations', array('location_name' => $id), 1);
 			
 		foreach($query->result_array() as $row)	$result = format_html($row);
 		
 		return $result;
 	}
+	
+	
+	
 	
 	## Data employee
 	function employee_group_control($param)

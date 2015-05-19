@@ -8,12 +8,10 @@ $(function(){
 		column_id	: 0,
 		
 		filter_by 	: [ 
-		{id : "Nama SPBE", label : "Kode"}, 
 
-		{id : "supplier_name", label : "Nama"}, 
-		{id : "supplier_leader", label : "Leader"},
-		{id : "supplier_phone", label : "Telepon"},
-        {id : "supplier_address", label : "Alamat"}],
+		{id : "location_name", label : "Nama SPBE"},
+		{id : "location_phone", label : "Telepon"},
+        {id : "location_address", label : "Alamat"}],
 		"aLengthMenu"		: [[50, 100, 250, 500], [50, 100, 250, 500]],
 	});
 	otable.fnSetColumnVis(0, false, false);

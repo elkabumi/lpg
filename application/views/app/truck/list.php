@@ -8,12 +8,16 @@ $(function(){
 		column_id	: 0,
 		
 		filter_by 	: [ 
-		{id : "truck_code", label : "Kode"}, 
-
-		{id : "truck_name", label : "Nama"}, 
-		{id : "truck_leader", label : "Leader"},
-		{id : "truck_phone", label : "Telepon"},
-        {id : "truck_address", label : "Alamat"}],
+		{id : "truck_nopol2", label : "Nopol"}, 
+		{id : "truck_stnk", label : "No Stnk"}, 
+		{id : "truck_owner", label : "Pemilik Kendaraan"},
+		{id : "truck_color", label : "Warna"},
+		{id : "truck_manufacture_date", label : "Tahun Pembuatan"},
+        {id : "truck_merk", label : "Merk"},
+		{id : "truck_type_id", label : "Jenis Armada"}, 
+		{id : "driver_name", label : "Supir"}, 
+		{id : "co_driver_name", label : "Kernet"}],
+		
 		"aLengthMenu"		: [[50, 100, 250, 500], [50, 100, 250, 500]],
 	});
 	otable.fnSetColumnVis(0, false, false);
@@ -31,7 +35,7 @@ $(function(){
             <th>Tahun Pembuatan</th>
             <th>Merk</th>
             <th>Jenis Armada</th>
-            <th>Supir</th>
+            <th>Sopir</th>
             <th>Kernet</th>
 		</tr> 
 	</thead> 

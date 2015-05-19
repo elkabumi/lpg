@@ -25,13 +25,12 @@ class Route extends CI_Controller{
 	function form($id = 0){
 		$data = array();
 		if($id==0){
-			$data['row_id']				= '';
+			$data['row_id']					= '';
 			//$data['route_code']			= format_code('routes','route_code','S',7);
-			$data['route_name']			= '';
-			$data['route_leader']		= '';
-			$data['route_description']	= '';
-			$data['route_address']	= '';
-			$data['route_phone']	= '';
+			$data['location_from_id']		= '';
+			$data['location_to_id']			= '';
+			$data['location_total_cost']	= '';
+			$data['location_desc']			= '';
 	
 		
 		}else{
@@ -44,8 +43,12 @@ class Route extends CI_Controller{
 
 		$this->load->helper('form');
 		$this->render->add_form('app/route/form', $data);
-		$this->render->build('Cabang');
-		$this->render->show('Cabang');
+		$this->render->build('Route');
+		
+		$this->render->add_view('app/route/transient_list');
+		$this->render->build('Biaya Route');
+		
+		$this->render->show('Route');
 		//$this->access->generate_log_view($id);
 	}
 	
@@ -60,33 +63,113 @@ class Route extends CI_Controller{
 		
 		$this->load->library('form_validation');
 		
-		$this->form_validation->set_rules('i_code','Kode', 'trim|required');
-		$this->form_validation->set_rules('i_name','Nama', 'trim|required|max_length[200]');
-		$this->form_validation->set_rules('i_leader','Leader', 'trim|required|max_length[200]');
-		$this->form_validation->set_rules('i_phone','telepon', 'trim|required');
-		$this->form_validation->set_rules('i_address','Alamat', 'trim|required');
+		$this->form_validation->set_rules('i_from_id','Dari Lokasi', 'trim|required');
+		$this->form_validation->set_rules('i_to_id','Ke Lokasi', 'trim|required');
+		$this->form_validation->set_rules('i_description','Keterangan', 'trim|required');
 		
 		if($this->form_validation->run() == FALSE) send_json_validate();
 		
-		$data['route_code'] 				= $this->input->post('i_code');
-		$data['route_name'] 				= $this->input->post('i_name');
-		$data['route_leader'] 				= $this->input->post('i_leader');
-		$data['route_description'] 			= $this->input->post('i_description');
-		$data['route_phone'] 				= $this->input->post('i_phone');
-		$data['route_address'] 				= $this->input->post('i_address');
+		$data['location_from_id'] 				= $this->input->post('i_from_id');
+		$data['location_to_id'] 				= $this->input->post('i_to_id');
+		$data['location_desc']	 				= $this->input->post('i_description');
 		
+		// simpan transient biaya Route
+		$list_name_biaya	= ($this->input->post('transient_rd_name'));
+		$list_biaya  =  	($this->input->post('transient_rd_price'));
+		$total_biaya = 0;
+		$items_biaya = array();
+		
+		if($list_name_biaya){
+			foreach($list_name_biaya as $key => $value)
+			{
+			$items_biaya[] = array(
+					'route_detail_name' => ($list_name_biaya[$key]),
+					'route_detail_cost' => $list_biaya[$key],
+			);
+				$total_biaya += $list_biaya[$key];
+			}		
+		}
+		
+		$data['location_total_cost'] = $total_biaya;
+				
 		if(empty($id)){
-			$data['route_status'] 					= 1;
-			$data['route_code']			= format_code('routes','route_code','S',7);
-			$error = $this->route_model->create($data);
+			$error = $this->route_model->create($data,$items_biaya);
 			send_json_action($error, "Data telah ditambah", "Data gagal ditambah");
 		}else{
-			$error = $this->route_model->update($id, $data);
+			$error = $this->route_model->update($id, $data,$items_biaya);
 			send_json_action($error, "Data telah direvisi", "Data gagal direvisi");
 		}
 		
 	}
-	
-	
+	function detail_list_loader($row_id=0)
+			{
+			if($row_id == 0)
+				
+				send_json(make_datatables_list(null)); 
+						
+				$data = $this->route_model->detail_list_loader($row_id);
+				$sort_id = 0;
+				foreach($data as $key => $value) 
+				{
+				$data[$key] = array(
+						form_transient_pair('transient_rd_name', $value['route_detail_name'],$value['route_detail_name']),
+						form_transient_pair('transient_rd_price',	tool_money_format($value['route_detail_cost']),$value['route_detail_cost'])
+						//form_transient_pair('transient_reg_aproved_price',	tool_money_format($value['detail_registration_approved_price']),$value['detail_registration_approved_price'])
+				);
+		}		
+		send_json(make_datatables_list($data)); 
+	}
+	function detail_form($route_id = 0) // jika id tidak diisi maka dianggap create, else dianggap edit
+		{		
+			$this->load->library('render');
+			$index = $this->input->post('transient_index');
+			if (strlen(trim($index)) == 0) {
+						
+				// TRANSIENT CREATE - isi form dengan nilai default / kosong
+					$data['index']							= '';
+					$data['route_id']						= $route_id ;
+					$data['transient_rd_name'] 				= '';
+					$data['transient_rd_price'] 			= '';
+			
+					
+			} else {
+				
+					$data['index']								= $index;
+					$data['route_id'] 					= $registration_id;
+					$data['transient_rd_name'] 			= array_shift($this->input->post('transient_rd_name'));
+					$data['transient_rd_price'] 		= array_shift($this->input->post('transient_rd_price'));
+				
+			}
+		
+			$this->render->add_form('app/route/transient_form', $data);
+			$this->render->show_buffer();
+		}
+
+			
+		function detail_form_action()
+		{		
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('i_name', 'Nama Biaya', 'trim|required');
+			$this->form_validation->set_rules('i_cost', 'Biaya', 'trim|required|integer');
+			
+			$index = $this->input->post('i_index');		
+			// cek data berdasarkan kriteria
+			if ($this->form_validation->run() == FALSE) send_json_validate();
+		
+			$no 					= $this->input->post('i_index');
+			$transient_rd_name 		= $this->input->post('i_name');
+			$transient_rd_price 	= $this->input->post('i_cost');
+			
+			$data = array(
+						form_transient_pair('transient_rd_name',$transient_rd_name,$transient_rd_name ),
+						form_transient_pair('transient_rd_price',	tool_money_format($transient_rd_price),$transient_rd_price)
+						//form_transient_pair('transient_reg_aproved_price',	tool_money_format($value['detail_registration_approved_price']),$value['detail_registration_approved_price'])
+				);
+		
+		send_json_transient($index, $data);
+
+		
+		}
+
 	
 }
