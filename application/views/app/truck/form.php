@@ -80,7 +80,7 @@ $(function(){
      <td req= "req">Kernet</td>
         <td><span class="lookup" id="lookup_employee_2">
 				<input type="hidden" name="i_co_driver_id" class="com_id" value="<?=$co_driver_id?>" />
-				<input type="text" class="com_input" name="i_employee_name"/>
+				<input type="text" class="com_input"/>
 				<div class="iconic_base iconic_search com_popup"></div>
                  <span class="com_desc"></span>
 				

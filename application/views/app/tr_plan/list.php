@@ -6,7 +6,7 @@ $(function(){
 		formTarget 		: "tr_plan/form",
 		actionTarget	: "tr_plan/form_action",
 		column_id		: 0,
-		filter_by 		: [ {id : "tanggal", label : "Tanggal"}, {id : "total", label : "Total"}, {id : "kulak", label : "Jumlah Kulak"}, {id : "kirim", label : "Jumlah Kirim"},]
+		filter_by 		: [ {id : "tanggal", label : "Tanggal"},{id : "kulak", label : "Jumlah Kulak"},]
 	});
 	otable.fnSetColumnVis(0, false, false);
 });

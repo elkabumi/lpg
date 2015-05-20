@@ -594,12 +594,15 @@ class Dtc_model extends CI_Model
 		$column['p1']			= 'employee_nip';
 		$column['p2']			= 'employee_name';
 		$column['p3']			= 'employee_position_name';
-		$this->db->start_cache();
 		
+		$this->db->start_cache();
+		$this->db->where('a.employee_active_status','1');
+		$this->db->where('a.employee_id <> ', 1);
 		if(array_key_exists($category, $column) && strlen($keyword) > 0)
 		{
 			$this->db->like($column[$category], $keyword);
 		}// end if
+		
 		$this->db->stop_cache();
 		
 		// hitung total record
@@ -667,9 +670,202 @@ class Dtc_model extends CI_Model
 	
 	
 	
+	## Data route
+	function route_control($param)
+	{
+		// map parameter ke variable biasa agar mudah digunakan
+		$limit 		= $param['limit'];
+		$offset	 	= $param['offset'];
+		$category 	= $param['category'];
+		$keyword 	= $param['keyword'];
+		
+		# order define columns start
+		$sort_column_index				= $param['sort_column'];
+		$sort_dir						= $param['sort_dir'];
+		
+		$order_by_column[] = 'route_id';
+		$order_by_column[] = 'b.location_name';
+		$order_by_column[] = 'c.location_name';
+		$order_by_column[] = 'location_total_cost';
+		
+		$order_by = $order_by_column[$sort_column_index] . $sort_dir;
+		# order define column end
+		
+		$column['p1']			= 'b.location_name';
+		$column['p2']			= 'c.location_name';
+		$column['p3']			= 'location_total_cost';
+		
+		$this->db->start_cache();
+	
+		if(array_key_exists($category, $column) && strlen($keyword) > 0)
+		{
+			$this->db->like($column[$category], $keyword);
+		}// end if
+		
+		$this->db->stop_cache();
+		
+		// hitung total record
+		$this->db->select('COUNT(1) AS total', 1); // pastikan ada AS total nya, 1 bila isinya adalah function (dalam hal ini COUNT)
+		$this->db->join('locations b','a.location_from_id = b.location_id');
+		$this->db->join('locations c','a.location_to_id = c.location_id');
+		$query	= $this->db->get('routes a'); 
+		$row 	= $query->row_array(); // fungsi ci untuk mengambil 1 row saja dari query
+		$total 	= $row['total'];	
+				
+		
+		// proses query sesuai dengan parameter
+		$this->db->select('a.*,b.location_name AS location_from,c.location_name AS location_to', 1); // ambil seluruh data
+		$this->db->join('locations b','a.location_from_id = b.location_id');
+		$this->db->join('locations c','a.location_to_id = c.location_id');		
+		$this->db->order_by($order_by);
+		$query = $this->db->get('routes a', $limit, $offset);
+		//query();
+		$data = array(); // inisialisasi variabel. biasakanlah, untuk mencegah warning dari php.
+		foreach($query->result_array() as $row) {
+			
+			
+			$row = format_html($row);
+			
+			$data[] = array(
+				$row['route_id'], 
+				$row['location_from'], 
+				$row['location_to'],
+				$row['location_total_cost']
+			); 
+		}
+		
+		// kembalikan nilai dalam format datatables_control
+		return make_datatables_control($param, $data, $total);
+	}
+	
+	function route_get($id, $mode)
+	{
+		if (empty($id) || !$id || !$mode) return NULL;
+		
+		$result = NULL;
+		
+		if ($mode == 1){
+			
+			$sql = "
+			select a.*,b.location_name AS location_from,c.location_name AS location_to
+			from routes a
+			join locations b on a.location_from_id =b.location_id
+			join locations c on a.location_to_id = c.location_id
+			where a.route_id = '$id'
+		
+			
+			";
+
+		
+		
+		$query = $this->db->query($sql);
+		//query();
+		}else{
+			$query = $this->db->get_where('employees', array('employee_nip' => $id), 1);
+		}
+		foreach($query->result_array() as $row)	$result = format_html($row);
+		
+		return $result;
+	}
+	
+	
+	## Data truck
+	function truck_control($param)
+	{
+		// map parameter ke variable biasa agar mudah digunakan
+		$limit 		= $param['limit'];
+		$offset	 	= $param['offset'];
+		$category 	= $param['category'];
+		$keyword 	= $param['keyword'];
+		
+		# order define columns start
+		$sort_column_index				= $param['sort_column'];
+		$sort_dir						= $param['sort_dir'];
+		
+		$order_by_column[] = 'truck_id';
+		$order_by_column[] = 'truck_nopol';
+		$order_by_column[] = 'truck_merk';
+		$order_by_column[] = 'truck_type_name';
+		
+		$order_by = $order_by_column[$sort_column_index] . $sort_dir;
+		# order define column end
+		
+		$column['p1']			= 'truck_nopol';
+		$column['p2']			= 'truck_merk';
+		$column['p3']			= 'truck_type_name';
+		$this->db->start_cache();
+		
+		if(array_key_exists($category, $column) && strlen($keyword) > 0)
+		{
+			$this->db->like($column[$category], $keyword);
+		}// end if
+		$this->db->stop_cache();
+		
+		// hitung total record
+		$this->db->select('COUNT(1) AS total', 1); // pastikan ada AS total nya, 1 bila isinya adalah function (dalam hal ini COUNT)
+		$this->db->join('truck_types b','a.truck_type_id = b.truck_type_id','left');
+		$query	= $this->db->get('trucks a'); 
+		$row 	= $query->row_array(); // fungsi ci untuk mengambil 1 row saja dari query
+		$total 	= $row['total'];	
+				
+		
+		// proses query sesuai dengan parameter
+		$this->db->select('a.*,b.truck_type_name', 1); // ambil seluruh data
+		$this->db->join('truck_types b','a.truck_type_id = b.truck_type_id','left');			
+		$this->db->order_by($order_by);
+		$query = $this->db->get('trucks a', $limit, $offset);
+		
+		$data = array(); // inisialisasi variabel. biasakanlah, untuk mencegah warning dari php.
+		foreach($query->result_array() as $row) {
+			
+			
+			$row = format_html($row);
+			
+			$data[] = array(
+				$row['truck_id'], 
+				$row['truck_nopol'], 
+				$row['truck_merk'],
+				$row['truck_type_name']
+			); 
+		}
+		
+		// kembalikan nilai dalam format datatables_control
+		return make_datatables_control($param, $data, $total);
+	}
+	
+	function truck_get($id, $mode)
+	{
+		if (empty($id) || !$id || !$mode) return NULL;
+		
+		$result = NULL;
+		
+		if ($mode == 1){
+			
+			$sql = "
+			select a.*, b.truck_type_name
+			from trucks a
+			left join truck_types b on b.truck_type_id = a.truck_type_id
+			where a.truck_id = '$id'
+		
+			
+			";
+
+		
+		
+		$query = $this->db->query($sql);
+		//query();
+		}else{
+			$query = $this->db->get_where('trucks', array('truck_nopol' => $id), 1);
+		}
+		foreach($query->result_array() as $row)	$result = format_html($row);
+		
+		return $result;
+	}
+	
+	
 	
 	## Data location
-	function location_control($param)
+	function location_control($param,$type=0)
 	{
 		// map parameter ke variable biasa agar mudah digunakan
 		$limit 		= $param['limit'];
@@ -697,11 +893,15 @@ class Dtc_model extends CI_Model
 		{
 			$this->db->like($column[$category], $keyword);
 		}// end if
+		if($type != 0){
+			$this->db->where('location_category_id <>',2);
+		}
 		$this->db->stop_cache();
 		
 		// hitung total record
 		$this->db->select('COUNT(1) AS total', 1); // pastikan ada AS total nya, 1 bila isinya adalah function (dalam hal ini COUNT)
 		$query	= $this->db->get('locations'); 
+		
 		$row 	= $query->row_array(); // fungsi ci untuk mengambil 1 row saja dari query
 		$total 	= $row['total'];	
 				

@@ -377,8 +377,8 @@ body > .header {
 }
 body > .header .navbar {
   height: 80px;
-  margin-bottom: 0;
   margin-left: 220px;
+  
 }
 body > .header .navbar .sidebar-toggle {
   float: left;

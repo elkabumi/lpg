@@ -1,6 +1,6 @@
 <?php
-	if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-			class Tr_plan extends CI_Controller{
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+	class Tr_plan extends CI_Controller{
 			function __construct(){
 			parent::__construct();
 			$this->load->library('render');
@@ -14,941 +14,555 @@
 			$this->render->build('Plan');
 			$this->render->show('Plan');
 		}
-		function table_controller(){
+		
+	function table_controller(){
 			$data = $this->tr_plan_model->list_controller();
 			send_json($data);
 		}
+		
+	function form($id = 0){
+		$data = array();
+		if($id==0){
+			$data['row_id']				= '';
+			//$data['truck_code']			= format_code('trucks','truck_code','S',7);
+			
+			$data['tr_plan_total_order']		= '';
+			$data['tr_plan_total_purchase']		= '';
+			
+			
+			$data['tr_plan_total_shipment	']	= '';
+			$data['tr_plan_date']	= '';
 	
-		function form($registration_id = 0)
-		{
-			$data = array();
-			$this->load->model('global_model');
-
-			$result = $this->tr_plan_model->read_id($registration_id);
+	
+		
+		}else{
+			$result = $this->tr_plan_model->read_id($id);
 			if($result){
 				$data = $result;
-				$data['row_id'] = $registration_id;
-				$data['check_in'] = format_new_date($data['check_in']);
-				$data['registration_estimation_date'] = format_new_date($data['registration_estimation_date']);
-				$data['spk_date'] = format_new_date($data['spk_date']);
-				$data['tr_plan_plain_first_date'] = format_new_date($result['tr_plan_plain_first_date']);
-				$data['tr_plan_plain_last_date'] = $result['tr_plan_plain_last_date'];
-				$data['tr_plan_actual_date'] = $result['tr_plan_actual_date'];
-				$data['tr_plan_target_date'] = $result['tr_plan_target_date'];
-				
+				$data['row_id'] = $id;
+				$data['tr_plan_date'] = format_new_date($data['tr_plan_date']);
 			}
-				
-			$this->load->helper('form');
-			$this->render->add_form('app/tr_plan/form', $data);
-			$this->render->build('Registrasi');
+		}
+		$this->load->helper('form');
 			
-			// List sparepart
-			$this->render->add_view('app/tr_plan/transient_list_sparepart', $data);
-			$this->render->build('Data Sparepart');
+		$this->render->add_form('app/tr_plan/form', $data);
+		$this->render->build('Plan');
+		//List Kulak
+		$this->render->add_view('app/tr_plan/transient_list_kulak');
+		$this->render->build('Data Kulak');
+		
+		$this->render->show('Plan');
+	}
+	function form_plan($id){
+		//$data = array();
+		/*if($id==0){
+			$data['row_id']				= '';
+			//$data['truck_code']			= format_code('trucks','truck_code','S',7);
+			$data['tr_plan_qty']			= '';
+			$data['tr_plan_total_order']		= '';
+			$data['tr_plan_total_shipment	']	= '';
+			$data['tr_plan_date']	= '';
+	
+	
+		
+		}else{*/
+		
+			$result = $this->tr_plan_model->read_plan_id($id);
+			if($result){
+				$data = $result;
+				$data['row_id'] = $id;
+			}
+		//}
+		$this->load->helper('form');
 			
-			// list panel asuransi
-			$this->render->add_view('app/tr_plan/transient_list_panel', $data);
-			$this->render->build('Data Panel Asuransi');
-
-			// list jasa
-			$this->render->add_view('app/tr_plan/transient_list', $data);
-			$this->render->build('Data Jasa');
-			// list bahan
-			$this->render->add_view('app/tr_plan/transient_list_bahan', $data);
-			$this->render->build('Data Bahan');
-			// list cat
-			$this->render->add_view('app/tr_plan/transient_list_cat', $data);
-			$this->render->build('Data Cat');
+		$this->render->add_form('app/tr_plan/form_plan', $data);
+		$this->render->build('Detail Plan');
+		//List Pengiriman
+		$this->render->add_view('app/tr_plan/transient_list_shipment', $data);
+		$this->render->build('Data Kulak');
+		
+		$this->render->show('Detail Plan');
+	}
+	
+	
+	
+	function form_action($is_delete = 0){
+		
+		$id = $this->input->post('row_id');
 			
-
-			// list foto
-			$this->render->add_view('app/tr_plan/transient_list_foto');
-			$this->render->build('Photo');
-			
-			$this->render->add_js('ajaxfileupload');
-			$this->render->show('Transaksi');
+		if($is_delete){
+			$is_proses_error = $this->tr_plan_model->delete($id);
+			send_json_action($is_proses_error, "Data telah dihapus");
 		}
 		
+		$this->load->library('form_validation');
+		
+		$this->form_validation->set_rules('i_date','Tanggal Plan','trim|required|valid_date|sql_date');
+		
+		if($this->form_validation->run() == FALSE) send_json_validate();
+		
+		$data['tr_plan_date'] 				= $this->input->post('i_date');
+	
 		
 		
-			
-		function form_action($is_delete = 0) // jika 0, berarti insert atau update, bila 1 berarti delete
-		{
-			$this->load->library('form_validation');
-			// bila operasinya DELETE -----------------------------------------------------------------------------------------
-			if($is_delete)
+		$get_date=$this->tr_plan_model->cek_date($data['tr_plan_date']);
+	
+		if($get_date > 1){
+			 send_json_error('Simpan gagal. Plan di Tanggal '.$data['tr_plan_date'].' Sudah ada');
+	
+		}
+			// simpan transient kulak
+		$list_td_code			= ($this->input->post('transient_detail_code'));
+		$list_td_truck_id		= ($this->input->post('transient_detail_truck_id'));
+		$list_td_cost_lain		= ($this->input->post('transient_detail_cost_lain'));
+		$list_td_driver 		= ($this->input->post('transient_detail_driver'));
+		$list_td_driver_id		= ($this->input->post('transient_detail_driver_id'));
+		$list_td_co_driver		= ($this->input->post('transient_detail_co_driver'));
+		$list_td_co_driver_id 	= ($this->input->post('transient_detail_co_driver_id'));
+		$list_td_plan_id		= ($this->input->post('transient_detail_plan_id'));
+		$list_td_spbe			= ($this->input->post('transient_detail_spbe'));
+		$list_td_qty 			= ($this->input->post('transient_detail_qty'));
+		$list_td_purchase		= ($this->input->post('transient_detail_purchase'));
+		$list_td_total_purchase	= ($this->input->post('transient_detail_total'));
+		$list_td_cost_driver 	= ($this->input->post('transient_detail_cost_driver'));
+		$list_td_cost_co_driver	= ($this->input->post('transient_detail_cost_co_driver'));
+		$list_td_cost_lain		= ($this->input->post('transient_detail_cost_lain'));
+					
+	
+		$total_purchase = 0;
+		$total_kulak 	= 0;
+		$items_plan_detail = array();
+		if(!$list_td_truck_id) send_json_error('Simpan gagal. Data Kulak Masih Kosong');
+	
+		if($list_td_truck_id){
+			foreach($list_td_truck_id as $key => $value)
 			{
-				$this->load->model('tr_plan_model');
-				$id = $this->input->post('i_tr_plan_id');
-				$is_process_error = $this->tr_plan_model->delete($id);
-				send_json_action($is_process_error, "Data telah dihapus", "Data gagal dihapus");
-			}
-		// bila bukan delete, berarti create atau update ------------------------------------------------------------------
-		// definisikan kriteria data
-				
-				$this->form_validation->set_rules('i_employee_group_id','Tim Kerja','trim|required');
-				$this->form_validation->set_rules('i_first_date','Tanggal awal plain','trim|required|valid_date|sql_date');
-				$this->form_validation->set_rules('i_last_date','Tanggal akhir plain','trim|required|valid_date|sql_date');
-				$this->form_validation->set_rules('i_actual_date','Tanggal Aktual','trim|required|valid_date|sql_date');
-				$this->form_validation->set_rules('i_target_date','Tanggal target selesai','trim|required|valid_date|sql_date');
-			
-		// cek data berdasarkan kriteria
-			if ($this->form_validation->run() == FALSE) send_json_validate();
-
-				$tr_plan_id = $this->input->post('i_tr_plan_id');
-
-				$data['registration_id'] = $this->input->post('row_id');
-				$data['employee_group_id'] = $this->input->post('i_employee_group_id');
-				$data['tr_plan_plain_first_date'] = $this->input->post('i_first_date');
-				$data['tr_plan_plain_last_date'] = $this->input->post('i_last_date');
-				$data['tr_plan_actual_date'] = $this->input->post('i_actual_date');
-				$data['tr_plan_target_date'] = $this->input->post('i_target_date');
-				$data['employee_group_id2'] = $this->input->post('i_employee_group_id2');
-				$data['tr_plan_gabungan_lain'] = $this->input->post('i_gabungan_lain');
-				$data['tr_plan_las_lain'] = $this->input->post('i_las_lain');
-				
-				// simpan transient jasa
-				$list_tr_plan_detail_date		= $this->input->post('transient_tr_plan_detail_date');
-				$list_workshop_service_id			= $this->input->post('transient_workshop_service_id');
-				$list_workshop_service_price		= $this->input->post('transient_workshop_service_price');
-				$list_workshop_service_job_price	= $this->input->post('transient_workshop_service_job_price');
-				$list_tr_plan_detail_progress	= $this->input->post('transient_tr_plan_detail_progress');
-
-			if(!$list_tr_plan_detail_date) send_json_error('Simpan gagal. Data Plan masih kosong');
-				$total_price = 0;
-				$total_progress = 0;
-				$jumlah_jasa = 0;
-				$items = array();
-
-				// jasa
-				if($list_tr_plan_detail_date){
-					foreach($list_tr_plan_detail_date as $key => $value)
-					{
-				//$get_purchase_price = $this->registration_model->get_purchase_price($list_product_id[$key]);
-						$items[] = array(
-							'tr_plan_detail_date' => ($list_tr_plan_detail_date[$key]),
-							'tr_plan_detail_progress' => $list_tr_plan_detail_progress[$key],
-							'workshop_service_id' => $list_workshop_service_id[$key],
-							'workshop_service_price' => $list_workshop_service_price[$key],
-							'workshop_service_job_price' => $list_workshop_service_job_price[$key]
-							);
-						$total_price += $list_workshop_service_job_price[$key];
-						$total_progress += $list_tr_plan_detail_progress[$key];
-						$jumlah_jasa++;
-					}
-				}
-
-				// simpan transient cat/bahan
-				$list_bahan_name	= ($this->input->post('transient_bahan_name'));
-				$list_bahan_qty =  ($this->input->post('transient_bahan_qty'));
-				$list_bahan_qty_form =  ($this->input->post('transient_bahan_qty_form'));
-				$list_bahan_desc  =  ($this->input->post('transient_bahan_description'));
-				$list_bahan_price	=  ($this->input->post('transient_bahan_price'));
-				$list_bahan_unit_name  	=   ($this->input->post('transient_bahan_unit_name'));
-				$list_bahan_stock_id  	=  ($this->input->post('transient_bahan_stock_id'));
-				$list_bahan_stock_qty 	=   ($this->input->post('transient_bahan_stock_qty'));
-				$list_bahan_edit	=   ($this->input->post('transient_bahan_edit'));
-				$list_bahan_tmb_id 	=   ($this->input->post('transient_tmb_id'));
-				
-				$total_material = 0;
-				$items_material = array();
+			$items_plan_detail[] = array(
+					'tr_plan_detail_id' => ($list_td_plan_id[$key]),
+					'location_id' => ($list_td_spbe[$key]),
+					'truck_id' => ($list_td_truck_id[$key]),
+					'driver_id' => ($list_td_driver_id[$key]),
+					'co_driver_id' => ($list_td_co_driver_id[$key]),
+					'tr_plan_detail_code' => ($list_td_code[$key]),
+					'tr_plan_detail_qty' => ($list_td_qty[$key]),
+					'tr_plan_detail_purchase' => ($list_td_purchase[$key]),
+					'tr_plan_detail_total_purchase' => ($list_td_total_purchase[$key]),
+					'tr_plan_detail_cost_driver' => ($list_td_cost_driver[$key]),
+					'tr_plan_detail_cost_co_driver' => ($list_td_cost_co_driver[$key]),
+					'tr_plan_detail_cost_lain' => ($list_td_cost_lain[$key]),
+			);
+			   $total_kulak += $list_td_qty[$key];
+			    $total_purchase += $list_td_total_purchase[$key];
+			}		
+		}
 		
-				if($list_bahan_name){
-					foreach($list_bahan_name as $key => $value)
-					{
-						//send_json($list_bahan_tmb_id[$key].''.$list_bahan_edit[$key]);
-						$check = 0;
-						$check_product = 0;
-						$bahan_stock_id_original = $list_tm_stock_id[$key];
-						foreach($list_tm_stock_id as $key_check => $value)
-							{
-						
-								if($bahan_stock_id_original == $list_tm_stock_id[$key_check]){
-									$check++;
-								}
-						
-							}
-						if($check > 1){
-							
-							$get_data_materails = $this->tr_plan_model->get_data_material($tm_stock_id_original);
-							send_json_error("Simpan gagal. Bahan item tidak boleh sama [".$get_data_materails[0]."]");
-						}
-						if($list_bahan_tmb_id[$key] > 0 and $list_bahan_edit[$key] == '0'){
-							if($list_bahan_qty_form[$key]  > $list_bahan_qty[$key]){
-								
-							}else if($list_bahan_qty_form[$key] < $list_bahan_qty[$key]){
-								send_json('kurang');
-							}
-						}
-						$items_material[] = array(
-							'tm_name' 			=> ($list_tm_name[$key]),
-							'tm_qty' 			=> $list_tm_qty[$key],
-							'tm_description' 	=> $list_tm_description[$key],
-							'tm_price'			=> $list_tm_price[$key]
-							);
-						$total_material += $list_tm_price[$key];
-						}
-					
-				}
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				//simpan transient spareparts
-				$list_rs_part_number	= ($this->input->post('transient_rs_part_number'));	
-				$list_rs_qty_received 	= ($this->input->post('transient_rs_qty_received'));	
-				$list_rs_qty_install_form= ($this->input->post('transient_rs_qty_install_form'));
-				$list_rs_tpd_id				= ($this->input->post('transient_tpd_id'));
-			
-				$list_rs_name			= ($this->input->post('transient_rs_name'));
-				$list_rs_qty 			= ($this->input->post('transient_rs_qty'));	
-				$list_rs_qty_install 	= ($this->input->post('transient_rs_qty_install'));
-				$list_rs_qty_stock 	= ($this->input->post('transient_rs_qty_stock'));
-				$list_rs_qty_stock_form 	= ($this->input->post('transient_rs_qty_stock_form'));
-				$list_rs_repair 	= ($this->input->post('transient_rs_repair'));
-				$list_rs_install_date 	= ($this->input->post('transient_install_date'));
-				$list_rs_install_desc	= ($this->input->post('transient_install_desc'));
+		$data['tr_plan_total_order'] = $total_kulak;
+		$data['tr_plan_total_purchase'] = $total_purchase;		
+		if(empty($id)){
+			$error = $this->tr_plan_model->create($data,$items_plan_detail);
+			send_json_action($error, "Data telah ditambah", "Data gagal ditambah",$this->tr_plan_model->insert_id);
+		}else{
+			$error = $this->tr_plan_model->update($id, $data,$items_plan_detail);
+			send_json_action($error, "Data telah direvisi", "Data gagal direvisi",$id);		
+		}
 		
-				
-				
-				if($list_rs_name){
-					foreach($list_rs_name as $key => $value)
-					{
-					if($list_rs_qty_install_form  > '0'){
-							$items_sparepats[] = array(
-							'tpd_detail_install'  =>$list_rs_qty_install[$key] + $list_rs_qty_install_form[$key],
-							'tpd_id'  => $list_rs_tpd_id[$key],
-							'tpdh_type'  => 3,
-							'tpdh_date'  => $list_rs_install_date[$key],
-							'tpdh_qty'  => $list_rs_qty_install_form[$key],
-							'tpdh_desc'  => $list_rs_install_desc[$key]
-							);
-					}else{
-						$items_sparepats[] = array(
-							'tpd_detail_install'  => 0,
-							'tpd_id'  => 0,
-							'tpdh_type'  => 0,
-							'tpdh_date'  => 0,
-							'tpdh_qty'  =>0,
-							'tpdh_desc'  =>''
-							
-						);
-					}
-					}
-				}
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				// simpan transient foto
-				$list_registration_photo_name	 	= $this->input->post('transient_photo_name');
-				$list_registration_photo_type	 	= $this->input->post('transient_photo_type');
-				$list_registration_photo_file		= $this->input->post('transient_photo_file');
-				$list_registration_photo_edit		= $this->input->post('transient_photo_edit');
-
-				$items_foto = array();
-				if($list_registration_photo_name){
-				foreach($list_registration_photo_name as $key => $value)
-				{
-					$path = "";
-					if($list_registration_photo_edit[$key] == 1){
-						
-						$storage = "img_mobil/";
-						$path = $this->access->info['employee_id']."_".date("ymdhms")."_".$list_registration_photo_type[$key]."_";
+	}
+	function form_plan_action($is_delete = 0){
+		
+		$id = $this->input->post('row_id');
+			
+		if($is_delete){
+			$is_proses_error = $this->tr_plan_model->delete($id);
+			send_json_action($is_proses_error, "Data telah dihapus");
+		}
+		
+		$this->load->library('form_validation');
+		/*
+		$this->form_validation->set_rules('i_date','Tanggal Plan','trim|required|valid_date|sql_date');
+		
+		if($this->form_validation->run() == FALSE) send_json_validate();
+		
+		$data['tr_plan_date'] 				= $this->input->post('i_date');
+		*/
+		$data['tr_plan_detail_qty'] 				= $this->input->post('i_qty_kulak');
+		
+		// simpan transient shipment/pengiriman
+		$list_ts_route_id	= ($this->input->post('transient_shipment_detail_route_id'));
+		$list_ts_route_qty	= ($this->input->post('transient_shipment_detail_qty'));
+		$list_ts_route_price	= ($this->input->post('transient_shipment_detail_price'));
+		$list_ts_route_cost = ($this->input->post('transient_shipment_detail_cost'));
+		$list_shipment_id = ($this->input->post('transient_tr_plan_detail_shipment_id'));
+		
+			
 					
-					rename($this->config->item('upload_tmp').$list_registration_photo_file[$key],
-					$this->config->item('upload_storage').$storage.$path.$list_registration_photo_file[$key]);	
-					}
-
-					$items_foto[] = array(				
-						'photo_name'  => $list_registration_photo_name[$key],
-						'photo_type_id'  => $list_registration_photo_type[$key],
-						'photo_file'  => $path.$list_registration_photo_file[$key]
-						
-					);
-					
-					
-					
-				}
-				}
-
-
-				$data['tr_plan_material_total'] = $total_material;
-				$data['tr_plan_progress'] = $total_progress / $jumlah_jasa;
-				$data['tr_plan_total'] = $total_price;
-
-				if(empty($tr_plan_id)) // jika tidak ada id maka create
-				{
-			//$data['registration_code'] = format_code('registrations','registration_code','PU',7);
-				//$error = $this->tr_plan_model->create($data, $items, $items_material, $items_foto,$items_sparepats);
-				send_json_action($error, "Data telah ditambah", "Data gagal ditambah");
-				}
-				else // id disebutkan, lakukan proses UPDATE
-				{
-					//$error = $this->tr_plan_model->update($tr_plan_id, $data, $items,$items_material, $items_foto,$items_sparepats);
-					send_json_action($error, "Data telah direvisi", "Data gagal direvisi");
-				}
-			}
-			function detail_list_loader($registration_id=0)
+	
+		$total_kirim 	= 0;
+		$total_sisa 	= 0;
+		$items_shipment = array();
+		if(!$list_ts_route_id) send_json_error('Simpan gagal. Data Pengiriman Masih Kosong');
+	
+		if($list_ts_route_id){
+			foreach($list_ts_route_id as $key => $value)
 			{
-				if($registration_id == 0)send_json(make_datatables_list(null));
-
-				$data = $this->tr_plan_model->detail_list_loader($registration_id);
+			$items_shipment[] = array(
+					'tr_plan_detail_shipment_id' => ($list_shipment_id[$key]),
+					'route_id' => ($list_ts_route_id[$key]),
+					'tr_plan_detail_shipment_qty' => ($list_ts_route_qty[$key]),
+					'tr_plan_detail_shipment_total' => ($list_ts_route_price[$key]),
+					'tr_plan_detail_shipment_total_paid' => 0,
+					'tr_plan_detail_shipment_status_id' => 0,
+			);
+			   $total_kirim += $list_ts_route_qty[$key];
+			}		
+		}
+		
+		if($total_kirim > $data['tr_plan_detail_qty']){
+			send_json_error('Simpan Gagal. Jumlah Keseluruhan Total Kirim Tidak boleh melebihi Total kulak['.$data['tr_plan_detail_qty'].']');
+		}
+		$data['tr_plan_detail_qty_shipment'] = $total_kirim;
+		$data['tr_plan_detail_qty_sisa'] = $data['tr_plan_detail_qty'] -	$data['tr_plan_detail_qty_shipment'];
+		if(empty($id)){
+			$error = $this->tr_plan_model->create_plan($data,$items_shipment);
+			send_json_action($error, "Data telah ditambah", "Data gagal ditambah",$this->tr_plan_model->insert_id);
+		}else{
+			$error = $this->tr_plan_model->update_plan($id, $data,$items_shipment);
+			send_json_action($error, "Data telah direvisi", "Data gagal direvisi",$id);		}
+		
+	}
+		
+	function detail_list_loader_kulak($row_id=0)
+			{
+			if($row_id == 0)
+				
+				send_json(make_datatables_list(null)); 
+						
+				$data = $this->tr_plan_model->detail_list_loader_kulak($row_id);
 				$sort_id = 0;
-
-				foreach($data as $key => $value)
+				foreach($data as $key => $value) 
 				{
+				if(!$value['tr_plan_detail_id']){
+					$detail='';
+				}else{
+					$detail="<a href='".site_url('tr_plan/form_plan/'.$value['tr_plan_detail_id'])."' class='link_input' style='color:#fff;'>detail </a>";
+				}
 				$data[$key] = array(
-					form_transient_pair('transient_tr_plan_detail_date', format_new_date($value['tr_plan_detail_date']), $value['tr_plan_detail_date'],
-							array(
-									'transient_tr_plan_detail_id' => $value['tr_plan_detail_id'],
-									
-									)),
-					
-						form_transient_pair('transient_workshop_service_id', $value['workshop_service_name'], $value['workshop_service_id']),
-						form_transient_pair('transient_workshop_service_price', tool_money_format($value['workshop_service_price']), $value['workshop_service_price']),
-						form_transient_pair('transient_workshop_service_job_price', tool_money_format($value['workshop_service_job_price']),$value['workshop_service_job_price']),
-						form_transient_pair('transient_tr_plan_detail_progress', $value['tr_plan_detail_progress'])
-					);
-				}
-				send_json(make_datatables_list($data));
-			}
-			
-			function detail_form($registration = 0) // jika id tidak diisi maka dianggap create, else dianggap edit
-			{
-				$this->load->library('render');
-				$index = $this->input->post('transient_index');
-				if (strlen(trim($index)) == 0) {
-					// TRANSIENT CREATE - isi form dengan nilai default / kosong
-					$data['index'] = '';
-					$data['tr_plan_detail_id'] = '';
-					$data['tr_plan_detail_date'] = '';
-					$data['workshop_service_id'] = '';
-					$data['workshop_service_price'] = '';
-					$data['workshop_service_name'] = '';
-					$data['workshop_service_job_price'] = '';
-					$data['tr_plan_detail_progress'] = '';
-				} else {
-					$data['index'] = $index;
-					//$data['workshop_service_name'] = array_shift($this->input->post('transient_workshop_service_name'));
-					$data['tr_plan_detail_id'] = array_shift($this->input->post('transient_tr_plan_detail_id'));
-					$data['tr_plan_detail_date'] = array_shift($this->input->post('transient_tr_plan_detail_date'));
-					$data['workshop_service_id'] = array_shift($this->input->post('transient_workshop_service_id'));
-					$data['workshop_service_price'] = array_shift($this->input->post('transient_workshop_service_price'));
-					$data['workshop_service_job_price'] = array_shift($this->input->post('transient_workshop_service_job_price'));
-					$data['tr_plan_detail_progress'] = array_shift($this->input->post('transient_tr_plan_detail_progress'));
-					
-				}
-				$data['progress']=array('25'=>'25%','50'=>'50%','70'=>'70%','90'=>'90%','100'=>'100%');
-				
-					$this->load->helper('form');
-					$this->render->add_form('app/tr_plan/transient_form', $data);
-					$this->render->show_buffer();
-			}
-			
-			
-			function detail_form_action()
-			{
-				$this->load->library('form_validation');
-				//$this->form_validation->set_rules('i_detail_registration_id', 'Harga', 'trim|required');
-				$this->form_validation->set_rules('i_tr_plan_detail_date', 'Tanggal', 'trim|required|valid_date|sql_date');
-				$this->form_validation->set_rules('i_workshop_service_id', 'Jasa', 'trim|required');
-				$this->form_validation->set_rules('i_tr_plan_detail_progress', 'Progress', 'trim|required|max_value[100]');
-				$index = $this->input->post('i_index');
-			// cek data berdasarkan kriteria
-			if ($this->form_validation->run() == FALSE) send_json_validate();
-				$no = $this->input->post('i_index');
-				
-				$tr_plan_detail_id = $this->input->post('i_tr_plan_detail_id');
-				$tr_plan_detail_date = ($this->input->post('i_tr_plan_detail_date'));
-				$workshop_service_id = $this->input->post('i_workshop_service_id');
-				$workshop_service_price	= $this->input->post('i_workshop_service_price');
-				$workshop_service_name	= $this->input->post('i_workshop_service_name');
-				$workshop_service_job_price	= $this->input->post('i_workshop_service_job_price');
-				$tr_plan_detail_progress	= $this->input->post('i_tr_plan_detail_progress');
-				//send_json_error($no);
-				$data = array(
-				form_transient_pair('transient_tr_plan_detail_date', format_new_date($tr_plan_detail_date), $tr_plan_detail_date,
-							array(
-									'transient_tr_plan_detail_id' => $tr_plan_detail_id)),
-					
-						form_transient_pair('transient_workshop_service_id', $workshop_service_name, $workshop_service_id),
-						form_transient_pair('transient_workshop_service_price', tool_money_format($workshop_service_price), $workshop_service_price),
-						form_transient_pair('transient_workshop_service_job_price', tool_money_format($workshop_service_job_price),$workshop_service_job_price),
-						form_transient_pair('transient_tr_plan_detail_progress', $tr_plan_detail_progress)
-					);
-			send_json_transient($index, $data);
-		}
-			
-	function detail_list_loader_sparepart($registration_id=0)
-	{
-		if($registration_id == 0)send_json(make_datatables_list(null)); 
-				
-		$data = $this->tr_plan_model->detail_list_loader_sparepart($registration_id);
-		$sort_id = 0;
-		foreach($data as $key => $value) 
-		{	
-		$value['tpd_detail_install'] = $value['tpd_detail_install']?$value['tpd_detail_install'] :0;
-		$value['tpd_detail_received'] = $value['tpd_detail_received']?$value['tpd_detail_received'] :0;
-		$stock = $value['tpd_detail_received']- $value['tpd_detail_install'];
-		$data[$key] = array(
-				form_transient_pair('transient_rs_part_number', $value['rs_part_number'], $value['rs_part_number'],
-									array('transient_rs_qty_received'=>$value['tpd_detail_received'],
-										  'transient_rs_qty_install_form'=>'0',
-										  'transient_tpd_id'=>$value['tpd_id'],
-										  'transient_install_date'=>'',
-										  'transient_install_desc'=>'',
-										  'transient_rs_qty_stock'=>$stock,
-										  )
-				),
-				form_transient_pair('transient_rs_name', $value['rs_name']),
-				form_transient_pair('transient_rs_qty',$value['rs_qty']),
-				form_transient_pair('transient_rs_qty_install',$value['tpd_detail_install']),
-				form_transient_pair('transient_rs_qty_stock_form',$stock),
-				form_transient_pair('transient_rs_repair', tool_money_format($value['rs_repair']), $value['rs_repair'])
-				//,form_transient_pair('transient_rs_approved_repair', tool_money_format($value['rs_approved_repair']), $value['rs_approved_repair'])
-		);
+						form_transient_pair('transient_detail_code', $value['tr_plan_detail_code'],$value['tr_plan_detail_code']),
+												
+						form_transient_pair('transient_detail_truck_id', $value['truck_nopol'],$value['truck_id'],
+												array(
+													  'transient_detail_nopol'=>$value['truck_nopol'],$value['truck_nopol'],
+													  'transient_detail_driver'=>$value['driver_name'],$value['driver_name'],
+													  'transient_detail_driver_id'=>$value['driver_id'],$value['driver_id'],
+													  'transient_detail_co_driver'=>$value['co_driver_name'],$value['co_driver_name'],
+													  'transient_detail_co_driver_id'=>$value['co_driver_id'],$value['co_driver_id'],
+													  'transient_detail_plan_id'=>$value['tr_plan_id'],$value['tr_plan_id']
+													  )
+												),
+						form_transient_pair('transient_detail_spbe',$value['location_name'],$value['location_id']),
+						form_transient_pair('transient_detail_qty',	$value['tr_plan_detail_qty'],$value['tr_plan_detail_qty'],
+											array('transient_detail_purchase'=>$value['tr_plan_detail_purchase'],$value['tr_plan_detail_purchase'])
+											),	
+						form_transient_pair('transient_detail_total', tool_money_format($value['tr_plan_detail_total_purchase']),$value['tr_plan_detail_total_purchase']),
+						form_transient_pair('transient_detail_cost_driver',tool_money_format($value['tr_plan_detail_cost_driver']),$value['tr_plan_detail_cost_driver']),
+						form_transient_pair('transient_detail_cost_co_driver',tool_money_format($value['tr_plan_detail_cost_co_driver']),$value['tr_plan_detail_cost_co_driver']),
+						form_transient_pair('transient_detail_cost_lain',tool_money_format($value['tr_plan_detail_cost_lain']),$value['tr_plan_detail_cost_lain']),
+						form_transient_pair('transient_detail', $detail, $detail),
 		
-		
-		
+				);
+				
+						
 		}		
 		send_json(make_datatables_list($data)); 
 	}
 	
-	function detail_list_loader_panel($row_id=0)
+	function detail_list_loader_shipment($row_id=0)
 			{
-				if($row_id == 0)
+			if($row_id == 0)
 				
 				send_json(make_datatables_list(null)); 
 						
-				$data = $this->tr_plan_model->detail_list_loader_panel($row_id);
+				$data = $this->tr_plan_model->detail_list_loader_shipment($row_id);
 				$sort_id = 0;
 				foreach($data as $key => $value) 
 				{
 				$data[$key] = array(
-						form_transient_pair('transient_product_code', $value['product_code'],$value['product_code'],
-									array(
-											'transient_product_price_id' => $value['product_price_id'],
-											'transient_detail_registration_id' =>$value['detail_registration_id'])),
-											
-						form_transient_pair('transient_product_name', $value['product_name']." (".$value['product_type_name']." - ".$value['pst_name'].")", $value['product_name']),
-						form_transient_pair('transient_reg_price',	$value['detail_registration_price'],$value['detail_registration_price'])
-						//,form_transient_pair('transient_reg_aproved_price',	$value['detail_registration_approved_price'],$value['detail_registration_approved_price'])
+						form_transient_pair('transient_shipment_detail_route_from', $value['route_from'],$value['location_from_id']),
+						form_transient_pair('transient_shipment_detail_route_to', $value['route_to'],$value['location_to_id'],
+											array('transient_shipment_detail_route_id' =>$value['route_id'],$value['route_id'],
+												  'transient_tr_plan_detail_shipment_id' =>$value['tr_plan_detail_shipment_id'],$value['tr_plan_detail_shipment_id'],
+											)
+						),
+						form_transient_pair('transient_shipment_detail_qty',$value['tr_plan_detail_shipment_qty'],$value['tr_plan_detail_shipment_qty']),
+						form_transient_pair('transient_shipment_detail_price',$value['tr_plan_detail_shipment_total'],$value['tr_plan_detail_shipment_total']),
+						form_transient_pair('transient_shipment_detail_cost',$value['location_total_cost'],$value['location_total_cost']),
+						
+				);
+				
+						
+		}		
+		send_json(make_datatables_list($data)); 
+	}
+	
+	function detail_form_kulak($row_id = 0) // jika id tidak diisi maka dianggap create, else dianggap edit
+		{		
+			$this->load->library('render');
+			$index = $this->input->post('transient_index');
+			if (strlen(trim($index)) == 0) {
+						
+				// TRANSIENT CREATE - isi form dengan nilai default / kosong
+					$cost=$this->tr_plan_model->get_cost();
+					$data['index']							= '';
+					$data['tr_plan_id']						= $row_id ;
+					$data['transient_detail_code'] 			= '';
+					$data['transient_detail_nopol'] 		= '';
+					$data['transient_detail_truck_id'] 		= '';
+					$data['transient_detail_driver'] 		= '';
+					$data['transient_detail_driver_id'] 	= '';
+					$data['transient_detail_co_driver'] 	= '';
+					$data['transient_detail_co_driver_id'] 	= '';
+					$data['transient_detail_plan_id'] 		= '';
+					$data['transient_detail_spbe'] 			= '';
+					$data['transient_detail_qty'] 			= '';
+					$data['transient_detail_total'] 		= '';
+					
+					$data['transient_detail_purchase'] 		= $cost[0];
+					$data['transient_detail_cost_driver'] 	= $cost[1];
+					$data['transient_detail_cost_co_driver']= $cost[2];
+					$data['transient_detail_cost_lain'] 	= '';
+			
+					
+			} else {
+				
+					$data['index']						= $index;
+					$data['tr_plan_id'] 				= $row_id;
+					$data['transient_detail_code'] 			= array_shift($this->input->post('transient_detail_code'));;
+					$data['transient_detail_nopol'] 		= array_shift($this->input->post('transient_detail_nopol'));
+					$data['transient_detail_truck_id'] 		= array_shift($this->input->post('transient_detail_truck_id'));
+					$data['transient_detail_driver'] 		= array_shift($this->input->post('transient_detail_driver'));
+					$data['transient_detail_driver_id'] 	= array_shift($this->input->post('transient_detail_driver_id'));
+					$data['transient_detail_co_driver'] 	= array_shift($this->input->post('transient_detail_co_driver'));
+					$data['transient_detail_co_driver_id'] 	= array_shift($this->input->post('transient_detail_co_driver_id'));
+					$data['transient_detail_plan_id'] 		= array_shift($this->input->post('transient_detail_plan_id'));
+					$data['transient_detail_spbe'] 			= array_shift($this->input->post('transient_detail_spbe'));
+					$data['transient_detail_qty'] 			= array_shift($this->input->post('transient_detail_qty'));
+					$data['transient_detail_total'] 		= array_shift($this->input->post('transient_detail_total'));
+					$data['transient_detail_purchase'] 		= array_shift($this->input->post('transient_detail_purchase'));
+					$data['transient_detail_cost_driver'] 	= array_shift($this->input->post('transient_detail_cost_driver'));
+					$data['transient_detail_cost_co_driver']= array_shift($this->input->post('transient_detail_cost_co_driver'));
+					$data['transient_detail_cost_lain'] 	= array_shift($this->input->post('transient_detail_cost_lain'));
+					
+					
+					
+			}
+		
+			$this->render->add_form('app/tr_plan/transient_form_kulak', $data);
+			$this->render->show_buffer();
+	}
+	
+	
+	function detail_form_shipment($row_id = 0) // jika id tidak diisi maka dianggap create, else dianggap edit
+	{	$this->load->library('render');
+			$index = $this->input->post('transient_index');
+			if (strlen(trim($index)) == 0) {
+						
+				// TRANSIENT CREATE - isi form dengan nilai default / kosong
+					$cost=$this->tr_plan_model->get_cost();
+					$data['index']							= '';
+					$data['row_id']						= $row_id ;
+					$data['transient_shipment_detail_route_from'] 	= '';
+					$data['transient_shipment_detail_route_to'] 	= '';
+					$data['transient_shipment_detail_route_id'] 	= '';
+					$data['transient_shipment_detail_qty'] 			= '';
+					$data['transient_shipment_detail_price'] 		= '';
+					$data['transient_shipment_detail_cost'] 		= '';
+					$data['transient_tr_plan_detail_shipment_id'] 		= '';
+					
+					
+			
+					
+			} else {
+				
+					$data['index']									= $index;
+					$data['row_id'] 						= $row_id;
+					$data['transient_shipment_detail_route_from'] 	= array_shift($this->input->post('transient_shipment_detail_route_from'));;
+					$data['transient_shipment_detail_route_to']	 	= array_shift($this->input->post('transient_shipment_detail_route_to'));
+					$data['transient_shipment_detail_route_id']		= array_shift($this->input->post('transient_shipment_detail_route_id'));
+					$data['transient_shipment_detail_qty'] 			= array_shift($this->input->post('transient_shipment_detail_qty'));
+					$data['transient_shipment_detail_price'] 		= array_shift($this->input->post('transient_shipment_detail_price'));
+					$data['transient_shipment_detail_cost'] 		= array_shift($this->input->post('transient_shipment_detail_cost'));
+					$data['transient_tr_plan_detail_shipment_id'] 	= array_shift($this->input->post('transient_tr_plan_detail_shipment_id'));
+		
+			
+					
+			}
+				
+		
+				$this->render->add_form('app/tr_plan/transient_form_shipment', $data);
+				$this->render->show_buffer();
+	}
+	
+	
+	function detail_form_action_kulak()
+	{		
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('i_truck_id', 'Truck', 'trim|required');
+			$this->form_validation->set_rules('i_spbe_id', 'SPBE', 'trim|required');
+			$this->form_validation->set_rules('i_qty', 'SPBE', 'trim|required|integer|min_value[0]');
+			$this->form_validation->set_rules('i_purchase', 'Harga satuan', 'trim|required|integer|min_value[0]');
+			
+			$index = $this->input->post('i_index');		
+			// cek data berdasarkan kriteria
+			if ($this->form_validation->run() == FALSE) send_json_validate();
+		
+			$no 						= $this->input->post('i_index');
+			$transient_detail_code 	= $this->input->post('i_code');
+			
+			$transient_detail_nopol 	= $this->input->post('i_truck_nopol');
+			$transient_detail_truck_id 	= $this->input->post('i_truck_id');
+			$transient_detail_driver 	= $this->input->post('i_driver_name');
+			
+			$transient_detail_driver_id 	= $this->input->post('i_driver_id');
+			$transient_detail_co_driver_id 	= $this->input->post('i_co_driver_id');
+			
+			$transient_detail_co_driver 	= $this->input->post('i_co_driver_name');
+			$transient_detail_plan_id 	= $this->input->post('i_plan_id');
+			$transient_detail_spbe 	= $this->input->post('i_spbe_id');
+			$transient_detail_spbe_name 	= $this->input->post('i_location_name');
+			$transient_detail_qty 	= $this->input->post('i_qty');
+			$transient_detail_purchase 	= $this->input->post('i_purchase');
+			$transient_detail_total 	= $this->input->post('i_total_purchase');
+			$transient_detail_cost_driver 	= $this->input->post('i_cost_driver');
+			$transient_detail_cost_co_driver 	= $this->input->post('i_cost_co_driver');
+			$transient_detail_cost_lain 	= $this->input->post('i_cost_lain');
+	
+			
+			$data = array(
+						form_transient_pair('transient_detail_code', $transient_detail_code,$transient_detail_code),
+						form_transient_pair('transient_detail_truck_id', $transient_detail_nopol,$transient_detail_truck_id,
+												array(
+													  'transient_detail_nopol'=>$transient_detail_nopol,$transient_detail_nopol,
+													  'transient_detail_driver'=>$transient_detail_driver,$transient_detail_driver,
+													  'transient_detail_driver_id'=>$transient_detail_driver_id,$transient_detail_driver_id,
+													  'transient_detail_co_driver'=>$transient_detail_co_driver,$transient_detail_co_driver,
+													  'transient_detail_co_driver_id'=>$transient_detail_co_driver_id,$transient_detail_co_driver_id,
+													  'transient_detail_plan_id'=>$transient_detail_plan_id,$transient_detail_plan_id
+													  )
+												),
+						form_transient_pair('transient_detail_spbe',$transient_detail_spbe_name,$transient_detail_spbe),
+						form_transient_pair('transient_detail_qty',	$transient_detail_qty,$transient_detail_qty,
+											array('transient_detail_purchase'=>$transient_detail_purchase,$transient_detail_purchase)
+											),	
+						form_transient_pair('transient_detail_total', tool_money_format($transient_detail_total),$transient_detail_total),
+						form_transient_pair('transient_detail_cost_driver',tool_money_format($transient_detail_cost_driver),$transient_detail_cost_driver),
+						form_transient_pair('transient_detail_cost_co_driver',tool_money_format($transient_detail_cost_co_driver),$transient_detail_cost_co_driver),
+						form_transient_pair('transient_detail_cost_lain',tool_money_format($transient_detail_cost_lain),$transient_detail_cost_lain),
+						form_transient_pair('transient_detail', '', ''),
+		
+				);
+		
+		send_json_transient($index, $data);
+
+		
+	}		
+	
+	function detail_form_action_shipment()
+	{		
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('i_route_id', 'Route', 'trim|required');
+			$this->form_validation->set_rules('i_qty', 'Jumlah Kirim', 'trim|required|integer');
+			$this->form_validation->set_rules('i_price', 'Harga Kirim', 'trim|required|integer');
+			
+			$index = $this->input->post('i_index');		
+			// cek data berdasarkan kriteria
+			if ($this->form_validation->run() == FALSE) send_json_validate();
+		
+			$no 									= $this->input->post('i_index');
+			$row_id 									= $this->input->post('row_id');
+			
+			$transient_shipment_detail_route_id 	= $this->input->post('i_route_id');
+			$transient_shipment_detail_route_from 	= $this->input->post('i_location_from');
+			$transient_shipment_detail_route_to 	= $this->input->post('i_location_to');
+			$transient_shipment_detail_cost 		= $this->input->post('i_cost_route');
+			$transient_shipment_detail_qty 			= $this->input->post('i_qty');
+			$transient_shipment_detail_price 		= $this->input->post('i_price');
+			$transient_tr_plan_detail_shipment_id 	= $this->input->post('i_tr_plan_shipment_id');
+		
+		$total_kulak =  $this->tr_plan_model->get_total_kulak($row_id);
+		
+		if($transient_shipment_detail_qty > $total_kulak ){
+			 send_json_error('Simpan gagal. Jumlah Kirim tidak boleh melebihi Jumlah Kulak['.$total_kulak.']');
+		}
+			$data = array(
+						form_transient_pair('transient_shipment_detail_route_from', $transient_shipment_detail_route_from,$transient_shipment_detail_route_from),
+						form_transient_pair('transient_shipment_detail_route_to', $transient_shipment_detail_route_to,$transient_shipment_detail_route_to,
+											array('transient_shipment_detail_route_id' =>$transient_shipment_detail_route_id,$transient_shipment_detail_route_id,
+												  'transient_tr_plan_detail_shipment_id' =>$transient_tr_plan_detail_shipment_id,$transient_tr_plan_detail_shipment_id
+											)
+						),
+						form_transient_pair('transient_shipment_detail_qty',$transient_shipment_detail_qty,$transient_shipment_detail_qty),
+						form_transient_pair('transient_shipment_detail_price',$transient_shipment_detail_price,$transient_shipment_detail_price ),
+						form_transient_pair('transient_shipment_detail_cost',$transient_shipment_detail_cost,$transient_shipment_detail_cost ),
 						
 				);
 		
-		
-	
-		}		
-		send_json(make_datatables_list($data)); 
-	}
-	function detail_list_loader_bahan($registration_id=0)
-	{
-		if($registration_id == 0)send_json(make_datatables_list(null)); 
-				
-		$data = $this->tr_plan_model->detail_list_loader_bahan($registration_id);
-		$sort_id = 0;
-		foreach($data as $key => $value) 
-		{	
-		
-		$data[$key] = array(
-				form_transient_pair('transient_bahan_name', $value['material_name'], $value['material_name'],
-						array('transient_bahan_stock_id'=>$value['material_stock_id'],
-						 	  'transient_bahan_unit_name'=>$value['unit_name'],
-							  'transient_tmb_id'=>$value['tm_id'],
-					     	  'transient_bahan_stock_qty'=>$value['material_stock_qty'],
-							  'transient_bahan_edit'=>'1',
-							  'transient_bahan_qty'=>$value['tm_qty'])
-				),
-				form_transient_pair('transient_bahan_qty_form', $value['tm_qty']),
-				form_transient_pair('transient_bahan_description',$value['tm_description']),
-				form_transient_pair('transient_bahan_price', tool_money_format($value['tm_price']), $value['tm_price'])
-		);
-		
-		
-		
-		}		
-		send_json(make_datatables_list($data)); 
-	}
-
-	function detail_form_bahan($registration_id = 0) // jika id tidak diisi maka dianggap create, else dianggap edit
-	{		
-		$this->load->library('render');
-		$index = $this->input->post('transient_index');
-		if (strlen(trim($index)) == 0) {
-					
-			// TRANSIENT CREATE - isi form dengan nilai default / kosong
-			$data['index']			= '';
-			$data['registration_id'] 				= $registration_id;
-			
-			$data['bahan_qty'] = 0;
-			$data['bahan_qty_form'] = 0;
-			$data['bahan_description'] = '';			
-			$data['bahan_price'] 	= '';
-			$data['bahan_unit_name'] 	= '';
-			$data['bahan_name'] 	= '';
-			$data['bahan_stock_id'] 	= '';
-			$data['bahan_stock_qty'] 	= '';
-			$data['tmb_id'] 	= '';
-			$data['bahan_edit'] 	= '0';
-			
-		
-		} else {
-			
-			$data['index']			= $index;
-			$data['registration_id'] 				= $registration_id;
-			$data['bahan_name']	= array_shift($this->input->post('transient_bahan_name'));
-			$data['bahan_qty'] = array_shift($this->input->post('transient_bahan_qty'));
-			$data['bahan_qty_form'] = array_shift($this->input->post('transient_bahan_qty_form'));
-			$data['bahan_description'] = array_shift($this->input->post('transient_bahan_description'));
-			$data['bahan_price'] 	= array_shift($this->input->post('transient_bahan_price'));
-			$data['bahan_unit_name'] 	=  array_shift($this->input->post('transient_bahan_unit_name'));
-			$data['bahan_stock_id'] 	= array_shift($this->input->post('transient_bahan_stock_id'));
-			$data['bahan_stock_qty'] 	=  array_shift($this->input->post('transient_bahan_stock_qty'));
-			$data['bahan_edit'] 	=  array_shift($this->input->post('transient_bahan_edit'));
-			$data['tmb_id'] 	=  array_shift($this->input->post('transient_tmb_id'));
-		}		
-			
-		$this->render->add_form('app/tr_plan/transient_form_bahan', $data);
-		$this->render->show_buffer();
-	}
-	
-	
-	function detail_form_action_bahan()
-	{		
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('i_material_stock_id', 'Nama Bahan', 'trim|required');
-		//$this->form_validation->set_rules('i_tm_qty', 'Qty', 'trim|required|numeric|min_value[1]');
-		//$this->form_validation->set_rules('i_tm_description', 'Keterangan', 'trim|required|numeric');
-		$this->form_validation->set_rules('i_tm_price', 'Harga', 'trim|required|numeric');
-		$index = $this->input->post('i_index');		
-		// cek data berdasarkan kriteria
-		if ($this->form_validation->run() == FALSE) send_json_validate(); 
-		
-		$this->load->model('global_model');	
-		
-		$no 		= $this->input->post('i_index');
-		$bahan_name 	= $this->input->post('i_name');
-		$bahan_qty 	= $this->input->post('i_tm_qty');
-		$bahan_qty_form 	= $this->input->post('i_tm_qty_form');
-		$bahan_description = $this->input->post('i_tm_description');
-		$bahan_price 	= $this->input->post('i_tm_price');
-		$bahan_unit_name 	= $this->input->post('i_unit');
-		$bahan_stock_id 	= $this->input->post('i_material_stock_id');
-		$bahan_stock_qty 	= $this->input->post('i_stock_qty');
-		$bahan_edit 	= $this->input->post('i_edit');
-		$tmb_id 	= $this->input->post('i_tmb_id');
-		if($bahan_stock_qty < $bahan_qty){
-				send_json_error("Qty tidak poleh melebihi Stock Bahan");
-		}
-		//send_json_error($no);
-		
-		$data = array(
-				form_transient_pair('transient_bahan_name', $bahan_name, $bahan_name,
-					array('transient_bahan_stock_id'=>$bahan_stock_id,
-						  'transient_bahan_unit_name'=>$bahan_unit_name,
-					      'transient_bahan_stock_qty'=>$bahan_stock_qty,
-						  'transient_tmb_id'=>$tmb_id ,
-						  'transient_bahan_edit'=>'0' ,
-						 'transient_bahan_qty'=>$bahan_qty)
-				),
-				form_transient_pair('transient_bahan_qty_form', $bahan_qty_form ),
-				form_transient_pair('transient_bahan_description',$bahan_description),
-				form_transient_pair('transient_bahan_price', tool_money_format($bahan_price), $bahan_price)
-		);
-		 
 		send_json_transient($index, $data);
-	}
-	
-		
-	function detail_list_loader_cat($registration_id=0)
-	{
-		if($registration_id == 0)send_json(make_datatables_list(null)); 
-				
-		$data = $this->tr_plan_model->detail_list_loader_cat($registration_id);
-		$sort_id = 0;
-		foreach($data as $key => $value) 
-		{	
-		
-		$data[$key] = array(
-				form_transient_pair('transient_tm_name', $value['material_name'], $value['material_name'],
-								array('transient_tm_stock_id'=>$value['material_stock_id'],
-						 		 	  'transient_tm_unit_name'=>$value['unit_name'],
-					     		 	  'transient_tm_stock_qty'=>$value['material_stock_qty'],)
-				),
-				form_transient_pair('transient_tm_name', $value['tm_qty']),
-				form_transient_pair('transient_tm_description',$value['tm_description']),
-				form_transient_pair('transient_tm_price', tool_money_format($value['tm_price']), $value['material_name'])
-				);
-		
-		
-		
-		}		
-		send_json(make_datatables_list($data)); 
-	}
 
-	function detail_list_loader_foto($registration_id=0)
-	{
-		if($registration_id == 0)
 		
-		send_json(make_datatables_list(null)); 
-				
-		$data = $this->tr_plan_model->detail_list_loader_foto($registration_id);
-		
-		$sort_id = 0;
-		foreach($data as $key => $value) 
-		{	
-			$storage = "storage/img_mobil/";
-
-			$foto='<img width="50px;" height="50px;" src='.base_url().$storage.form_transient_pair('transient_photo', $value['photo_file'], $value['photo_file']).'';
-				
-
-		$data[$key] = array(
-				form_transient_pair('transient_photo_name', $value['photo_name'],$value['photo_name'],
-					array(
-											'transient_photo_type_id' => $value['photo_type_id'],
-											'transient_photo_file' => $value['photo_file'],
-											'transient_photo_edit' => 0
-											)
-				),
-				form_transient_pair('transient_photo_type', $value['photo_type_name'], $value['photo_type_id']),
-				$foto
-				
-		);
-		
-		
-	
-		}		
-		send_json(make_datatables_list($data)); 
-	}
-	function detail_form_sparepart()
-	{		
-		$this->load->library('render');
-		$index = $this->input->post('transient_index');
-		
-		if (strlen(trim($index)) == 0) {
-		
-			// TRANSIENT CREATE - isi form dengan nilai default / kosong
-			$data['index']			= '';
-			$data['rs_part_number']	= '';	
-			$data['rs_qty_received'] = '';
-			$data['rs_qty_install_form'] = '';	
-			$data['rs_name']	= '';
-			$data['rs_qty'] = '';	
-			$data['rs_qty_install'] = '';			
-			$data['rs_qty_stock'] 	= '';
-					
-			$data['rs_qty_stock_form'] 	= '';
-			$data['rs_repair'] 	= '';
-			$data['rs_install_date'] 	= '';
-			$data['rs_install_desc'] 	= '';	
-			
-		} else {
-			
-			$data['index']				= $index;
-			$data['rs_part_number']		= array_shift($this->input->post('transient_rs_part_number'));	
-			$data['rs_qty_received'] 	= array_shift($this->input->post('transient_rs_qty_received'));	
-			$data['rs_qty_install_form']= array_shift($this->input->post('transient_rs_qty_install_form'));
-			$data['tpd_id']				= array_shift($this->input->post('transient_tpd_id'));
-			
-			$data['rs_name']			= array_shift($this->input->post('transient_rs_name'));
-			$data['rs_qty'] 			= array_shift($this->input->post('transient_rs_qty'));	
-			$data['rs_qty_install'] 	= array_shift($this->input->post('transient_rs_qty_install'));
-			$data['rs_qty_stock'] 		= array_shift($this->input->post('transient_rs_qty_stock'));
-			$data['rs_qty_stock_form'] 	= array_shift($this->input->post('transient_rs_qty_stock_form'));
-		
-			$data['rs_repair'] 			= array_shift($this->input->post('transient_rs_repair'));
-			
-			$data['rs_install_date'] 	= array_shift($this->input->post('transient_install_date'));
-			$data['rs_install_desc'] 	= array_shift($this->input->post('transient_install_desc'));
-		}		
-			
-		$this->render->add_form('app/tr_plan/transient_form_sparepart', $data);
-		$this->render->show_buffer();
-	}
-	function detail_form_action_sparepart()
-	{		
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('i_rs_install_form', 'Jumlah Pemasangan', 'trim|required|numeric|min_value[1]');
-		$this->form_validation->set_rules('i_rs_install_date','Tanggal Pemasangan','trim|required|valid_date|sql_date');
-		
-		$index = $this->input->post('i_index');		
-		// cek data berdasarkan kriteria
-		if ($this->form_validation->run() == FALSE) send_json_validate(); 
-		
-		$this->load->model('global_model');	
-		
-		$no 		= $this->input->post('i_index');
-		$rs_part_number 	= $this->input->post('i_rs_no');
-		$rs_qty_received 	= $this->input->post('i_rs_qty_received');
-		$rs_qty_install_form= $this->input->post('i_rs_install_form');
-		$tpd_id 				= $this->input->post('i_tpd_id');
-		$rs_name 			= $this->input->post('i_rs_name');
-		$rs_qty 			= $this->input->post('i_rs_qty');
-		$rs_qty_install 	= $this->input->post('i_rs_qty_install');
-		$rs_qty_stock		= $this->input->post('i_rs_stock');	
-		$rs_qty_stock_form	= $this->input->post('i_rs_qty_stock_form');
-		$rs_repair			= $this->input->post('i_rs_repair');
-		$rs_install_date 	= $this->input->post('i_rs_install_date');
-		$rs_install_desc 	= $this->input->post('i_rs_install_desc');
-		
-		//send_json_error($no);
-		if($rs_qty_stock < $rs_qty_install_form){
-				send_json_error("Jumlah Pemasangan tidak Boleh melebihi Jumlah Stock");
-		}
-		$install = $rs_qty_install + $rs_qty_install_form;
-		$stock = $rs_qty_stock -  $rs_qty_install_form;
-		$data = array(
-				form_transient_pair('transient_rs_part_number',$rs_part_number,$rs_part_number,
-									array('transient_rs_qty_received'=> $rs_qty_received,
-										  'transient_rs_qty_install_form'=> $rs_qty_install_form,
-										  'transient_tpd_id'=> $tpd_id ,
-										  'transient_install_date'=> $rs_install_date,
-										  'transient_install_desc'=> $rs_install_desc,
-										  'transient_rs_qty_stock'=> $rs_qty_stock)
-				),
-				form_transient_pair('transient_rs_name', $rs_name),
-				form_transient_pair('transient_rs_qty',$rs_qty),
-				form_transient_pair('transient_rs_qty_install',$install,$rs_qty_install),
-				form_transient_pair('transient_rs_qty_stock_form',$stock),
-				form_transient_pair('transient_rs_repair', tool_money_format($rs_repair), $rs_repair)
-				);
-		 
-		send_json_transient($index, $data);
-	}
-	
-	
-	function detail_form_cat($registration_id = 0) // jika id tidak diisi maka dianggap create, else dianggap edit
-	{		
-		$this->load->library('render');
-		$index = $this->input->post('transient_index');
-		if (strlen(trim($index)) == 0) {
-					
-			// TRANSIENT CREATE - isi form dengan nilai default / kosong
-			$data['index']			= '';
-			$data['registration_id'] 				= $registration_id;
-			
-			$data['tm_qty'] = '';
-			$data['tm_description'] = '';			
-			$data['tm_price'] 	= '';
-			$data['tm_unit_name'] 	= '';
-			$data['tm_name'] 	= '';
-			$data['tm_stock_id'] 	= '';
-			$data['tm_stock_qty'] 	= '';
-		
-		} else {
-			
-			$data['index']			= $index;
-			$data['registration_id'] 				= $registration_id;
-			$data['tm_name']	= array_shift($this->input->post('transient_tm_name'));
-			$data['tm_qty'] = array_shift($this->input->post('transient_tm_qty'));
-			$data['tm_description'] = array_shift($this->input->post('transient_tm_description'));
-			$data['tm_price'] 	= array_shift($this->input->post('transient_tm_price'));
-			$data['tm_unit_name'] 	=  array_shift($this->input->post('transient_tm_unit_name'));
-			
-			$data['tm_stock_id'] 	= array_shift($this->input->post('transient_tm_stock_id'));
-			$data['tm_stock_qty'] 	=  array_shift($this->input->post('transient_tm_stock_qty'));
-		}		
-			
-		$this->render->add_form('app/tr_plan/transient_form_cat', $data);
-		$this->render->show_buffer();
-	}
-	
-	
-	function detail_form_action_cat()
-	{		
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('i_material_stock_id', 'Nama cat', 'trim|required');
-		$this->form_validation->set_rules('i_tm_qty', 'Qty', 'trim|required|numeric|min_value[1]');
-		//$this->form_validation->set_rules('i_tm_description', 'Keterangan', 'trim|required|numeric');
-		$this->form_validation->set_rules('i_tm_price', 'Harga', 'trim|required|numeric');
-		$index = $this->input->post('i_index');		
-		// cek data berdasarkan kriteria
-		if ($this->form_validation->run() == FALSE) send_json_validate(); 
-		
-		$this->load->model('global_model');	
-		
-		$no 		= $this->input->post('i_index');
-		$tm_name 	= $this->input->post('i_name');
-		$tm_qty 	= $this->input->post('i_tm_qty');
-		$tm_description = $this->input->post('i_tm_description');
-		$tm_price 	= $this->input->post('i_tm_price');
-		$tm_unit_name 	= $this->input->post('i_unit');
-		$tm_stock_id 	= $this->input->post('i_material_stock_id');
-		$tm_stock_qty 	= $this->input->post('i_stock_qty');
-		if($tm_stock_qty < $tm_qty){
-				send_json_error("Qty tidak poleh melebihi Stock Cat");
-		}
-		//send_json_error($no);
-		
-		$data = array(
-				form_transient_pair('transient_tm_name', $tm_name, $tm_name,
-					array('transient_tm_stock_id'=>$tm_stock_id,
-						  'transient_tm_unit_name'=>$tm_unit_name,
-					      'transient_tm_stock_qty'=>$tm_stock_qty,)
-				),
-				form_transient_pair('transient_tm_qty', $tm_qty),
-				form_transient_pair('transient_tm_description',$tm_description),
-				form_transient_pair('transient_tm_price', tool_money_format($tm_price), $tm_price)
-		);
-		 
-		send_json_transient($index, $data);
-	}
-	
-	function detail_form_foto($registration_id = 0) // jika id tidak diisi maka dianggap create, else dianggap edit
-	{		
-		$this->load->library('render');
-		$index = $this->input->post('transient_index');
-		$this->load->model('global_model');
-		if (strlen(trim($index)) == 0) {
-					
-			// TRANSIENT CREATE - isi form dengan nilai default / kosong
-			$data['index']			= '';
-			$data['registration_id'] 				= $registration_id;
-			$data['photo_name']	= '';
-			$data['photo_type']	= '2';
-			$data['photo_edit']	= '1';	
-			$data['photo_type_id'] = "";
-			$data['photo_file'] = '';
-		} else {
-			
-			$data['index']			= $index;
-			$data['registration_id'] 				= $registration_id;
-			$data['photo_name'] = array_shift($this->input->post('transient_photo_name'));
-			$data['photo_type'] = array_shift($this->input->post('transient_photo_type'));
-			$data['photo_type_id'] = array_shift($this->input->post('transient_photo_type'));
-			$data['photo_file'] = array_shift($this->input->post('transient_photo_file'));
-			$data['photo_edit'] = array_shift($this->input->post('transient_photo_edit'));
-
-			
-		}		
-		$data['cbo_photo_type_id'] 		= $this->global_model->get_type_photo(2);
-		$this->load->helper('form');
-		$this->render->add_form('app/tr_plan/transient_form_foto', $data);
-		
-		$this->render->show_buffer();
-	}
-	function detail_form_action_foto()
-	{		
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('i_photo_name', 'nama foto', 'trim|required');
-		$this->form_validation->set_rules('i_photo_file','foto', 'trim|required');
-	
-		$index = $this->input->post('i_index');		
-		// cek data berdasarkan kriteria
-		if ($this->form_validation->run() == FALSE) send_json_validate(); 
-	
-		
-		$no 		= $this->input->post('i_index');
-		
-		$photo_name	= $this->input->post('i_photo_name');
-		$photo_type	= $this->input->post('i_photo_type');
-		$photo_type_id	= $this->input->post('i_photo_type_id');
-		$photo_file	= $this->input->post('i_photo_file');
-		$photo_edit	= $this->input->post('i_photo_edit');
-		
-		$photo_type_name = $this->tr_plan_model->get_photo_type_name($photo_type_id);
-		
-		
-		$foto='<img   width="50px;" height="50px;" src='.base_url().'tmp/'.form_transient_pair('transient_photo', $photo_file,$photo_file).'';
-		form_transient_pair('transient_photo', $photo_file,$photo_file);
-		$data = array(
-	
-				form_transient_pair('transient_photo_name', $photo_name, $photo_name, 
-					array(
-											'transient_photo_type_name' => $photo_type_name,
-											'transient_photo_file' => $photo_file,
-											'transient_photo_edit' => $photo_edit
-											)
-				),
-				form_transient_pair('transient_photo_type', $photo_type_name, $photo_type_id),
-				form_transient_pair('transient_photo',	$foto, $photo_file),
-				
-					
-					
-		);
-		 
-		send_json_transient($index, $data);
-	}
-
-	function load_workshop_service()
-	{
-		$id 	= $this->input->post('workshop_service_id');
-		
-		$query = $this->tr_plan_model->load_workshop_service($id);
-		$data = array();
-		
-		foreach($query->result_array() as $row)
-		{
-			$data['workshop_service_price'] = $row['workshop_service_price'];
-			$data['workshop_service_job_price'] = $row['workshop_service_job_price'];
-			$data['workshop_service_name'] = $row['workshop_service_name'];
-		}
-		send_json_message('workshop_service', $data);
-	}
-			
-	
-		function do_upload()
-		{		
-			//$this->load->library('blob');
-			//$blob = $this->blob->send('fileToUpload', BLOB_ALLOW_IMAGES, 1);
-			$config['upload_path'] = 'tmp/';
-			$config['allowed_types'] = 'gif|jpg|png';
-			//$config['max_size']	= '1000';
-			//$config['max_width']  = '1024';
-			//$config['max_height']  = '768';
-			$this->load->library('upload', $config);
-		
-			if ( ! $this->upload->do_upload('fileToUpload'))
-			{
-				$output = array('error' => strip_tags($this->upload->display_errors()));
-				debug($output);
-				//$output = array('error' => print_r($error,1), 'msg'=>'test');
-				send_json($output);
-				//$this->load->view('upload_form', $error);
-			}	
-			else
-			{
-				$data = $this->upload->data();
-				$output = array('error' => '', 'value' => $data['file_name']);
-				send_json($output);
-				//$this->load->view('upload_success', $data);
-			}
-		}
-		function load_detail_material()
+	}					
+	function load_data_truck()
 	{
 		$id 	= $this->input->post('id');
 		
-		$query = $this->tr_plan_model->load_detail_material($id);
+		$query = $this->tr_plan_model->load_data_truck($id);
 		$data = array();
 		
 		foreach($query->result_array() as $row)
 		{
-		
-			$data['tm_unit_name'] 	= $row['unit_name'];
-			$data['tm_name'] 		= $row['material_name'];
-			$data['tm_stock_qty'] 		= $row['material_stock_qty'];
+			$data['truck_nopol'] 		= $row['truck_nopol'];
+			$data['driver_id'] 			= $row['driver_id'];
+			$data['co_driver_id'] 		= $row['co_driver_id'];
+			$data['driver_name'] 		= $row['driver_name'];
+			$data['co_driver_name'] 	= $row['co_driver_name'];
 			
 		
 			
 		}
-		send_json_message('detail_material', $data);
-	}
-	}
+		send_json_message('Satuan', $data);
+	}		
+				
+	function load_data_spbe()
+	{
+		$id 	= $this->input->post('id');
+		
+		$query = $this->tr_plan_model->load_data_spbe($id);
+		$data = array();
+		
+		foreach($query->result_array() as $row)
+		{
+			$data['location_name'] 		= $row['location_name'];
+		
+		}
+		send_json_message('SPBE', $data);
+	}		
+	function load_data_route()
+	{
+		$id 	= $this->input->post('id');
+		
+		$query = $this->tr_plan_model->load_data_route($id);
+		$data = array();
+		
+		foreach($query->result_array() as $row)
+		{
+			$data['location_total_cost'] 	= $row['location_total_cost'];
+			$data['location_from_name'] 	= $row['location_from_name'];
+			$data['location_to_name'] 		= $row['location_to_name'];
+		
+		}
+		send_json_message('route', $data);
+	}		
+				
+						
+				
+		
+}
 			

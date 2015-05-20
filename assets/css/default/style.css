@@ -1262,6 +1262,21 @@ margin:0;
 	color:#fff;
 	text-shadow:0 -1px 0 rgba(0, 0, 0, 0.2);
 }
+.link_button{
+	 background: #1cbb9b none repeat scroll 0 0;
+    border: 1px solid #1cbb9b;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    height: 40px;
+    line-height: 18px !important;
+    margin: 1px;
+    padding: 12px 20px;
+    text-align: center;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+}
 
 /*------------new table-----------------*/
 

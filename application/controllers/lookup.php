@@ -47,11 +47,39 @@ class Lookup extends CI_Controller
 		$this->dtc->employee_get();
 	}
 	
-	# lookup data location
-	function location_table_control()
+	# lookup data route
+	function route_table_control()
 	{
 		$this->load->library('dtc');
-		$this->dtc->location_control();
+		$this->dtc->route_control();
+	}
+	
+	function route_lookup_id()
+	{
+		$this->load->library('dtc');
+		$this->dtc->route_get();
+	}
+	
+	# lookup data truck
+	function truck_table_control()
+	{
+		$this->load->library('dtc');
+		$this->dtc->truck_control();
+	}
+	
+	function truck_lookup_id()
+	{
+		$this->load->library('dtc');
+		$this->dtc->truck_get();
+	}
+	
+	
+	
+	# lookup data location
+	function location_table_control($type=0)
+	{
+		$this->load->library('dtc');
+		$this->dtc->location_control($type);
 	}
 	
 	function location_lookup_id()

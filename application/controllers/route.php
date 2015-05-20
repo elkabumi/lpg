@@ -135,7 +135,7 @@ class Route extends CI_Controller{
 			} else {
 				
 					$data['index']								= $index;
-					$data['route_id'] 					= $registration_id;
+					$data['route_id'] 					= $route_id;
 					$data['transient_rd_name'] 			= array_shift($this->input->post('transient_rd_name'));
 					$data['transient_rd_price'] 		= array_shift($this->input->post('transient_rd_price'));
 				

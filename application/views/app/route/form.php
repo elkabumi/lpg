@@ -25,6 +25,7 @@ $(function(){
 		component_id	: "#lookup_location_to",
 		filter_by		: [{id : "p1", label : "Nama"},{id : "p2", label : "Alamat"}]
 	});
+	
 	createDatePicker();
 });
 

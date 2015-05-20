@@ -211,12 +211,60 @@ class Dtc
 		}
 		else send_json_error_feedback();
 	}
-	
-	# lookup data loaction
-	function location_control()
+
+	# lookup data route
+	function route_control()
 	{
 		$ci = & get_instance();
-		$data = $ci->dtc_model->location_control(get_datatables_control());
+		$data = $ci->dtc_model->route_control(get_datatables_control());
+		send_json($data); 
+	}
+	
+	function route_get()
+	{
+		$ci = & get_instance();
+		$mode = $ci->input->post('mode');
+		$data = $ci->input->post('data');
+
+		$result = $ci->dtc_model->route_get($data, $mode);
+		
+		if ($result) 
+		{ 
+			send_json_lookup_feedback($result['route_id'], '', $result['location_from']." - > ".$result['location_to']);
+	
+		}
+		else send_json_error_feedback();
+	}
+
+	# lookup data Truck
+	function truck_control()
+	{
+		$ci = & get_instance();
+		$data = $ci->dtc_model->truck_control(get_datatables_control());
+		send_json($data); 
+	}
+	
+	function truck_get()
+	{
+		$ci = & get_instance();
+		$mode = $ci->input->post('mode');
+		$data = $ci->input->post('data');
+
+		$result = $ci->dtc_model->truck_get($data, $mode);
+		
+		if ($result) 
+		{ 
+			send_json_lookup_feedback($result['truck_id'], $result['truck_nopol'], $result['truck_merk']);
+		}
+		else send_json_error_feedback();
+	}
+	
+
+	# lookup data loaction
+	function location_control($type=0)
+	{
+		$ci = & get_instance();
+		$data = $ci->dtc_model->location_control(get_datatables_control(),$type);
 		send_json($data); 
 	}
 	
