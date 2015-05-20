@@ -255,7 +255,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 													  'transient_detail_driver_id'=>$value['driver_id'],$value['driver_id'],
 													  'transient_detail_co_driver'=>$value['co_driver_name'],$value['co_driver_name'],
 													  'transient_detail_co_driver_id'=>$value['co_driver_id'],$value['co_driver_id'],
-													  'transient_detail_plan_id'=>$value['tr_plan_id'],$value['tr_plan_id']
+													  'transient_detail_plan_id'=>$value['tr_plan_detail_id'],$value['tr_plan_detail_id']
 													  )
 												),
 						form_transient_pair('transient_detail_spbe',$value['location_name'],$value['location_id']),

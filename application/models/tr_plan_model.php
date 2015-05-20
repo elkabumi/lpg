@@ -136,25 +136,18 @@ class Tr_plan_model extends CI_Model{
 		$this->db->trans_start();
 		$this->db->where('tr_plan_id', $id);
 		$this->db->update('tr_plans', $data);
-		/*
-		$data_market['market_code'] = $data['supplier_code'];
-		$data_market['market_name'] = $data['supplier_name'];
 		
-		$this->db->where('market_id', $id);
-		$this->db->update('markets', $data_market);
-		*/
+		$this->db->where('tr_plan_id', $id);
+		$this->db->delete('tr_plan_details');
+		
 		
 		$index = 0;
 		foreach($items_plan_detail as $row)
 		{			
-			if(!$row['tr_plan_detail_id']){
-				$row['tr_plan_id'] = $id;
-				$row['tr_plan_detail_id'] = '';
+			$row['tr_plan_id'] = $id;
+		
 				$this->db->insert('tr_plan_details', $row);
-			}else{
-				$this->db->where('tr_plan_detail_id', $row['tr_plan_detail_id']);
-				$this->db->update('tr_plan_details', $row);
-			}
+			
 			
 			$index++;
 		}
@@ -205,20 +198,19 @@ class Tr_plan_model extends CI_Model{
 		$this->db->update('markets', $data_market);
 		*/
 		
+		$this->db->where('tr_plan_detail_id', $id);
+		$this->db->delete('tr_plan_detail_shipments');
+		
+		
 		$index = 0;
 		foreach($items_shipment as $row)
 		{			
-			if(!$row['tr_plan_detail_shipment_id']){
 				$row['tr_plan_detail_id'] = $id;
-				$row['tr_plan_detail_shipment_id'] = '';
 				$this->db->insert('tr_plan_detail_shipments', $row);
-			}else{
-				$this->db->where('tr_plan_detail_shipment_id', $row['tr_plan_detail_shipment_id']);
-				$this->db->update('tr_plan_detail_shipments', $row);
-			}
-			
 			$index++;
 		}
+		
+		
 		
 		$this->access->log_update($id, "Plan [".$id."]");
 		
