@@ -190,6 +190,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		$list_ts_route_id	= ($this->input->post('transient_shipment_detail_route_id'));
 		$list_ts_route_qty	= ($this->input->post('transient_shipment_detail_qty'));
 		$list_ts_route_price	= ($this->input->post('transient_shipment_detail_price'));
+		$list_ts_route_total_price	= ($this->input->post('transient_shipment_detail_total_price'));
 		$list_ts_route_cost = ($this->input->post('transient_shipment_detail_cost'));
 		$list_shipment_id = ($this->input->post('transient_tr_plan_detail_shipment_id'));
 		
@@ -208,7 +209,9 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					'tr_plan_detail_shipment_id' => ($list_shipment_id[$key]),
 					'route_id' => ($list_ts_route_id[$key]),
 					'tr_plan_detail_shipment_qty' => ($list_ts_route_qty[$key]),
-					'tr_plan_detail_shipment_total' => ($list_ts_route_price[$key]),
+					'tr_plan_detail_shipment_price' => ($list_ts_route_price[$key]),
+					'tr_plan_detail_shipment_total_price' => ($list_ts_route_total_price[$key]),
+					'tr_plan_detail_shipment_cost' => ($list_ts_route_cost[$key]),
 					'tr_plan_detail_shipment_total_paid' => 0,
 					'tr_plan_detail_shipment_status_id' => 0,
 			);
@@ -290,11 +293,13 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 						form_transient_pair('transient_shipment_detail_route_to', $value['route_to'],$value['location_to_id'],
 											array('transient_shipment_detail_route_id' =>$value['route_id'],$value['route_id'],
 												  'transient_tr_plan_detail_shipment_id' =>$value['tr_plan_detail_shipment_id'],$value['tr_plan_detail_shipment_id'],
+												  'transient_shipment_detail_price' =>$value['tr_plan_detail_shipment_price'],$value['tr_plan_detail_shipment_price'],
+											
 											)
 						),
 						form_transient_pair('transient_shipment_detail_qty',$value['tr_plan_detail_shipment_qty'],$value['tr_plan_detail_shipment_qty']),
-						form_transient_pair('transient_shipment_detail_price',$value['tr_plan_detail_shipment_total'],$value['tr_plan_detail_shipment_total']),
-						form_transient_pair('transient_shipment_detail_cost',$value['location_total_cost'],$value['location_total_cost']),
+						form_transient_pair('transient_shipment_detail_total_price',$value['tr_plan_detail_shipment_total_price'],$value['tr_plan_detail_shipment_total_price']),
+						form_transient_pair('transient_shipment_detail_cost',$value['tr_plan_detail_shipment_cost'],$value['tr_plan_detail_shipment_cost']),
 						
 				);
 				
@@ -374,6 +379,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					$data['transient_shipment_detail_route_id'] 	= '';
 					$data['transient_shipment_detail_qty'] 			= '';
 					$data['transient_shipment_detail_price'] 		= '';
+					$data['transient_shipment_detail_total_price'] 	= '';
 					$data['transient_shipment_detail_cost'] 		= '';
 					$data['transient_tr_plan_detail_shipment_id'] 		= '';
 					
@@ -389,10 +395,9 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					$data['transient_shipment_detail_route_id']		= array_shift($this->input->post('transient_shipment_detail_route_id'));
 					$data['transient_shipment_detail_qty'] 			= array_shift($this->input->post('transient_shipment_detail_qty'));
 					$data['transient_shipment_detail_price'] 		= array_shift($this->input->post('transient_shipment_detail_price'));
+					$data['transient_shipment_detail_total_price'] 	= array_shift($this->input->post('transient_shipment_detail_total_price'));
 					$data['transient_shipment_detail_cost'] 		= array_shift($this->input->post('transient_shipment_detail_cost'));
 					$data['transient_tr_plan_detail_shipment_id'] 	= array_shift($this->input->post('transient_tr_plan_detail_shipment_id'));
-		
-			
 					
 			}
 				
@@ -485,6 +490,8 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			$transient_shipment_detail_cost 		= $this->input->post('i_cost_route');
 			$transient_shipment_detail_qty 			= $this->input->post('i_qty');
 			$transient_shipment_detail_price 		= $this->input->post('i_price');
+			$transient_shipment_detail_total_price 		= $this->input->post('i_total_price');
+			
 			$transient_tr_plan_detail_shipment_id 	= $this->input->post('i_tr_plan_shipment_id');
 		
 		$total_kulak =  $this->tr_plan_model->get_total_kulak($row_id);
@@ -493,14 +500,16 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			 send_json_error('Simpan gagal. Jumlah Kirim tidak boleh melebihi Jumlah Kulak['.$total_kulak.']');
 		}
 			$data = array(
-						form_transient_pair('transient_shipment_detail_route_from', $transient_shipment_detail_route_from,$transient_shipment_detail_route_from),
+					form_transient_pair('transient_shipment_detail_route_from', $transient_shipment_detail_route_from,$transient_shipment_detail_route_from),
 						form_transient_pair('transient_shipment_detail_route_to', $transient_shipment_detail_route_to,$transient_shipment_detail_route_to,
 											array('transient_shipment_detail_route_id' =>$transient_shipment_detail_route_id,$transient_shipment_detail_route_id,
-												  'transient_tr_plan_detail_shipment_id' =>$transient_tr_plan_detail_shipment_id,$transient_tr_plan_detail_shipment_id
+												  'transient_tr_plan_detail_shipment_id' =>$transient_tr_plan_detail_shipment_id,$transient_tr_plan_detail_shipment_id,
+												  'transient_shipment_detail_price' =>$transient_shipment_detail_price,$transient_shipment_detail_price,
+				
 											)
 						),
 						form_transient_pair('transient_shipment_detail_qty',$transient_shipment_detail_qty,$transient_shipment_detail_qty),
-						form_transient_pair('transient_shipment_detail_price',$transient_shipment_detail_price,$transient_shipment_detail_price ),
+						form_transient_pair('transient_shipment_detail_total_price',$transient_shipment_detail_total_price,$transient_shipment_detail_total_price),
 						form_transient_pair('transient_shipment_detail_cost',$transient_shipment_detail_cost,$transient_shipment_detail_cost ),
 						
 				);
@@ -556,6 +565,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			$data['location_total_cost'] 	= $row['location_total_cost'];
 			$data['location_from_name'] 	= $row['location_from_name'];
 			$data['location_to_name'] 		= $row['location_to_name'];
+			$data['harga'] 					= $row['harga'];
 		
 		}
 		send_json_message('route', $data);

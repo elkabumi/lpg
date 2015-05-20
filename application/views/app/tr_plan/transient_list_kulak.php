@@ -19,6 +19,9 @@ $(function(){
 		$('input#td_total').val(formatMoney(tm_total));
 		
 	}
+	
+	
+	
 });</script>
 <div class="transient_category">Data Kulak</div>
 <div>

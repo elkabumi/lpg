@@ -302,7 +302,8 @@ class Tr_plan_model extends CI_Model{
 		$sql = "
 		select a.*,
 			b.location_name as location_from_name,
-			c.location_name as location_to_name
+			c.location_name as location_to_name,
+			c.location_price as harga
 		from routes a
 		join locations b on b.location_id = a.location_from_id
 		join locations c on c.location_id = a.location_to_id

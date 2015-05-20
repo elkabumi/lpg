@@ -8,7 +8,7 @@ $(function(){
 		column_id 		: 0,
 		component_id	: "#lookup_route",
 		filter_by		: [{id : "p1", label : "Dari"},{id : "p2", label : "Menuju Pangkalan"},{id : "p3", label : "Biaya"}],
-		onSelect		: load_data_route
+		//onSelect		: load_data_route
 	});
 	
 	function load_data_route()
@@ -29,12 +29,30 @@ $(function(){
 				$('input[name="i_cost_route"]').val(data.content['location_total_cost']);	
 				$('input[name="i_location_from"]').val(data.content['location_from_name']);	
 				$('input[name="i_location_to"]').val(data.content['location_to_name']);	
+				$('input[name="i_price"]').val(data.content['harga']);	
 			
 			}
 			
 		});
 	}
-	
+	$('input[name="i_qty"]').change(
+		function(){
+		
+			var qty = $('input[name="i_qty"]').val();
+			var price = $('input[name="i_price"]').val();
+			var total = qty * price ;
+			$('input[name="i_total_price"]').val(total);
+		}
+	)
+	$('input[name="i_price"]').change(
+		function(){
+		
+			var qty = $('input[name="i_qty"]').val();
+			var price  = $('input[name="i_price"]').val();
+			var total = qty * price ;
+			$('input[name="i_total_price"]').val(total);
+		}
+	)
 	createDatePicker();
 });
 </script>
@@ -59,16 +77,21 @@ $(function(){
        </td>
      </tr>
     <tr>
-    	 <td width="196">Biaya Route</td>
-    	 <td width="651"><input name="i_cost_route" type="text" id="i_qty" value="<?=$transient_shipment_detail_cost ?>" size="10"/></td>
+    	 <td width="196">Biaya Route<?=$transient_shipment_detail_cost ?></td>
+    	 <td width="651"><input name="i_cost_route" type="text" id="i_cost_route" value="<?=$transient_shipment_detail_cost ?>" size="10"/>
+      </td>
     </tr>
     <tr>
     	 <td width="196">Jumlah Kirim</td>
     	 <td width="651"><input name="i_qty" type="text" id="i_qty" value="<?=$transient_shipment_detail_qty ?>" size="10"/></td>
     </tr>
-      <tr>
-    	 <td width="196">Harga kirim</td>
+     <tr>
+    	 <td width="196">Harga</td>
     	 <td width="651"><input name="i_price" type="text" id="i_price" value="<?=$transient_shipment_detail_price ?>" size="10"/></td>
+    </tr>
+      <tr>
+    	 <td width="196">Total Harga</td>
+    	 <td width="651"><input readonly="readonly" name="i_total_price" type="text" id="i_total_price" value="<?=$transient_shipment_detail_total_price ?>" size="10"/></td>
     </tr>
  	
  	
