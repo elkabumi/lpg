@@ -25,8 +25,8 @@ class customer extends CI_Controller{
 	function form($id = 0){
 		$data = array();
 		if($id==0){
-			$data['row_id']				= '';
-			//$data['customer_code']			= format_code('customers','customer_code','S',7);
+			$data['row_id']					= '';
+			//$data['customer_code']		= format_code('customers','customer_code','S',7);
 			$data['location_name']			= '';
 			$data['location_phone']			= '';
 			$data['location_address']		= '';
@@ -34,6 +34,7 @@ class customer extends CI_Controller{
 			$data['location_kelurahan']		= '';
 			$data['location_kecamatan']		= '';
 			$data['location_kota']			= '';
+			$data['location_price']			= '';
 	
 		
 		}else{
@@ -65,16 +66,18 @@ class customer extends CI_Controller{
 		$this->form_validation->set_rules('i_name','Nama Pangkalan', 'trim|required');
 		$this->form_validation->set_rules('i_phone','No.Telpn Pangakalan', 'trim|required');
 		$this->form_validation->set_rules('i_address','Alamat', 'trim|required');
+		$this->form_validation->set_rules('i_price','Harga Jual Satuan', 'trim|required|integer');
 		
 		if($this->form_validation->run() == FALSE) send_json_validate();
 		
 			$data['location_name'] 				= $this->input->post('i_name');
 			$data['location_phone'] 			= $this->input->post('i_phone');
 			$data['location_address'] 			= $this->input->post('i_address');
-			$data['location_rt_rw'] 				= $this->input->post('i_rt');
-			$data['location_kelurahan'] 			= $this->input->post('i_kel');
-			$data['location_kecamatan'] 			= $this->input->post('i_kec');
-			$data['location_kota'] 			= $this->input->post('i_city');
+			$data['location_rt_rw'] 			= $this->input->post('i_rt');
+			$data['location_kelurahan'] 		= $this->input->post('i_kel');
+			$data['location_kecamatan'] 		= $this->input->post('i_kec');
+			$data['location_kota'] 				= $this->input->post('i_city');
+			$data['location_price'] 			= $this->input->post('i_price');
 		
 		if(empty($id)){
 			$data['location_category_id'] 					= 2;

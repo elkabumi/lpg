@@ -376,7 +376,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					$data['row_id']						= $row_id ;
 					$data['transient_shipment_detail_route_from'] 	= '';
 					$data['transient_shipment_detail_route_to'] 	= '';
-					$data['transient_shipment_detail_route_id'] 	= '';
+					$data['transient_shipment_detail_route_id'] 	= '0';
 					$data['transient_shipment_detail_qty'] 			= '';
 					$data['transient_shipment_detail_price'] 		= '';
 					$data['transient_shipment_detail_total_price'] 	= '';
