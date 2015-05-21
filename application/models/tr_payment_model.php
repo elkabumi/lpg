@@ -84,10 +84,14 @@ class tr_payment_model extends CI_Model{
 	}
 	
 	function read_id($id){
-		$this->db->select('*', 1);
-		$this->db->where('employee_id', $id);
-		$query = $this->db->get('employees', 1);
+		$this->db->select('a.*,b.*,d.*', 1);
+		$this->db->where('a.tr_plan_detail_shipment_id', $id);
+		$this->db->join('tr_payments b','b.tr_plan_detail_shipment_id = a.tr_plan_detail_shipment_id','left');
+		$this->db->join('routes c','a.route_id = c.route_id','left');
+		$this->db->join('locations d','c.location_to_id = d.location_id','left');
+		$query = $this->db->get('tr_plan_detail_shipments a', 1);
 		$result = null;
+		//query($query);
 		foreach($query->result_array() as $row)
 		{
 			$result = format_html($row);
@@ -104,11 +108,33 @@ class tr_payment_model extends CI_Model{
 		return $this->db->trans_status();
 	}
 	
-	function update($id, $data){
+	function update($id,$items,$total){
 		$this->db->trans_start();
-		$this->db->where('employee_id', $id);
-		$this->db->update('employees', $data);
-		$this->access->log_update($id, "Pegawai[".$data['employee_name']."]");
+		
+		//hapus history 
+		$this->db->where('tr_plan_detail_shipment_id', $id);
+		$this->db->delete('tr_payments');
+		
+		//insert history payment
+		$index = 0;
+		foreach($items as $row)
+		{	
+			$row['tr_plan_detail_shipment_id'] = $id;		
+			$this->db->insert('tr_payments', $row);
+			$index++;
+		}
+		
+		//update tr_plan_detail_shipments
+		$bayar = $this->read_bayar($id);
+		
+		if($bayar != $total){
+			$status = 0;
+			}else{
+			$status = 1;	
+		}
+		
+		$sql = "update tr_plan_detail_shipments set tr_plan_detail_shipment_total_paid = $total,tr_plan_detail_shipment_status_id = $status where tr_plan_detail_shipment_id = $id";
+		$query = $this->db->query($sql);
 		
 		$this->db->trans_complete();
 		return $this->db->trans_status();
@@ -127,7 +153,71 @@ class tr_payment_model extends CI_Model{
 		return $this->db->trans_status();
 	}
 	
+	function detail_list_loader($date_1)
+	{
+		// buat array kosong
+		$result = array(); 	
+		if($date_1 != 0){
+			$where = "WHERE a.tr_plan_detail_shipment_realization_date = '".$date_1."' AND a.tr_plan_detail_shipment_status_id = 0";
+		}else{
+			$where = '';
+		}
+		$sql = "
+		select a.* , d.location_name
+		from tr_plan_detail_shipments a
+		left join routes c on a.route_id = c.route_id
+		left join locations d on c.location_to_id = d.location_id
+		".$where."";
+		
+		
+		
+		$query = $this->db->query($sql); //debug();
+		//query();
+		foreach($query->result_array() as $row)
+		{
+			$result[] = format_html($row);
+		}
+		return $result;
+	}
 	
+	function detail_list_loader_bayar($id)
+	{
+		// buat array kosong
+		$result = array(); 	
+		if($id != 0){
+			$where = "WHERE tr_plan_detail_shipment_id = '".$id."'";
+		}else{
+			$where = '';
+		}
+		$sql = "
+		select * 
+		from tr_payments 
+		".$where."";
+		
+		
+		
+		$query = $this->db->query($sql); //debug();
+		//query();
+		foreach($query->result_array() as $row)
+		{
+			$result[] = format_html($row);
+		}
+		return $result;
+	}
+	
+	
+	function read_bayar($id)
+	{
+		$sql = "SELECT tr_plan_detail_shipment_total_paid
+				FROM tr_plan_detail_shipments
+				where tr_plan_detail_shipment_id = $id";
+		$query = $this->db->query($sql); // parameter limit harus 1
+		//query($query);
+		
+		$result = null;
+        foreach ($query->result_array() as $row) $result = format_html($row);
+        return $result['tr_plan_detail_shipment_total_paid'];
+	}
 	
 	
 }
