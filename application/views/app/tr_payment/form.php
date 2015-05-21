@@ -3,57 +3,62 @@ $(function(){
 
 	createForm({
 		id 				: "#id_form_nya", 
-		actionTarget	: "periode/form_action",
-		backPage		: "periode",
-		nextPage		: "periode"
-	});	
+		actionTarget	: "tr_payment/form_action",
+		backPage		: "tr_payment",
+		nextPage		: "tr_payment/form"
+	});
+	
+	var otb = createTableFormTransient({
+		id 				: "#transient_detail",
+		listSource 		: "tr_payment/detail_table_loader/0/0/0/0/0",
+		formSource 		: "tr_payment/detail_form/<?=$row_id?>",
+		controlTarget	: "tr_payment/detail_form_action",
+	});
+	$('#preview').click(function(){
+	
+			var date_1 		= ($('input[name="i_date_1"]').val()) ? $('input[name="i_date_1"]').val() : "0";
+			
+			if(date_1 == 0){
+					alert('Tanggal Realisasi tidak boleh kosong');
+			}else{
+					var explode_1  = date_1.split('/');
+					var new_date_1  = explode_1[2]+"-"+explode_1[1]+"-"+explode_1[0];
+				
+					otb.fnSettings().sAjaxSource = site_url + "tr_payment/detail_table_loader/"+new_date_1;
+					otb.fnReloadAjax();
+			}
+	
+	});
+	createDatePicker();
+	//updateAll(); 
 });
 </script>
 
-<form id="id_form_nya">
+<form class="form_class" id="id_form_nya">	
 <div class="form_area">
 <div class="form_area_frame">
-<table width="100%" cellpadding="4" class="form_layout">
-	<tr>
-     <td width="196">Kode</td>
-     <td width="651">
-       <input type="hidden" name="row_id" value="<?=$row_id?>" />
-       <input name="period_code" type="text" id="textfield7" readonly="readonly" class="required" value="<?=$period_code?>" size="4" maxlength="4" /></td>
+<table>
+		<tr>
+	 <input type="hidden" name="row_id" value="<?=$row_id?>" /></td>
+   </tr>
+      <tr>
+     <td>Tanggal Realisasi</td>
+     <td width="1%">:</td>
+     <td><input name="i_date_1" type="text" id="i_date_1" value="<?=$date_1 ?>" class="date_input" size="10"/></td>
      </tr>
-   <tr>
-     <td width="196">Bulan</td>
-     <td width="651">
-       <?=form_dropdown('period_month', $bulan, $period_month)?>
-     </td>
-     </tr>
-   <tr>
-     <td width="196">Tahun</td>
-     <td width="651"><input name="period_year" type="text" class="required" value="<?=$period_year?>" size="4" /></td>
-     </tr>
-     <tr>
-     <td width="196">Status</td>
-     <td width="651"><p>
-       <label style="margin-left:20%;">
-         <input type="radio" name="period_closed" value="1" id="period_closed1" <?php if($period_closed == 1){?> checked="checked"<?php } ?> />
-         Aktif</label>
-     </br>
-       <label style="margin-left:20%;">
-         <input type="radio" name="period_closed" value="0" id="period_closed2" <?php if($period_closed == 0){?> checked="checked"<?php } ?> />
-         Tidak Aktif</label>
-      
-     </p></td>
-     </tr>
-   <tr>
-     <td width="196">Keterangan</td>
-     <td width="651"><textarea name="period_description"><?=$period_description?></textarea></td>
-     </tr>   
-</table>
+  
+   </table>
+     </div>
+	
+	<div class="command_bar">
+
+	<input type="button" id="preview" value="preview"   />
+
+	 
+	 
+	</div>
 </div>
-<div class="command_bar">
-	<input type="button" id="submit" value="Simpan"/>
-	<input type="button" id="enable" value="Edit"/>
-	<input type="button" id="cancel" value="Batal" /> 
-</div>
-</div>
+<!-- table contact -->
+
 </form>
 

@@ -12,11 +12,15 @@ $(function(){
 	createDatePicker();
 });
 </script>
+<table>
+<thead>
 <tr>
       <td>Tanggal Realisasi </td>
       <td>:</td>
       <td><input type="text" name="i_create_date" class="date_input" size="15" value="" /></td>
 </tr>
+</thead>
+</table>
 <div id="panel" class="command_table">
 	<input type="button" id="add" value="Search"/>
 </div>
