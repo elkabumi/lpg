@@ -8,7 +8,7 @@ $(function(){
 		column_id 		: 0,
 		component_id	: "#lookup_route",
 		filter_by		: [{id : "p1", label : "Dari"},{id : "p2", label : "Menuju Pangkalan"},{id : "p3", label : "Biaya"}],
-		//onSelect		: load_data_route
+		onSelect		: load_data_route
 	});
 	
 	function load_data_route()
@@ -26,11 +26,15 @@ $(function(){
 			data: data,
 			dataType: 'json',
 			success: function(data){	
-				$('input[name="i_cost_route"]').val(data.content['location_total_cost']);	
 				$('input[name="i_location_from"]').val(data.content['location_from_name']);	
 				$('input[name="i_location_to"]').val(data.content['location_to_name']);	
-				$('input[name="i_price"]').val(data.content['harga']);	
-			
+				if($('input[name="i_route_id"]').val() != <?=$transient_shipment_detail_route_id?>){
+					$('input[name="i_cost_route"]').val(data.content['location_total_cost']);	
+					$('input[name="i_price"]').val(data.content['harga']);	
+				}else{
+					$('input[name="i_cost_route"]').val(<?=$transient_shipment_detail_cost ?>);	
+					$('input[name="i_price"]').val(<?=$transient_shipment_detail_price ?>);
+				}
 			}
 			
 		});
@@ -60,6 +64,7 @@ $(function(){
 <div class="form_area_frame">
 <table width="100%" cellpadding="4" class="form_layout">
      <tr>
+     
      <td req= "req">Route</td>
         <td><span class="lookup" id="lookup_route">
 				<input type="hidden" name="i_route_id" class="com_id" value="<?=$transient_shipment_detail_route_id?>" />
@@ -77,7 +82,7 @@ $(function(){
        </td>
      </tr>
     <tr>
-    	 <td width="196">Biaya Route<?=$transient_shipment_detail_cost ?></td>
+    	 <td width="196">Biaya Route</td>
     	 <td width="651"><input name="i_cost_route" type="text" id="i_cost_route" value="<?=$transient_shipment_detail_cost ?>" size="10"/>
       </td>
     </tr>

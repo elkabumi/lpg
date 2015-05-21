@@ -183,7 +183,19 @@ class Route_model extends CI_Model{
 		}
 		return $result;
 	}
-	
+	function cek_route($from_id,$to_id)
+	{
+		$sql = "select COUNT(route_id) AS id
+				FROM routes
+				WHERE location_from_id = '$from_id' AND location_to_id = '$to_id'
+				";
+		
+		$query = $this->db->query($sql);
+		
+		$result = null;
+		foreach ($query->result_array() as $row) $result = format_html($row);
+		return $result['id'];
+	}
 	
 	
 }

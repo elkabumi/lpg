@@ -73,6 +73,14 @@ class Route extends CI_Controller{
 		$data['location_to_id'] 				= $this->input->post('i_to_id');
 		$data['location_desc']	 				= $this->input->post('i_description');
 		
+		if($data['location_from_id'] == $data['location_to_id']){
+			send_json_error('Simpan Gagal.Dari Lokasi dan ke Lokasi Tidak Boleh sama');
+		}
+		$get_route=$this->route_model->cek_route($data['location_from_id'],$data['location_to_id']);
+		if($get_route == '1'){
+				send_json_error('Simpan Gagal.Route Sudah Ada');
+		
+		}
 		// simpan transient biaya Route
 		$list_name_biaya	= ($this->input->post('transient_rd_name'));
 		$list_biaya  =  	($this->input->post('transient_rd_price'));

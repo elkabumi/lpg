@@ -10,7 +10,9 @@ $(function(){
     <tr>
      <td width="196">Nama Biaya</td> 
        <td width="651"><input name="i_name" type="text" id="i_name" value="<?=$transient_rd_name?>"  size="10"/>
-	  </td>
+	  <input type="hidden" name="i_index" value="<?=$index?>" />
+   
+      </td>
      </tr>
 
       <tr>

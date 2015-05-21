@@ -22,8 +22,11 @@ $(function(){
      <td width="196">Nama Pangkalan</td>
      <td width="651"><input name="i_name" type="text" id="i_name" value="<?=$location_name ?>" />
      <input type="hidden" name="row_id" value="<?=$row_id?>" /></td>
-   </tr>
-   
+  </tr>
+  <tr>
+   	 <td width="196">Harga Jual Satuan</td>
+     <td width="651"><input name="i_price" type="text" id="i_price" value="<?=$location_price ?>" size="10"/></td>
+ </tr>
   <tr>
      <td width="196">No.Telpn Pangakalan</td>
      <td width="651"><input name="i_phone" type="text" id="i_phone" value="<?=$location_phone ?>" size="10"/></td>
