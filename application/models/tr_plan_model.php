@@ -224,9 +224,9 @@ class Tr_plan_model extends CI_Model{
 		/*$this->db->where('employee_id', $id);
 		$this->db->delete('employees');
 		*/
-		$data['employee_active_status'] = 0;
-		$this->db->where('employee_id', $id);
-		$this->db->update('employees', $data);
+		//$data['employee_active_status'] = 0;
+		$this->db->where('tr_plan_id', $id);
+		$this->db->delete('tr_plans');
 		
 		$this->access->log_delete($id, "Pegawai");
 		$this->db->trans_complete();

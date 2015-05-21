@@ -4,7 +4,7 @@ $(function(){
 		id 				: "#id_form_nya", 
 		actionTarget	: "tr_plan/form_action",
 		backPage		: "tr_plan",
-		nextPage		: "tr_plan/form"
+		nextPage		: "tr_plan"
 	});
 
 
