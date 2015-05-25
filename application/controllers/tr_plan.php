@@ -71,6 +71,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			if($result){
 				$data = $result;
 				$data['row_id'] = $id;
+
 			}
 		//}
 		$this->load->helper('form');
@@ -212,6 +213,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					'tr_plan_detail_shipment_price' => ($list_ts_route_price[$key]),
 					'tr_plan_detail_shipment_total_price' => ($list_ts_route_total_price[$key]),
 					'tr_plan_detail_shipment_cost' => ($list_ts_route_cost[$key]),
+					'tr_plan_detail_shipment_realization_date' => date("Y-m-d"),
 					'tr_plan_detail_shipment_total_paid' => 0,
 					'tr_plan_detail_shipment_status_id' => 0,
 			);

@@ -107,7 +107,7 @@ $(function(){
 <div class="form_area_frame">
 <table width="100%" cellpadding="4" class="form_layout">
 	 <tr>
-    	 <td width="196">Kode Kulak</td>
+    	 <td width="196">Nomor DO</td>
     	 <td width="651"><input name="i_code" type="text" id="i_code" value="<?=$transient_detail_code ?>" size="10"/></td>
     </tr>
      <tr>
@@ -155,7 +155,7 @@ $(function(){
 				
 				</span>	-->
        </td>
-     </tr>-->
+     </tr>
      <tr>
      <td req= "req">SPBE</td>
         <td><span class="lookup" id="lookup_spbe">
