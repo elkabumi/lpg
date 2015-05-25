@@ -106,12 +106,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 	
 		
 		
-		$get_date=$this->tr_plan_model->cek_date($data['tr_plan_date']);
 	
-		if($get_date > 1){
-			 send_json_error('Simpan gagal. Plan di Tanggal '.$data['tr_plan_date'].' Sudah ada');
-	
-		}
 			// simpan transient kulak
 		$list_td_code			= ($this->input->post('transient_detail_code'));
 		$list_td_truck_id		= ($this->input->post('transient_detail_truck_id'));
@@ -159,10 +154,17 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		
 		$data['tr_plan_total_order'] = $total_kulak;
 		$data['tr_plan_total_purchase'] = $total_purchase;		
+		/*
+		$get_date=$this->tr_plan_model->cek_date($data['tr_plan_date']);
+		if($get_date > 1){
+			 send_json_error('Simpan gagal. Plan di Tanggal '.$data['tr_plan_date'].' Sudah ada');
+		}*/	
 		if(empty($id)){
+		
 			$error = $this->tr_plan_model->create($data,$items_plan_detail);
-			send_json_action($error, "Data telah ditambah", "Data gagal ditambah",$this->tr_plan_model->insert_id);
+			send_json_action($error, "Data telah ditambah", "Data gagal ditambah");
 		}else{
+		
 			$error = $this->tr_plan_model->update($id, $data,$items_plan_detail);
 			send_json_action($error, "Data telah direvisi", "Data gagal direvisi",$id);		
 		}

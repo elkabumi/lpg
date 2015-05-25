@@ -61,9 +61,9 @@ class truck_model extends CI_Model{
 			c.employee_name as co_driver_name,
 			d.truck_type_name
 		from trucks a
-		join employees b on b.employee_id = a.driver_id
-		join employees c on c.employee_id = a.co_driver_id
-		join truck_types d on d.truck_type_id = a.truck_type_id
+		LEFT join employees b on b.employee_id = a.driver_id
+		LEFT join employees c on c.employee_id = a.co_driver_id
+		LEFT join truck_types d on d.truck_type_id = a.truck_type_id
 		 $where   $order_by
 			
 			";
