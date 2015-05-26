@@ -95,11 +95,14 @@ class Tr_plan_model extends CI_Model{
 	function read_plan_id($id){
 		$this->db->select('a.*,b.truck_nopol,c.employee_name AS driver_name,d.employee_name AS co_driver_name
 					, e.location_name', 1);
+		$this->db->where('a.tr_plan_detail_id', $id);
 		$this->db->join('trucks b', 'b.truck_id = a.truck_id');
 		$this->db->join('employees c', 'c.employee_id = a.driver_id');
 		$this->db->join('employees d', 'd.employee_id = a.co_driver_id');
 		$this->db->join('locations e', 'e.location_id = a.location_id');
+		$this->db->where('tr_plan_detail_id', $id);
 		$query = $this->db->get('tr_plan_details a', 1);
+	
 		$result = null;
 		foreach($query->result_array() as $row)
 		{
@@ -108,16 +111,17 @@ class Tr_plan_model extends CI_Model{
 		return $result;
 	}
 	function create($data,$items_plan_detail){
-		$this->db->trans_start();
+		/*$this->db->trans_start();
 		$this->db->insert('tr_plans', $data);
 		$id = $this->db->insert_id();
-		
+		*/
 		// Detail Biaya Route
 		$index = 0;
 		foreach($items_plan_detail as $row)
 		{		
-			$row['tr_plan_id'] = $id;
-			$this->db->insert('tr_plan_details', $row);
+			$this->db->where('tr_plan_detail_id', $row['tr_plan_detail_id']);
+			$this->db->update('tr_plan_details', $row);
+		
 			$index++;
 		}
 		/*
@@ -127,32 +131,33 @@ class Tr_plan_model extends CI_Model{
 		$this->db->insert('markets', $data_market);
 		*/
 		
-		$this->access->log_insert($id, "Plan [".$id."]");
+		$this->access->log_insert(1, "Plan [".$data['tr_plan_date']."]");
 		$this->db->trans_complete();
 		return $this->db->trans_status();
 	}
 	
-	function update($id, $data,$items_plan_detail){
+	function update($id,$data,$items_plan_detail){
 		$this->db->trans_start();
-		$this->db->where('tr_plan_id', $id);
+		/*$this->db->where('tr_plan_id', $id);
 		$this->db->update('tr_plans', $data);
 		
 		$this->db->where('tr_plan_id', $id);
 		$this->db->delete('tr_plan_details');
-		
+		*/
 		
 		$index = 0;
 		foreach($items_plan_detail as $row)
 		{			
-			$row['tr_plan_id'] = $id;
-		
-				$this->db->insert('tr_plan_details', $row);
-			
+			$this->db->where('tr_plan_detail_id', $row['tr_plan_detail_id']);
+			$this->db->update('tr_plan_details', $row);
+			/*$row['tr_plan_id'] = $id;
+			$this->db->insert('tr_plan_details', $row);
+			*/
 			
 			$index++;
 		}
 		
-		$this->access->log_update($id, "Plan [".$id."]");
+		$this->access->log_update($id, "Plan [2]");
 		
 		$this->db->trans_complete();
 		return $this->db->trans_status();
@@ -224,27 +229,29 @@ class Tr_plan_model extends CI_Model{
 		/*$this->db->where('employee_id', $id);
 		$this->db->delete('employees');
 		*/
-		$data['employee_active_status'] = 0;
-		$this->db->where('employee_id', $id);
-		$this->db->update('employees', $data);
+		//$data['employee_active_status'] = 0;
+		$this->db->where('tr_plan_id', $id);
+		$this->db->delete('tr_plans');
 		
 		$this->access->log_delete($id, "Pegawai");
 		$this->db->trans_complete();
 		return $this->db->trans_status();
 	}
-	function detail_list_loader_kulak($id)
+	function detail_table_loader_kulak($date)
 	{
 		// buat array kosong
 		$result = array(); 		
-		$this->db->select('a.*,b.truck_nopol,c.employee_name AS driver_name,d.employee_name AS co_driver_name
+		$this->db->select('a.*,f.*,g.*,b.truck_nopol,c.employee_name AS driver_name,d.employee_name AS co_driver_name
 					, e.location_name', 1);
-		$this->db->from('tr_plan_details a');
-		$this->db->join('trucks b', 'b.truck_id = a.truck_id');
-		$this->db->join('employees c', 'c.employee_id = a.driver_id');
-		$this->db->join('employees d', 'd.employee_id = a.co_driver_id');
-		$this->db->join('locations e', 'e.location_id = a.location_id');
+		$this->db->from('tr_plans a');
+		$this->db->join('tr_plan_purchases f', 'f.tr_plan_id = a.tr_plan_id');
+		$this->db->join('tr_plan_details g', 'f.tr_plan_purchase_id = g.tr_plan_purchase_id');
+		$this->db->join('trucks b', 'b.truck_id = g.truck_id','left');
+		$this->db->join('employees c', 'c.employee_id = g.driver_id','left');
+		$this->db->join('employees d', 'd.employee_id = g.co_driver_id','left');
+		$this->db->join('locations e', 'e.location_id = g.location_id');
 		
-		$this->db->where('a.tr_plan_id', $id);
+		$this->db->where('a.tr_plan_date', $date);
 		$query = $this->db->get(); debug();
 		//query();
 		foreach($query->result_array() as $row)
@@ -365,19 +372,6 @@ class Tr_plan_model extends CI_Model{
 		$result = null;
 		foreach ($query->result_array() as $row) $result = format_html($row);
 		return $result['kirim'];
-	}
-	function cek_date($date)
-	{
-		$sql = "select COUNT(tr_plan_id) AS id
-				FROM tr_plans
-				WHERE 	tr_plan_date = '$date'
-				";
-		
-		$query = $this->db->query($sql);
-		
-		$result = null;
-		foreach ($query->result_array() as $row) $result = format_html($row);
-		return $result['id'];
 	}
 	
 	
