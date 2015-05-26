@@ -87,21 +87,11 @@ $(function(){
        <tr>
    	 <td width="196">Biaya Lain-Lain</td>
     	 <td width="651"><input name="i_cost_lain" type="text" id="i_cost_lain" value="<?=$tr_plan_detail_cost_lain ?>" size="10"/></td>
+
      </tr>
- 	
-</table>
-</div>
 
-<div class="command_bar">
-	   <input type="button" id="submit" value="Simpan"/>
-	<input type="button" id="enable" value="Edit"/>
-    <!---
- 
-	<input type="button" id="cancel" value="Batal" /> 
-    -->
-    <a href="<?=site_url('tr_plan/form/'.$tr_plan_id.'')?>" class='link_button'>Back</a>
-</div>
-
-</div>
-</form>
-
+     </table>
+    <table width="100%" cellpadding="1">
+    <tr>
+    <td>
+   

@@ -2,9 +2,9 @@
 $(function(){
 	createTableFormTransient({
 		id 				: "#transient_contact",
-		listSource 		: "tr_plan/detail_list_loader_shipment/<?=$row_id?>",
-		formSource 		: "tr_plan/detail_form_shipment/<?=$row_id?>",
-		controlTarget	: "tr_plan/detail_form_action_shipment",
+		listSource 		: "ransom/detail_list_loader/<?=$row_id?>",
+		formSource 		: "ransom/detail_form/<?=$row_id?>",
+		controlTarget	: "ransom/detail_form_action",
 		onAdd		: function (){perhitungan();},	
 		onTargetLoad: function (){perhitungan();} 
 	});
@@ -16,22 +16,22 @@ $(function(){
 		{
 			tm_total += parseFloat($(this).val());
 		});
-		$('input#tsd_total').val(formatMoney(tm_total));
+		$('input#td_total').val(formatMoney(tm_total));
 		
 	}
+	
+	
+	
 });</script>
-<div class="transient_category">Data pengiriman</div>
+<div class="transient_category">Data Tebusan</div>
 <div>
 <form id="tform">
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="transient_contact"> 
 	<thead>
 		<tr>
-       		<th>Dari</th>
-            <th>Ke Pangakalan</th>
-            <th>Jumlah Kirim</th>
-            <th>Total Harga Kirim</th>
-            <th>BIaya Kirim</th>
-          	<th>Tanggal Kirim</th>
+       		<th>No</th>
+            <th>SPBE</th>
+            <th>Jumlah Tebusan</th>
       </tr> 
 	</thead> 
 	<tbody> 	
@@ -40,13 +40,13 @@ $(function(){
 <div class="command_table" style="text-align:left;">
  <table align="right">
           <tr>
-            <td><span class="summary_total">Jumlah Pengiriman</span></td>
-            <td><input id="td_total" value="<?= $tr_plan_detail_qty_shipment?>" type="text" readonly="readonly" class="format_money" size="50" />
+            <td><span class="summary_total"> Total Tebusan</span></td>
+            <td><input id="td_total" value="<?//= $tr_plan_total_purchase?>" type="text" readonly="readonly" class="format_money" size="50" />
            </td>
           </tr>
         </table>
       <input type="button" id="add" value="Tambah"/>
-	<input type="button" id="edit" value="Revisi"/>
+	<!--<input type="button" id="edit" value="Revisi"/>-->
     <input type="button" id="delete" value="Hapus"/>
    
 </div>
