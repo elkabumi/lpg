@@ -100,6 +100,7 @@ class Tr_plan_model extends CI_Model{
 		$this->db->join('employees c', 'c.employee_id = a.driver_id');
 		$this->db->join('employees d', 'd.employee_id = a.co_driver_id');
 		$this->db->join('locations e', 'e.location_id = a.location_id');
+		$this->db->where('tr_plan_detail_id', $id);
 		$query = $this->db->get('tr_plan_details a', 1);
 	
 		$result = null;

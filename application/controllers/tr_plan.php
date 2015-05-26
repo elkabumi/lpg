@@ -34,6 +34,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			if($result){
 				$data = $result;
 				$data['row_id'] = $id;
+
 			}
 		
 		$this->load->helper('form');
@@ -182,6 +183,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					'tr_plan_detail_shipment_total_price' => ($list_ts_route_total_price[$key]),
 					'tr_plan_detail_shipment_cost' => ($list_ts_route_cost[$key]),
 					'tr_plan_detail_shipment_realization_date' => ($list_ts_date[$key]),
+
 					'tr_plan_detail_shipment_total_paid' => 0,
 					'tr_plan_detail_shipment_status_id' => 0,
 			);
@@ -223,8 +225,6 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				}
 				$data[$key] = array(
 						form_transient_pair('transient_detail_no', $no,$no),
-						
-						
 						form_transient_pair('transient_detail_code', $value['tr_plan_detail_code'],$value['tr_plan_detail_code']),
 						form_transient_pair('transient_detail_date', $value['tr_plan_detail_date_realization'],$value['tr_plan_detail_date_realization']),
 						form_transient_pair('transient_detail_truck_id', $value['truck_nopol'],$value['truck_id'],
