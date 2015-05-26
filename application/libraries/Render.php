@@ -340,7 +340,8 @@ where a.menu_url like '$url' or a.menu_url like '$seg1'");
 			//$params['branch'] = $ci->access->branch_name . "(" .  $ci->access->branch_id . ")";
 			$params['group_name'] = $ci->access->info['group_name'];
 			
-			
+			$expired_price = $this->get_expired_price();
+			$params['expired_price'] = $expired_price;
 			
 			$this->block['user_info'] = $ci->load->view('common/userinfo', $params, true);
 		}
@@ -435,6 +436,38 @@ where a.menu_url like '$url' or a.menu_url like '$seg1'");
 		$result = null;
 		foreach ($query->result_array() as $row) $result = format_html($row);
 		return $result['total_expired'];
+	}
+	function get_expired_price()
+	{
+		$ci = & get_instance();
+		
+		 $selisih = -4;
+		 $total = 0;
+		 for($i=0; $i>=$selisih; $i--){
+		 $x = mktime (0 ,0 ,0 ,date("m") , date("d") +$i, date("y"));
+		 $nama_hari= date("l", $x);
+		 $tg= date("d-m-Y", $x);
+			 if($nama_hari == "Sunday"){
+					$total-1;
+				 }else{
+					 $total++;
+					 }
+			if($total == 3){
+				$output = $tg;
+				}
+				 
+		 }	
+
+		$sql = "
+		select count(tr_plan_detail_shipment_id) as total_row
+		from tr_plan_detail_shipments 
+ 		where tr_plan_detail_shipment_realization_date >= $output and tr_plan_detail_shipment_status_id = 0";
+		
+		$query = $ci->db->query($sql);
+		
+		$result = null;
+		foreach ($query->result_array() as $row) $result = format_html($row);
+		return $result['total_row'];
 	}
 	function get_employee_pic($id) { 
 		$ci = & get_instance(); 

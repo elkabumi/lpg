@@ -5,6 +5,7 @@
 		<tr>
 			
             <th>Tanggal</th>
+            <th>Pangkalan</th>
     		<th>Jumlah</th>
             <th>Tagihan</th>
             <th>Dibayar</th>

@@ -3,9 +3,9 @@ $(function(){
 
 	createForm({
 		id 				: "#id_form_nya", 
-		actionTarget	: "tr_payment/form_action",
-		backPage		: "tr_payment",
-		nextPage		: "tr_payment/form/<?=$row_id?>"
+		actionTarget	: "ar_payment/form_action",
+		backPage		: "ar_payment",
+		nextPage		: "ar_payment/form/<?=$row_id?>"
 	});
 	
 	$('input[name="i_status"]').change(function(){

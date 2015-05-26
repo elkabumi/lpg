@@ -1,72 +1,34 @@
 <?php
 	if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-			class tr_payment extends CI_Controller{
+			class ar_payment extends CI_Controller{
 			function __construct(){
 			parent::__construct();
 			$this->load->library('render');
-			$this->load->model('tr_payment_model');
+			$this->load->model('ar_payment_model');
 			$this->load->library('access');
-			$this->access->set_module('tr_payment.tr_payment');
+			$this->access->set_module('ar_payment.ar_payment');
 			$this->access->user_page();
 			}
 			
 			
-			function index(){
-				
-			$data = array();
-			
-				$data['row_id'] = '';
-				$data['date_1'] = '';
-				$data['date_2'] = '';
-				
-			
-				$this->load->helper('form');
-					
-				$this->render->add_form('app/tr_payment/form', $data);
-				$this->render->build('Pembayaran');
-				
-				
-				$this->render->add_view('app/tr_payment/transient_list');
-				$this->render->build('Detail');
-			
-				
-				$this->render->show('Pembayaran');
-			}
+	function index(){
 		
-			function detail_table_loader($date_1 = 0) {
-			if($date_1 == 0){
-					send_json(make_datatables_list(null));
-			}else{
-				
-				$data = $this->tr_payment_model->detail_list_loader($date_1);
-				
-				
-				$sort_id = 0;
-				foreach($data as $key => $value) 
-				{	
-				$link = "<a href=".site_url('tr_payment/form/'.$value['tr_plan_detail_shipment_id'])." class='link_input'> Bayar </a>";
-				$realisasi_date = format_new_date($value['tr_plan_detail_shipment_realization_date']);
-				$data[$key] = array(
-			
-						form_transient_pair('transient_tr_plan_detail_shipment_realization_date', $realisasi_date),
-						form_transient_pair('transient_tr_plan_detail_shipment_qty',$value['location_name']),
-						form_transient_pair('transient_tr_plan_detail_shipment_qty',$value['tr_plan_detail_shipment_qty']),
-						form_transient_pair('transient_tr_plan_detail_shipment_total_price', tool_money_format($value['tr_plan_detail_shipment_total_price']),$value['tr_plan_detail_shipment_total_price']),
-						form_transient_pair('transient_tr_plan_detail_shipment_total_paid', tool_money_format($value['tr_plan_detail_shipment_total_paid']),$value['tr_plan_detail_shipment_total_paid']),
-						form_transient_pair('transient_config', $link)
-						
-					);
-				}
-			}
-			send_json(make_datatables_list($data));
-		}
+		$this->render->add_view('app/ar_payment/list');
+		$this->render->build('Tagihan Pembayaran');
+		$this->render->show('Tagihan Pembayaran');
+	}
+	
+	function table_controller(){
+		$data = $this->ar_payment_model->list_controller();
+		send_json($data);
+	}
 		
 		function detail_list_loader_bayar($row_id = 0) {
 			if($row_id == 0){
 					send_json(make_datatables_list(null));
 			}else{
 				
-				$data = $this->tr_payment_model->detail_list_loader_bayar($row_id);
+				$data = $this->ar_payment_model->detail_list_loader_bayar($row_id);
 				
 				
 				$sort_id = 0;
@@ -90,7 +52,7 @@
 			$data = array();
 			$this->load->model('global_model');
 
-			$result = $this->tr_payment_model->read_id($tr_plan_detail_shipment_id);
+			$result = $this->ar_payment_model->read_id($tr_plan_detail_shipment_id);
 			if($result){
 				$data = $result;
 				$data['row_id'] = $tr_plan_detail_shipment_id;
@@ -99,14 +61,14 @@
 			}
 				
 			$this->load->helper('form');
-			$this->render->add_form('app/tr_payment/form_detail', $data);
-			$this->render->build('Registrasi');
+			$this->render->add_form('app/ar_payment/form', $data);
+			$this->render->build('Detail');
 			
 			// List bayar
-			$this->render->add_view('app/tr_payment/transient_list_bayar');
-			$this->render->build('Data Sparepart');
+			$this->render->add_view('app/ar_payment/transient_list');
+			$this->render->build('History Pembayaran');
 						
-			$this->render->show('Transaksi');
+			$this->render->show('Transaksi Pembayaran');
 		}
 		
 		function form_action($is_delete = 0) // jika 0, berarti insert atau update, bila 1 berarti delete
@@ -114,7 +76,7 @@
 			$id = $this->input->post('row_id');
 			
 			if($is_delete){
-				$is_proses_error = $this->tr_payment_model->delete($id);
+				$is_proses_error = $this->ar_payment_model->delete($id);
 				send_json_action($is_proses_error, "Data telah dihapus");
 			}
 			
@@ -132,7 +94,7 @@
 			$data['broken_total']  				= $this->input->post('i_broken_total');
 			$data['broken_status'] 				= $this->input->post('i_status');
 			
-			$code = $this->tr_payment_model->read_code();
+			$code = $this->ar_payment_model->read_code();
 			if($kode_verifikasi != $code){
 				send_json_error("Simpan gagal,kode verifikasi salah");
 				}
@@ -160,10 +122,10 @@
 			//echo $items_biaya;
 					
 			if(empty($id)){
-				$error = $this->route_model->create($data,$items);
+				//$error = $this->route_model->create($data,$items);
 				send_json_action($error, "Data telah ditambah", "Data gagal ditambah");
 			}else{
-				$error = $this->tr_payment_model->update($id,$data,$items,$total_biaya);
+				$error = $this->ar_payment_model->update($id,$data,$items,$total_biaya);
 				send_json_action($error, "Data telah direvisi", "Data gagal direvisi");
 			}
 		}
@@ -188,7 +150,7 @@
 				}
 				
 					$this->load->helper('form');
-					$this->render->add_form('app/tr_payment/transient_form', $data);
+					$this->render->add_form('app/ar_payment/transient_form', $data);
 					$this->render->show_buffer();
 			}
 			
