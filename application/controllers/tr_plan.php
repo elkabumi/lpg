@@ -2,12 +2,12 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 	class Tr_plan extends CI_Controller{
 			function __construct(){
-			parent::__construct();
-			$this->load->library('render');
-			$this->load->model('tr_plan_model');
-			$this->load->library('access');
-			$this->access->set_module('tr_plan.tr_plan');
-			$this->access->user_page();
+				parent::__construct();
+				$this->load->library('render');
+			 	$this->load->model('tr_plan_model');
+			 	 $this->load->library('access');
+			 $this->access->set_module('tr_plan.tr_plan');
+			 $this->access->user_page();
 			}
 		
 		function index(){
@@ -269,6 +269,8 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				{
 				$data[$key] = array(
 						form_transient_pair('transient_shipment_detail_route_from', $value['route_from'],$value['location_from_id']),
+						form_transient_pair('transient_shipment_detail_date',$value['tr_plan_detail_shipment_realization_date'],$value['tr_plan_detail_shipment_realization_date']),
+						
 						form_transient_pair('transient_shipment_detail_route_to', $value['route_to'],$value['location_to_id'],
 											array('transient_shipment_detail_route_id' =>$value['route_id'],$value['route_id'],
 												  'transient_tr_plan_detail_shipment_id' =>$value['tr_plan_detail_shipment_id'],$value['tr_plan_detail_shipment_id'],
@@ -279,7 +281,6 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 						form_transient_pair('transient_shipment_detail_qty',$value['tr_plan_detail_shipment_qty'],$value['tr_plan_detail_shipment_qty']),
 						form_transient_pair('transient_shipment_detail_total_price',$value['tr_plan_detail_shipment_total_price'],$value['tr_plan_detail_shipment_total_price']),
 						form_transient_pair('transient_shipment_detail_cost',$value['tr_plan_detail_shipment_cost'],$value['tr_plan_detail_shipment_cost']),
-						form_transient_pair('transient_shipment_detail_date',$value['tr_plan_detail_shipment_realization_date'],$value['tr_plan_detail_shipment_realization_date']),
 						
 				);
 				

@@ -63,12 +63,15 @@ $(function(){
 <form class="subform_area">
 <div class="form_area_frame">
 <table width="100%" cellpadding="4" class="form_layout">
-     <tr>
+     <!--<tr>
       <td>Tanggal Kirim  </td>
    
-      <td><input type="text" name="i_date" class="date_input" size="15" value="<?=$transient_shipment_detail_date?>" /></td>
+      <td>
+      -->
+      <input type="text" name="i_date" class="date_input" size="15" value="<?=$transient_shipment_detail_date?>" />
+      <!--</td>
         
-   </tr>
+   </tr>-->
      <tr>
      
      <td req= "req">Route</td>

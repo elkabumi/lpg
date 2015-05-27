@@ -1,4 +1,4 @@
-<?php
+#<?php
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class truck extends CI_Controller{
@@ -41,9 +41,9 @@ class truck extends CI_Controller{
 			$data['truck_no_rangka'] = '';
 			$data['truck_no_mesin']	 = '';
 			$data['truck_no_bpkb']	 = '';
-			$data['truck_jatuh_tempo']	= '';
-			$data['truck_jatuh_tempo_kiur']	= '';
-			$data['truck_rekom']	= '';
+			$data['truck_jatuh_tempo']		= date('d/m/Y');
+			$data['truck_jatuh_tempo_kiur']	= date('d/m/Y');
+			$data['truck_rekom']			=date('d/m/Y');
 	
 		
 		}else{

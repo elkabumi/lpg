@@ -1,7 +1,10 @@
 <?php
 
 class Tr_realization_shipment_model extends CI_Model{
-
+	var $trans_type = 5;
+	var $insert_id = NULL;
+	var $insert_id2 = NULL;
+	
 	function __construct(){
 		
 	}
@@ -18,18 +21,16 @@ class Tr_realization_shipment_model extends CI_Model{
 		// daftar kolom yang valid
 		
 		$columns['tanggal'] = 'tr_plan_date';
-		$columns['total'] 	= 'tr_plan_qty';
 		$columns['kulak']	= 'tr_plan_total_order';
-		$columns['kirim']	= 'tr_plan_total_shipment';
 		
 		$sort_column_index = $params['sort_column'];
 		$sort_dir = $params['sort_dir'];
 		
-		$order_by_column[] = 'tr_plan_detail_shipment_id';
+		$order_by_column[] = 'tr_plan_id';
 		$order_by_column[] = 'tr_plan_date';
-		$order_by_column[] = 'tr_plan_qty';
+		$order_by_column[] = 'tr_plan_id';
 		$order_by_column[] = 'tr_plan_total_order';
-		$order_by_column[] = 'tr_plan_total_shipment';
+		$order_by_column[] = 'tr_plan_id';
 		
 		$order_by = " order by ".$order_by_column[$sort_column_index] . $sort_dir;
 		if (array_key_exists($category, $columns) && strlen($keyword) > 0) 
@@ -44,13 +45,9 @@ class Tr_realization_shipment_model extends CI_Model{
 		};	
 
 		$sql = "
-		select a.*,b.*,c.*,e.location_name
-		from tr_plan_detail_shipments a
-		JOIN tr_plan_details b ON a.tr_plan_detail_id = b.tr_plan_detail_id
-		JOIN tr_plans c ON b.tr_plan_id = c.tr_plan_id
-		JOIN routes d ON a.route_id = d.route_id
-		JOIN locations e ON e.location_id = d.location_to_id
- 		$where  $order_by
+		select * 
+		from tr_plans
+		$where  $order_by
 			
 			";
 
@@ -66,14 +63,15 @@ class Tr_realization_shipment_model extends CI_Model{
 		foreach($query->result_array() as $row) {
 			$row = format_html($row);
 			$plan_date = format_new_date($row['tr_plan_date']);
-			$link = "<a href=".site_url('transaction/form/'.$row['tr_plan_id'])." class='link_input'> Detail </a>";
-		
+			$get_jumlah_kulak= $this->get_jumlah_kulak($row['tr_plan_id']);
+			$get_total_kirim = $this->get_total_kirim($row['tr_plan_id']);
+			$link = "<a href=".site_url('tr_plan/form/'.$row['tr_plan_id'])." class='link_input'> Detail </a>";
 			$data[] = array(
-				$row['tr_plan_detail_shipment_id'], 
+				$row['tr_plan_id'], 
 				$plan_date,
-				$row['route_name'],
-				$row['tr_plan_detail_shipment_qty'], 
-				tool_money_format($row['tr_plan_detail_shipment_total']),
+				$get_jumlah_kulak,
+				$row['tr_plan_total_order'],
+				$get_total_kirim,
 				$link
 				
 			); 
@@ -84,9 +82,13 @@ class Tr_realization_shipment_model extends CI_Model{
 	}
 	
 	function read_id($id){
-		$this->db->select('*', 1);
-		$this->db->where('employee_id', $id);
-		$query = $this->db->get('employees', 1);
+		$this->db->select('a.*,b.*,c.location_name AS route_from,d.location_name AS route_to', 1);
+		$this->db->from('tr_plan_detail_shipments a');
+		$this->db->join('routes b', 'b.route_id = a.route_id');
+		$this->db->join('locations c', 'c.location_id = b.location_from_id');
+		$this->db->join('locations d', 'd.location_id = b.location_to_id');
+		$this->db->where('a.tr_plan_detail_shipment_id', $id);
+		$query = $this->db->get(); debug();
 		$result = null;
 		foreach($query->result_array() as $row)
 		{
@@ -94,39 +96,60 @@ class Tr_realization_shipment_model extends CI_Model{
 		}
 		return $result;
 	}
-	
-	function create($data){
-		$this->db->trans_start();
-		$this->db->insert('employees', $data);
-		$id = $this->db->insert_id();
-		$this->access->log_insert($id, "Pegawai [".$data['employee_name']."]");
+	function create($data,$items_plan_detail){
+
+		$this->access->log_insert(1, "Realisasi Shipment [".$data['tr_plan_date']."]");
 		$this->db->trans_complete();
 		return $this->db->trans_status();
 	}
 	
-	function update($id, $data){
+	function update($id,$data){
 		$this->db->trans_start();
-		$this->db->where('employee_id', $id);
-		$this->db->update('employees', $data);
-		$this->access->log_update($id, "Pegawai[".$data['employee_name']."]");
+		$this->db->where('tr_plan_detail_shipment_id', $id);
+		$this->db->update('tr_plan_detail_shipments', $data);
+		//query();
+		
+		$this->access->log_update($id, "Realisasi Shipment [".$id."]");
 		
 		$this->db->trans_complete();
 		return $this->db->trans_status();
+	
 	}
 	function delete($id){
 		$this->db->trans_start();
 		/*$this->db->where('employee_id', $id);
 		$this->db->delete('employees');
 		*/
-		$data['employee_active_status'] = 0;
-		$this->db->where('employee_id', $id);
-		$this->db->update('employees', $data);
+		//$data['employee_active_status'] = 0;
+		$this->db->where('tr_plan_id', $id);
+		$this->db->delete('tr_plans');
 		
 		$this->access->log_delete($id, "Pegawai");
 		$this->db->trans_complete();
 		return $this->db->trans_status();
 	}
-	
+	function detail_table_loader_shipment($date)
+	{
+		// buat array kosong
+		$result = array(); 		
+		$this->db->select('a.*,b.*,c.location_name AS route_from,d.location_name AS route_to,g.tr_plan_detail_date_realization', 1);
+		$this->db->from('tr_plan_detail_shipments a');
+		$this->db->join('routes b', 'b.route_id = a.route_id');
+		$this->db->join('locations c', 'c.location_id = b.location_from_id');
+		$this->db->join('locations d', 'd.location_id = b.location_to_id');
+		$this->db->join('tr_plan_details g', 'a.tr_plan_detail_id = g.tr_plan_detail_id');
+		$this->db->join('tr_plan_purchases h', 'g.tr_plan_purchase_id = h.tr_plan_purchase_id');
+		$this->db->join('tr_plans i', 'i.tr_plan_id = h.tr_plan_id');
+		$this->db->where('g.tr_plan_detail_date_realization', $date);
+		$this->db->where('g.tr_plan_detail_status_realization', 1);
+		$query = $this->db->get(); debug();
+		//query();
+		foreach($query->result_array() as $row)
+		{
+			$result[] = format_html($row);
+		}
+		return $result;
+	}
 	
 	
 	

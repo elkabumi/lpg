@@ -28,9 +28,9 @@ class Ransom_model extends CI_Model{
 		
 		$order_by_column[] = 'tr_plan_id';
 		$order_by_column[] = 'tr_plan_date';
-		$order_by_column[] = 'tr_plan_id';
-		$order_by_column[] = 'tr_plan_total_order';
-		$order_by_column[] = 'tr_plan_id';
+		//$order_by_column[] = 'tr_plan_id';
+		//$order_by_column[] = 'tr_plan_total_order';
+		//$order_by_column[] = 'tr_plan_id';
 		
 		$order_by = " order by ".$order_by_column[$sort_column_index] . $sort_dir;
 		if (array_key_exists($category, $columns) && strlen($keyword) > 0) 
