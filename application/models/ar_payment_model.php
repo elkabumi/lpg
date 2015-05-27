@@ -64,7 +64,7 @@ class ar_payment_model extends CI_Model{
 		from tr_plan_detail_shipments a
 		left join routes c on a.route_id = c.route_id
 		left join locations d on c.location_to_id = d.location_id
- 		where tr_plan_detail_shipment_realization_date <= '$output' and tr_plan_detail_shipment_status_id = 0 and tr_plan_detail_shipment_status_realization = 1 $where  $order_by
+ 		where tr_plan_detail_shipment_realization_date >= '$output' and tr_plan_detail_shipment_status_id = 0 and tr_plan_detail_shipment_status_realization = 1 $where  $order_by
 			
 			";
 
@@ -75,7 +75,7 @@ class ar_payment_model extends CI_Model{
 		$sql = $sql.$limit;
 		
 		$query = $this->db->query($sql);
-		query();
+		//query();
 		
 		$data = array(); // inisialisasi variabel. biasakanlah, untuk mencegah warning dari php.
 		foreach($query->result_array() as $row) {
