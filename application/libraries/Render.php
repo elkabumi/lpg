@@ -446,13 +446,13 @@ where a.menu_url like '$url' or a.menu_url like '$seg1'");
 		 for($i=0; $i>=$selisih; $i--){
 		 $x = mktime (0 ,0 ,0 ,date("m") , date("d") +$i, date("y"));
 		 $nama_hari= date("l", $x);
-		 $tg= date("d-m-Y", $x);
+		 $tg= date("Y-m-d", $x);
 			 if($nama_hari == "Sunday"){
 					$total-1;
 				 }else{
 					 $total++;
 					 }
-			if($total == 3){
+			if($total == 4){
 				$output = $tg;
 				}
 				 
@@ -461,7 +461,7 @@ where a.menu_url like '$url' or a.menu_url like '$seg1'");
 		$sql = "
 		select count(tr_plan_detail_shipment_id) as total_row
 		from tr_plan_detail_shipments 
- 		where tr_plan_detail_shipment_realization_date >= '$output' and tr_plan_detail_shipment_status_id = 0 and tr_plan_detail_shipment_status_realization = 1";
+ 		where tr_plan_detail_shipment_realization_date <= '$output' and tr_plan_detail_shipment_status_id = 0 and tr_plan_detail_shipment_status_realization = 1";
 		
 		$query = $ci->db->query($sql);
 		
