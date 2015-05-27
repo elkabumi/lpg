@@ -64,7 +64,7 @@ class ar_payment_model extends CI_Model{
 		from tr_plan_detail_shipments a
 		left join routes c on a.route_id = c.route_id
 		left join locations d on c.location_to_id = d.location_id
- 		where tr_plan_detail_shipment_realization_date >= $output and tr_plan_detail_shipment_status_id = 0 $where  $order_by
+ 		where tr_plan_detail_shipment_realization_date >= $output and tr_plan_detail_shipment_status_id = 0 and tr_plan_detail_shipment_status_realization = 1 $where  $order_by
 			
 			";
 
@@ -185,7 +185,7 @@ class ar_payment_model extends CI_Model{
 		// buat array kosong
 		$result = array(); 	
 		if($date_1 != 0){
-			$where = "WHERE a.tr_plan_detail_shipment_realization_date = '".$date_1."' AND a.tr_plan_detail_shipment_status_id = 0";
+			$where = "WHERE a.tr_plan_detail_shipment_realization_date = '".$date_1."' AND a.tr_plan_detail_shipment_status_id = 0 and tr_plan_detail_shipment_status_realization = 1";
 		}else{
 			$where = '';
 		}

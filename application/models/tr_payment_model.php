@@ -169,7 +169,7 @@ class tr_payment_model extends CI_Model{
 		// buat array kosong
 		$result = array(); 	
 		if($date_1 != 0){
-			$where = "WHERE a.tr_plan_detail_shipment_realization_date = '".$date_1."' AND a.tr_plan_detail_shipment_status_id = 0";
+			$where = "WHERE a.tr_plan_detail_shipment_realization_date = '".$date_1."' AND a.tr_plan_detail_shipment_status_id = 0 and tr_plan_detail_shipment_status_realization = 1";
 		}else{
 			$where = '';
 		}
