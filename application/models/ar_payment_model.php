@@ -130,6 +130,10 @@ class ar_payment_model extends CI_Model{
 		
 		$id_update = $data['tr_plan_detail_shipment_id'];
 		
+		//hapus broken 
+		$this->db->where('tr_plan_detail_shipment_id', $id_update);
+		$this->db->delete('brokens');
+		
 		//insert broken
 		$this->db->insert('brokens', $data);
 		$id = $this->db->insert_id();
