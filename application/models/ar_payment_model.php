@@ -1,6 +1,6 @@
 <?php
 
-class tr_payment_model extends CI_Model{
+class ar_payment_model extends CI_Model{
 
 	function __construct(){
 		
@@ -17,44 +17,59 @@ class tr_payment_model extends CI_Model{
 		// map value dari combobox ke table
 		// daftar kolom yang valid
 		
-		$columns['tanggal'] = 'tr_plan_date';
-		$columns['total'] 	= 'tr_plan_qty';
-		$columns['kulak']	= 'tr_plan_total_order';
-		$columns['kirim']	= 'tr_plan_total_shipment';
+		$columns['tanggal'] 	= 'tr_plan_detail_shipment_realization_date';
+		$columns['pangkalan'] 	= 'location_name';
 		
 		$sort_column_index = $params['sort_column'];
 		$sort_dir = $params['sort_dir'];
 		
 		$order_by_column[] = 'tr_plan_detail_shipment_id';
-		$order_by_column[] = 'tr_plan_date';
-		$order_by_column[] = 'tr_plan_qty';
-		$order_by_column[] = 'tr_plan_total_order';
-		$order_by_column[] = 'tr_plan_total_shipment';
+		$order_by_column[] = 'tr_plan_detail_shipment_realization_date';
+		$order_by_column[] = 'location_name';
+		$order_by_column[] = 'tr_plan_detail_shipment_qty';
+		$order_by_column[] = 'tr_plan_detail_shipment_total_price';
+		$order_by_column[] = 'tr_plan_detail_shipment_total_paid';
 		
 		$order_by = " order by ".$order_by_column[$sort_column_index] . $sort_dir;
 		if (array_key_exists($category, $columns) && strlen($keyword) > 0) 
 		{
 			
-				$where = " WHERE ".$columns[$category]." like '%$keyword%'";
+				$where = " AND ".$columns[$category]." like '%$keyword%'";
 			
 			
 		}
 		if ($limit > 0) {
 			$limit = " limit $limit offset $offset";
-		};	
+		};
+		
+		$selisih = -4;
+		 $total = 0;
+		 for($i=0; $i>=$selisih; $i--){
+		 $x = mktime (0 ,0 ,0 ,date("m") , date("d") +$i, date("y"));
+		 $nama_hari= date("l", $x);
+		 $tg= date("d-m-Y", $x);
+			 if($nama_hari == "Sunday"){
+					$total-1;
+				 }else{
+					 $total++;
+					 }
+			if($total == 3){
+				$output = $tg;
+				}
+				 
+		 }	
 
 		$sql = "
-		select a.*,b.*,c.*,e.location_name
+		select a.* , d.location_name
 		from tr_plan_detail_shipments a
-		JOIN tr_plan_details b ON a.tr_plan_detail_id = b.tr_plan_detail_id
-		JOIN tr_plans c ON b.tr_plan_id = c.tr_plan_id
-		JOIN routes d ON a.route_id = d.route_id
-		JOIN locations e ON e.location_id = d.location_to_id
- 		$where  $order_by
+		left join routes c on a.route_id = c.route_id
+		left join locations d on c.location_to_id = d.location_id
+ 		where tr_plan_detail_shipment_realization_date >= $output and tr_plan_detail_shipment_status_id = 0 $where  $order_by
 			
 			";
 
 		$query_total = $this->db->query($sql);
+		
 		$total = $query_total->num_rows();
 		
 		$sql = $sql.$limit;
@@ -65,15 +80,16 @@ class tr_payment_model extends CI_Model{
 		$data = array(); // inisialisasi variabel. biasakanlah, untuk mencegah warning dari php.
 		foreach($query->result_array() as $row) {
 			$row = format_html($row);
-			$plan_date = format_new_date($row['tr_plan_date']);
-			$link = "<a href=".site_url('transaction/form/'.$row['tr_plan_id'])." class='link_input'> Detail </a>";
+			$realisasi_date = format_new_date($row['tr_plan_detail_shipment_realization_date']);
+			$link = "<a href=".site_url('ar_payment/form/'.$row['tr_plan_detail_shipment_id'])." class='link_input'> Bayar </a>";
 		
 			$data[] = array(
 				$row['tr_plan_detail_shipment_id'], 
-				$plan_date,
-				$row['route_name'],
+				$realisasi_date,
+				$row['location_name'],
 				$row['tr_plan_detail_shipment_qty'], 
-				tool_money_format($row['tr_plan_detail_shipment_total']),
+				tool_money_format($row['tr_plan_detail_shipment_total_price']),
+				tool_money_format($row['tr_plan_detail_shipment_total_paid']),
 				$link
 				
 			); 

@@ -54,6 +54,9 @@ font-weight:bold;
         <?= "Login as ".$group_name?>
       </span></td>
     </tr>
+    <tr>
+		<td><img src="<?=base_url()?>assets/images/refresh.png" align="left" /></td><td class="emp_c" title="Grup"><a href="<?=base_url()?>ar_payment">Tunggakan </a>&nbsp;<?php if($expired_price > 0 ){ ?><small class="badge pull-right bg-orange"><?= $expired_price?></small><?php }else{ echo "0"; }?></td>
+	</tr>
 </table>
 
 </p>
