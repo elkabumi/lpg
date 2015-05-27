@@ -47,13 +47,13 @@ class ar_payment_model extends CI_Model{
 		 for($i=0; $i>=$selisih; $i--){
 		 $x = mktime (0 ,0 ,0 ,date("m") , date("d") +$i, date("y"));
 		 $nama_hari= date("l", $x);
-		 $tg= date("d-m-Y", $x);
+		 $tg= date("Y-m-d", $x);
 			 if($nama_hari == "Sunday"){
 					$total-1;
 				 }else{
 					 $total++;
 					 }
-			if($total == 3){
+			if($total == 4){
 				$output = $tg;
 				}
 				 
@@ -64,7 +64,7 @@ class ar_payment_model extends CI_Model{
 		from tr_plan_detail_shipments a
 		left join routes c on a.route_id = c.route_id
 		left join locations d on c.location_to_id = d.location_id
- 		where tr_plan_detail_shipment_realization_date >= '$output' and tr_plan_detail_shipment_status_id = 0 and tr_plan_detail_shipment_status_realization = 1 $where  $order_by
+ 		where tr_plan_detail_shipment_realization_date <= '$output' and tr_plan_detail_shipment_status_id = 0 and tr_plan_detail_shipment_status_realization = 1 $where  $order_by
 			
 			";
 
