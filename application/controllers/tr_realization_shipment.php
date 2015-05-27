@@ -94,6 +94,8 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			
 				$data[$key] = array(
 						form_transient_pair('transient_detail_date', $value['tr_plan_detail_date_realization'],$value['tr_plan_detail_date_realization']),
+						form_transient_pair('transient_shipment_detail_date',$value['tr_plan_detail_shipment_realization_date'],$value['tr_plan_detail_shipment_realization_date']),
+						
 						form_transient_pair('transient_shipment_detail_route_from', $value['route_from'],$value['location_from_id']),
 						form_transient_pair('transient_shipment_detail_route_to', $value['route_to'],$value['location_to_id'],
 											array('transient_shipment_detail_route_id' =>$value['route_id'],$value['route_id'],
@@ -105,8 +107,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 						form_transient_pair('transient_shipment_detail_qty',$value['tr_plan_detail_shipment_qty'],$value['tr_plan_detail_shipment_qty']),
 						form_transient_pair('transient_shipment_detail_total_price',$value['tr_plan_detail_shipment_total_price'],$value['tr_plan_detail_shipment_total_price']),
 						form_transient_pair('transient_shipment_detail_cost',$value['tr_plan_detail_shipment_cost'],$value['tr_plan_detail_shipment_cost']),
-						form_transient_pair('transient_shipment_detail_date',$value['tr_plan_detail_shipment_realization_date'],$value['tr_plan_detail_shipment_realization_date']),
-						form_transient_pair('transient_shipment_detail_date',$link,$link),
+						form_transient_pair('transient_shipment_detail_link',$link,$link),
 				
 				);
 				
