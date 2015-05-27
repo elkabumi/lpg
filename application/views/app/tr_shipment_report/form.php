@@ -29,13 +29,13 @@ $(function(){
 			}
 	
 	});
-	$('#print').click(function(){
+	$('#print3').click(function(){
 			if(confirm("Download Laporan Penjualan Harian?") == true){
 				var date 		= ($('input[name="i_date"]').val()) ? $('input[name="i_date"]').val() : "0";
 		
-			if(date == 0){
+				if(date == 0){
 					alert('Tanggal Pengiriman tidak boleh kosong');
-			}else{
+				}else{
 					var explode  = date.split('/');
 					var new_date  = explode[2]+"-"+explode[1]+"-"+explode[0];
 				
@@ -67,7 +67,7 @@ $(function(){
   </table>
 <div class="command_bar">
   <input type="button" id="preview" value="preview"   />
-    <input type="button" id="print" value="Download Xls"  style="width:100px;"  />
+    <input type="button" id="print3" value="Download Xls" />
 	
   </div>
      </table>

@@ -273,7 +273,7 @@ class Global_model extends CI_Model
 								    header("Content-Disposition: attachment; filename=$title.xls");
 								    header("Content-transfer-encoding: binary");
 
-	  							$this->load->view($content, $data);
+	  			$this->load->view($content, $data);
 		
 		 /*if($type == 'pdf')
 		{

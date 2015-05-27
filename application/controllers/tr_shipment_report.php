@@ -71,6 +71,22 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		send_json(make_datatables_list($data)); 
 		}
 	}
+	function report($date = 0){
+	
+	if($date){
+	   $this->load->model('global_model');
+	   
+	   $result = $this->tr_shipment_report_model->detail_table_loader_shipment($date);
+			
+			if ($result) // cek dulu apakah data ditemukan 
+			{
+				$data = $result;
+			}
+	
+		   $this->global_model->create_report('Laporan_Penjualan_Harian', 'report/tr_shipment_report.php', $data,0);
+		}
+	}
+
 
 	
 				
