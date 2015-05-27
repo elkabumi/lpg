@@ -2,11 +2,11 @@
 $(function(){
 	otable = createTable({
 		id 				: "#table",
-		listSource 		: "tr_ralization/table_controller",
-		formTarget 		: "tr_ralization/form",
-		actionTarget	: "tr_ralization/form_action",
+		listSource 		: "tr_plan/table_controller",
+		formTarget 		: "tr_plan/form",
+		actionTarget	: "tr_plan/form_action",
 		column_id		: 0,
-		filter_by 		: [ {id : "tanggal", label : "Tanggal"}, {id : "total", label : "Total"}, {id : "kulak", label : "Jumlah Kulak"}, {id : "kirim", label : "Jumlah Kirim"},]
+		filter_by 		: [ {id : "tanggal", label : "Tanggal"},{id : "kulak", label : "Jumlah Kulak"},]
 	});
 	otable.fnSetColumnVis(0, false, false);
 });
@@ -17,9 +17,9 @@ $(function(){
 		<tr>
         	<th width="10%">ID</th>
             <th width="10%">Tanggal</th>
-			<th width="20%">Total Realisasi</th>
-			<th width="10%">Jumlah Realisai Kulak</th>
-			<th width="30%">Jumlah Realisasi Kirim</th>
+			<th width="20%">Total</th>
+			<th width="10%">Jumlah Kulak</th>
+			<th width="30%">Jumlah Kirim</th>
 			<th width="5%">Detail</th>			
 		</tr> 
 	</thead> 

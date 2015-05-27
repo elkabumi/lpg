@@ -136,10 +136,12 @@ $(function(){
     	 <td width="196">Nomor DO</td>
     	 <td width="651"><input name="i_code" type="text" id="i_code" value="<?=$transient_detail_code ?>" size="10"/></td>
     </tr>
-  <tr>
+    <tr>
       <td>Tanggal Pengambilan  </td>
-   
-      <td><input type="text" name="i_date" class="date_input" size="15" value="<?=$transient_detail_date?>" /></td>
+   	  <td>
+      <input type="text" name="i_date" class="date_input" size="15" value="<?=$transient_detail_date?>" />
+       
+      </td>
         
    </tr>
     <tr>

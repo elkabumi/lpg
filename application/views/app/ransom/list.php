@@ -6,7 +6,7 @@ $(function(){
 		formTarget 		: "ransom/form",
 		actionTarget	: "ransom/form_action",
 		column_id		: 0,
-		filter_by 		: [ {id : "tanggal", label : "Tanggal"},{id : "kulak", label : "Jumlah Kulak"},]
+		filter_by 		: [ {id : "tanggal", label : "Tanggal"},]
 	});
 	otable.fnSetColumnVis(0, false, false);
 });

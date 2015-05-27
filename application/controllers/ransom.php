@@ -160,10 +160,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					$data['transient_detail_location_id'] 	= '';
 					$data['transient_detail_qty'] 			= '';
 		
-			
-					
 			} else {
-				
 					$data['index']						= $index;
 					$data['tr_plan_id'] 				= $row_id;
 					$data['transient_detail_purchase_id'] 	= array_shift($this->input->post('transient_detail_purchase_id'));;
