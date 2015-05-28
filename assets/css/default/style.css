@@ -1217,7 +1217,8 @@ margin:0;
 	background:#fff;
 }
 
-.format_money { text-align: right !important; font-size:24px !important; width:300px !important; text-align:right !important; margin-bottom:10px; margin-right:10px; border:1px solid #000; border-radius:3px; padding:10px;   }
+.format_money { text-align: right !important; font-size:24px !important; height: 40px !important; width:300px !important; text-align:right !important;  border:1px solid #000; border-radius:3px;  }
+.format_money_new { text-align: right !important; font-size:24px !important; height: 40px !important; width:300px !important; text-align:right !important;  border:1px solid #000; border-radius:3px;  }
 .tree_list { padding: 4px; }
 .tree_list thead th { padding: 4px; font-weight: bold; }
 .tree_list .tree_1 { background: url('images/tree_1.gif') left top no-repeat; padding: 1px 0px 1px 20px; }

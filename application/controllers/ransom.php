@@ -27,6 +27,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			//$data['truck_code']			= format_code('trucks','truck_code','S',7);
 			
 			$data['tr_plan_date']		= '';
+			$data['tr_plan_total_purchase'] = '0';
 			
 	
 	
@@ -37,6 +38,9 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				$data = $result;
 				$data['row_id'] = $id;
 				$data['tr_plan_date'] = format_new_date($data['tr_plan_date']);
+
+				$data['tr_plan_total_purchase'] = $this->ransom_model->get_total_tebusan($id);
+
 			}
 		}
 		$this->load->helper('form');

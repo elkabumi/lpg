@@ -12,11 +12,11 @@ $(function(){
 	function perhitungan()
 	{
 		var tm_total = 0;
-		$('input[name="transient_detail_total[]"]').each(function()
+		$('input[name="transient_detail_qty[]"]').each(function()
 		{
 			tm_total += parseFloat($(this).val());
 		});
-		$('input#td_total').val(formatMoney(tm_total));
+		$('input#td_total').val((tm_total));
 		
 	}
 	
@@ -41,7 +41,7 @@ $(function(){
  <table align="right">
           <tr>
             <td><span class="summary_total"> Total Tebusan</span></td>
-            <td><input id="td_total" value="<?//= $tr_plan_total_purchase?>" type="text" readonly="readonly" class="format_money" size="50" />
+            <td><input id="td_total" value="<?= $tr_plan_total_purchase?>" type="text" readonly="readonly" class="format_money_new" />
            </td>
           </tr>
         </table>

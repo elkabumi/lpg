@@ -784,6 +784,8 @@ class Dtc_model extends CI_Model
 		
 		$order_by_column[] = 'truck_id';
 		$order_by_column[] = 'truck_nopol';
+		$order_by_column[] = 'driver_name';
+		$order_by_column[] = 'co_driver_name';
 		$order_by_column[] = 'truck_merk';
 		$order_by_column[] = 'truck_type_name';
 		
@@ -791,8 +793,10 @@ class Dtc_model extends CI_Model
 		# order define column end
 		
 		$column['p1']			= 'truck_nopol';
-		$column['p2']			= 'truck_merk';
-		$column['p3']			= 'truck_type_name';
+		$column['p2']			= 'c.employee_name';
+		$column['p3']			= 'd.employee_name';
+		$column['p4']			= 'truck_merk';
+		$column['p5']			= 'truck_type_name';
 		$this->db->start_cache();
 		
 		if(array_key_exists($category, $column) && strlen($keyword) > 0)
@@ -804,14 +808,19 @@ class Dtc_model extends CI_Model
 		// hitung total record
 		$this->db->select('COUNT(1) AS total', 1); // pastikan ada AS total nya, 1 bila isinya adalah function (dalam hal ini COUNT)
 		$this->db->join('truck_types b','a.truck_type_id = b.truck_type_id','left');
+		$this->db->join('employees c','c.employee_id = a.driver_id');		
+		$this->db->join('employees d','d.employee_id = a.co_driver_id');	
 		$query	= $this->db->get('trucks a'); 
+
 		$row 	= $query->row_array(); // fungsi ci untuk mengambil 1 row saja dari query
 		$total 	= $row['total'];	
 				
 		
 		// proses query sesuai dengan parameter
-		$this->db->select('a.*,b.truck_type_name', 1); // ambil seluruh data
-		$this->db->join('truck_types b','a.truck_type_id = b.truck_type_id','left');			
+		$this->db->select('a.*,b.truck_type_name, c.employee_name as driver_name, d.employee_name as co_driver_name', 1); // ambil seluruh data
+		$this->db->join('truck_types b','a.truck_type_id = b.truck_type_id','left');
+		$this->db->join('employees c','c.employee_id = a.driver_id');		
+		$this->db->join('employees d','d.employee_id = a.co_driver_id');			
 		$this->db->order_by($order_by);
 		$query = $this->db->get('trucks a', $limit, $offset);
 		
@@ -823,7 +832,9 @@ class Dtc_model extends CI_Model
 			
 			$data[] = array(
 				$row['truck_id'], 
-				$row['truck_nopol'], 
+				$row['truck_nopol'],
+				$row['driver_name'],
+				$row['co_driver_name'], 
 				$row['truck_merk'],
 				$row['truck_type_name']
 			); 

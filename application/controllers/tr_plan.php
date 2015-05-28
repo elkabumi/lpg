@@ -226,7 +226,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				$data[$key] = array(
 						form_transient_pair('transient_detail_no', $no,$no),
 						form_transient_pair('transient_detail_code', $value['tr_plan_detail_code'],$value['tr_plan_detail_code']),
-						form_transient_pair('transient_detail_date', $value['tr_plan_detail_date_realization'],$value['tr_plan_detail_date_realization']),
+						form_transient_pair('transient_detail_date', format_new_date($value['tr_plan_detail_date_realization']),$value['tr_plan_detail_date_realization']),
 						form_transient_pair('transient_detail_truck_id', $value['truck_nopol'],$value['truck_id'],
 												array(
 													  'transient_detail_nopol'=>$value['truck_nopol'],$value['truck_nopol'],
@@ -478,7 +478,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 	function detail_form_action_shipment()
 	{		
 			$this->load->library('form_validation');
-			$this->form_validation->set_rules('i_date','Tanggal Pengambilan','trim|required|valid_date|sql_date');
+			$this->form_validation->set_rules('i_date','Tanggal Pengambilan','trim|required|sql_date|valid_date');
 			$this->form_validation->set_rules('i_route_id', 'Route', 'trim|required');
 			$this->form_validation->set_rules('i_qty', 'Jumlah Kirim', 'trim|required|integer');
 			$this->form_validation->set_rules('i_price', 'Harga Kirim', 'trim|required|integer');
@@ -488,7 +488,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			if ($this->form_validation->run() == FALSE) send_json_validate();
 		
 			$no 									= $this->input->post('i_index');
-			$row_id 									= $this->input->post('row_id');
+			$row_id 								= $this->input->post('row_id');
 			$transient_shipment_detail_date		 	= $this->input->post('i_date');
 			
 			
@@ -543,6 +543,23 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			$data['co_driver_name'] 	= $row['co_driver_name'];
 			
 		
+			
+		}
+		send_json_message('Satuan', $data);
+	}	
+
+	function get_total_purchase()
+	{
+		$date 	= $this->input->post('date');
+
+		$date = format_date($date);
+		
+		$query = $this->tr_plan_model->get_total_purchase($date);
+		$data = array();
+		
+		foreach($query->result_array() as $row)
+		{
+			$data['result'] 		= $row['result'];
 			
 		}
 		send_json_message('Satuan', $data);

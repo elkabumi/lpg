@@ -37,6 +37,19 @@ $(function(){
 					otb.fnSettings().sAjaxSource = site_url + "tr_plan/detail_table_loader_kulak/"+new_date;
 					otb.fnReloadAjax();
 			}
+
+			var data ='date='+date; 
+
+			$.ajax({
+				type: 'POST',
+				url: '<?=site_url('tr_plan/get_total_purchase')?>',
+				data: data,
+				dataType: 'json',
+				success: function(data){	
+					$('input#td_total').val(formatMoney(data.content['result']));	
+				}
+				
+			});
 	
 	});
 	createDatePicker();
