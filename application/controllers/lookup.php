@@ -72,7 +72,18 @@ class Lookup extends CI_Controller
 		$this->load->library('dtc');
 		$this->dtc->truck_get();
 	}
+	# lookup data cost_type
+	function cost_type_table_control()
+	{
+		$this->load->library('dtc');
+		$this->dtc->cost_type_control();
+	}
 	
+	function cost_type_lookup_id()
+	{
+		$this->load->library('dtc');
+		$this->dtc->cost_type_get();
+	}
 	
 	
 	# lookup data location
