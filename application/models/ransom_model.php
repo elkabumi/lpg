@@ -259,4 +259,17 @@ class Ransom_model extends CI_Model{
 		foreach ($query->result_array() as $row) $result = format_html($row);
 		return $result['id'];
 	}
+
+	function get_total_tebusan($id)
+	{
+		$sql = "
+		select sum(tr_plan_purchase_qty) as jumlah
+		FROM tr_plan_purchases
+		WHERE tr_plan_id = $id";
+		$query = $this->db->query($sql);
+		
+		$result = null;
+		foreach ($query->result_array() as $row) $result = format_html($row);
+		return $result['jumlah'];
+	}
 }

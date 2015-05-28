@@ -294,6 +294,21 @@ class Tr_plan_model extends CI_Model{
 		//query();
 		return $query;
 	}
+
+	function get_total_purchase($date)
+	{
+		$sql = "
+		select sum(tr_plan_detail_total_purchase) as result
+				
+		FROM tr_plans a
+		JOIN tr_plan_purchases b ON b.tr_plan_id = a.tr_plan_id 
+		JOIN tr_plan_details c ON c.tr_plan_purchase_id = b.tr_plan_purchase_id 
+		WHERE a.tr_plan_date = '$date'";
+		$query = $this->db->query($sql);
+	//	query();
+		return $query;
+	}
+
 	function load_data_spbe($id)
 	{
 		$sql = "

@@ -63,28 +63,28 @@ $(function(){
 <form class="subform_area">
 <div class="form_area_frame">
 <table width="100%" cellpadding="4" class="form_layout">
-     <!--<tr>
+    <tr>
       <td>Tanggal Kirim  </td>
    
       <td>
-      -->
+      
       <input type="text" name="i_date" class="date_input" size="15" value="<?=$transient_shipment_detail_date?>" />
-      <!--</td>
+      </td>
         
-   </tr>-->
+   </tr>
      <tr>
      
      <td req= "req">Route</td>
         <td><span class="lookup" id="lookup_route">
 				<input type="hidden" name="i_route_id" class="com_id" value="<?=$transient_shipment_detail_route_id?>" />
-				<input type="text" class="com_input"/>
+				<input type="text" class="com_input" style="width:0px !important;"/>
               
 				<div class="iconic_base iconic_search com_popup"></div>
                 <span class="com_desc"></span>
 				</span>	
 				<input type="hidden" name="i_index" value="<?=$index?>" />
    				<input type="hidden" name="row_id" value="<?=$row_id?>" />
-              >
+              
    			    <input type="hidden" name="i_location_from" id="i_location_from" value="<?=$transient_shipment_detail_route_from?>"/>
        			<input type="hidden" name="i_location_to" id="i_location_to" value="<?=$transient_shipment_detail_route_to?>"/>
        			<input type="hidden" name="i_tr_plan_shipment_id" id="i_tr_plan_shipment_id" value="<?=$transient_tr_plan_detail_shipment_id?>"/>

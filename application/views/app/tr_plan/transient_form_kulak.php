@@ -7,7 +7,11 @@ $(function(){
 		dataSource		: "lookup/truck_lookup_id",
 		column_id 		: 0,
 		component_id	: "#lookup_truck",
-		filter_by		: [{id : "p1", label : "Nopol"},{id : "p2", label : "Merk"},{id : "p3", label : "Jenis Armada"}],
+		filter_by		: [{id : "p1", label : "Nopol"},
+							{id : "p2", label : "Sopir"},
+							{id : "p3", label : "Kernet"},
+							{id : "p4", label : "Merk"},
+							{id : "p5", label : "Jenis Armada"}],
 		onSelect		: load_data_truck
 	});
 	createLookUp({
@@ -275,6 +279,8 @@ $(function(){
 			<tr>
 			<th>ID</th>
 			<th>Nopol</th>
+			<th>Sopir</th>
+			<th>Kernet</th>
 			<th>Merk</th>
             <th>Jenis Armada</th>
 			</tr> 
