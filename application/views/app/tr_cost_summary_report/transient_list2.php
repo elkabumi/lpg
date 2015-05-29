@@ -22,9 +22,7 @@
            </td>
           </tr>
         </table>
-      <input type="button" id="add" value="Tambah"/>
-	<input type="button" id="edit" value="Revisi"/>
-    <input type="button" id="delete" value="Hapus"/>
+
    
 </div>
 <div id="editor"></div>
