@@ -19,7 +19,7 @@ $(function(){
 <table  width="100%" cellpadding="4" class="form_layout">
 
 <tr>
-    <td width="196">Tangal Tebusan</td>
+    <td width="196">Tanggal Tebusan</td>
     <td width="651"><input type="text" name="i_date" class="date_input" size="15" value="<?=$tr_plan_date?>" /> 
     <input type="hidden" name="row_id" value="<?=$row_id?>" /></td>
     </tr>

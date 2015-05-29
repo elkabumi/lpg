@@ -87,14 +87,16 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				{
 				if($value['tr_plan_detail_shipment_status_realization'] == 0){
 					$status='Belum Terealisasi';
+					$link = "<a href=".site_url('tr_realization_shipment/form/'.$value['tr_plan_detail_shipment_id'])." class='link_input'> Realisasi </a>";
+			
 				}else{
 					$status='Telah Terealisasi';
+					$link = "";
 				}
-				$link = "<a href=".site_url('tr_realization_shipment/form/'.$value['tr_plan_detail_shipment_id'])." class='link_input'> Realisasi </a>";
-			
+				
 				$data[$key] = array(
-						form_transient_pair('transient_detail_date', $value['tr_plan_detail_date_realization'],$value['tr_plan_detail_date_realization']),
-						form_transient_pair('transient_shipment_detail_date',$value['tr_plan_detail_shipment_realization_date'],$value['tr_plan_detail_shipment_realization_date']),
+						form_transient_pair('transient_detail_date', format_new_date($value['tr_plan_detail_date_realization']),$value['tr_plan_detail_date_realization']),
+						form_transient_pair('transient_shipment_detail_date', format_new_date($value['tr_plan_detail_shipment_realization_date']),$value['tr_plan_detail_shipment_realization_date']),
 						
 						form_transient_pair('transient_shipment_detail_route_from', $value['route_from'],$value['location_from_id']),
 						form_transient_pair('transient_shipment_detail_route_to', $value['route_to'],$value['location_to_id'],
@@ -107,6 +109,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 						form_transient_pair('transient_shipment_detail_qty',$value['tr_plan_detail_shipment_qty'],$value['tr_plan_detail_shipment_qty']),
 						form_transient_pair('transient_shipment_detail_total_price',$value['tr_plan_detail_shipment_total_price'],$value['tr_plan_detail_shipment_total_price']),
 						form_transient_pair('transient_shipment_detail_cost',$value['tr_plan_detail_shipment_cost'],$value['tr_plan_detail_shipment_cost']),
+						form_transient_pair('transient_shipment_detail_status_realization',show_checkbox_status($value['tr_plan_detail_shipment_status_realization'] ),$value['tr_plan_detail_shipment_status_realization'] ),
 						form_transient_pair('transient_shipment_detail_link',$link,$link),
 				
 				);

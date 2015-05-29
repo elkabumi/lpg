@@ -257,9 +257,37 @@ if ( ! function_exists('format_new_date'))
     function format_new_date($unix_timestamp, $format = 'd/m/Y') 
     {
 		
-		if(!$unix_timestamp)return '';
-        return date($format, strtotime($unix_timestamp));
+		if(!$unix_timestamp){
+			return '';
+		}else if($unix_timestamp == '0000-00-00'){
+			return "";
+		}else{
+        	return date($format, strtotime($unix_timestamp));
+		}
+
+
+		/*$tgl = date('Y-m-d', $unix_timestamp);
+		list($thn, $bln, $tgl) = explode("-", $tgl);
+		$timestamp = mktime(0,0,0,$bln,$tgl+1,$thn);
+        return date($format, $timestamp);*/
+    }		
+}
+
+if ( ! function_exists('normal_date'))
+{
+	//$unix_timestamp = mktime($unix_timestamp, date("d")+1);
+    function normal_date($date)
+    {
 		
+		$date_new = explode("/", $date);
+
+		if(strlen($date_new[0]) == 4){
+			$result = $date_new[2]."/".$date_new[1]."/".$date_new[0];
+		}else{
+			$result = $date;
+		}
+
+		return $result;
 		/*$tgl = date('Y-m-d', $unix_timestamp);
 		list($thn, $bln, $tgl) = explode("-", $tgl);
 		$timestamp = mktime(0,0,0,$bln,$tgl+1,$thn);
@@ -468,7 +496,11 @@ if ( ! function_exists('format_date'))
     {
 		if(strlen($dt)<10)return '1970-01-01';
 		$tm_arr = explode('/',$dt);
-        return $tm_arr[2].'-'.$tm_arr[1].'-'.$tm_arr[0];
+		if(strlen($tm_arr[2]) == 4){
+        	return $tm_arr[2].'-'.$tm_arr[1].'-'.$tm_arr[0];
+        }else{
+        	return $tm_arr[0].'-'.$tm_arr[1].'-'.$tm_arr[2];
+        }
     }		
 }
 if ( ! function_exists('ppn_mode_dropdown'))

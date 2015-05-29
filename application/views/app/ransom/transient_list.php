@@ -29,7 +29,7 @@ $(function(){
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="transient_contact"> 
 	<thead>
 		<tr>
-       		<th>No</th>
+       		<th>Tanggal</th>
             <th>SPBE</th>
             <th>Jumlah Tebusan</th>
       </tr> 
@@ -46,7 +46,7 @@ $(function(){
           </tr>
         </table>
       <input type="button" id="add" value="Tambah"/>
-	<!--<input type="button" id="edit" value="Revisi"/>-->
+	<input type="button" id="edit" value="Revisi"/>
     <input type="button" id="delete" value="Hapus"/>
    
 </div>

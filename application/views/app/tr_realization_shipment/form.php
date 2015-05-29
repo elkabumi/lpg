@@ -48,11 +48,10 @@ $(function(){
      </td>
      </tr>
   </table>
+</div>
 <div class="command_bar">
   <input type="button" id="preview" value="preview"   />
-  </div>
-     </table>
-    <table width="100%" cellpadding="1">
-    <tr>
-    <td>
-   
+</div>
+
+</div>
+</form>

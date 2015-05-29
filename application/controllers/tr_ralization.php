@@ -10,7 +10,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			 	$this->access->user_page();
 			}
 		
-		function index(){
+	function index(){
 				
 				$data = array();
 				$data['row_id'] = '';
@@ -92,13 +92,13 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				}else{
 					$status='Telah Terealisasi';
 				}
-				$link = "<a href=".site_url('tr_ralization/form/'.$value['tr_plan_detail_id'])." class='link_input'> Realisasi </a>";
+				$link = "<a href=".site_url('tr_ralization/form/'.$value['tr_plan_detail_id'])." class='link_input'> Proses </a>";
 			
 				$data[$key] = array(
 						form_transient_pair('transient_detail_no', $no,$no),
-						form_transient_pair('transient_detail_date_tebusan', $value['tr_plan_date'],$value['tr_plan_date']),
+						form_transient_pair('transient_detail_date_tebusan', format_new_date($value['tr_plan_date']),$value['tr_plan_date']),
 						form_transient_pair('transient_detail_code', $value['tr_plan_detail_code'],$value['tr_plan_detail_code']),
-						form_transient_pair('transient_detail_date', $value['tr_plan_detail_date_realization'],$value['tr_plan_detail_date_realization']),
+						form_transient_pair('transient_detail_date', format_new_date($value['tr_plan_detail_date_realization']),$value['tr_plan_detail_date_realization']),
 						form_transient_pair('transient_detail_truck_id', $value['truck_nopol'],$value['truck_id']),
 						form_transient_pair('transient_detail_spbe',$value['location_name'],$value['location_id']),
 						form_transient_pair('transient_detail_qty',	$value['tr_plan_detail_qty'],$value['tr_plan_detail_qty']),	

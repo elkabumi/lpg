@@ -74,7 +74,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 	
 		
 		// simpan transient kulak
-		$list_td_code			= ($this->input->post('transient_detail_code'));
+		//$list_td_code			= ($this->input->post('transient_detail_code'));
 		$list_td_date		= ($this->input->post('transient_detail_date'));
 		
 		$list_td_truck_id		= ($this->input->post('transient_detail_truck_id'));
@@ -110,7 +110,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					'tr_plan_truck_driver_type' => ($list_td_driver_type[$key]),
 					'driver_id' => ($list_td_driver_id[$key]),
 					'co_driver_id' => ($list_td_co_driver_id[$key]),
-					'tr_plan_detail_code' => ($list_td_code[$key]),
+					//'tr_plan_detail_code' => ($list_td_code[$key]),
 					'tr_plan_detail_qty' => ($list_td_qty[$key]),
 					'tr_plan_detail_purchase' => ($list_td_purchase[$key]),
 					'tr_plan_detail_total_purchase' => ($list_td_total_purchase[$key]),
@@ -225,8 +225,10 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				}
 				$data[$key] = array(
 						form_transient_pair('transient_detail_no', $no,$no),
-						form_transient_pair('transient_detail_code', $value['tr_plan_detail_code'],$value['tr_plan_detail_code']),
-						form_transient_pair('transient_detail_date', format_new_date($value['tr_plan_detail_date_realization']),$value['tr_plan_detail_date_realization']),
+						//form_transient_pair('transient_detail_code', $value['tr_plan_detail_code'],$value['tr_plan_detail_code']),
+						form_transient_pair('transient_detail_spbe',$value['location_name'],$value['location_id']),
+						form_transient_pair('transient_detail_purchase_date', format_new_date($value['tr_plan_purchase_date']), $value['tr_plan_purchase_date']),
+						form_transient_pair('transient_detail_date', format_new_date($value['tr_plan_detail_date_realization']), $value['tr_plan_detail_date_realization']),
 						form_transient_pair('transient_detail_truck_id', $value['truck_nopol'],$value['truck_id'],
 												array(
 													  'transient_detail_nopol'=>$value['truck_nopol'],$value['truck_nopol'],
@@ -238,7 +240,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 													  'transient_detail_plan_id'=>$value['tr_plan_detail_id'],$value['tr_plan_detail_id']
 													  )
 												),
-						form_transient_pair('transient_detail_spbe',$value['location_name'],$value['location_id']),
+						
 						form_transient_pair('transient_detail_qty',	$value['tr_plan_detail_qty'],$value['tr_plan_detail_qty'],
 											array('transient_detail_purchase'=>$value['tr_plan_detail_purchase'],$value['tr_plan_detail_purchase'])
 											),	
@@ -267,10 +269,27 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				$sort_id = 0;
 				foreach($data as $key => $value) 
 				{
+					
+				/*
+				$data = array(
+					form_transient_pair('transient_shipment_detail_route_from', $transient_shipment_detail_route_from,$transient_shipment_detail_route_from),
+						form_transient_pair('transient_shipment_detail_route_to', $transient_shipment_detail_route_to,$transient_shipment_detail_route_to,
+											array('transient_shipment_detail_route_id' =>$transient_shipment_detail_route_id,$transient_shipment_detail_route_id,
+												  'transient_tr_plan_detail_shipment_id' =>$transient_tr_plan_detail_shipment_id,$transient_tr_plan_detail_shipment_id,
+												  'transient_shipment_detail_price' =>$transient_shipment_detail_price,$transient_shipment_detail_price,
+				
+											)
+						),
+						form_transient_pair('transient_shipment_detail_qty',$transient_shipment_detail_qty,$transient_shipment_detail_qty),
+						form_transient_pair('transient_shipment_detail_total_price',$transient_shipment_detail_total_price,$transient_shipment_detail_total_price),
+						form_transient_pair('transient_shipment_detail_cost',$transient_shipment_detail_cost,$transient_shipment_detail_cost ),
+						form_transient_pair('transient_shipment_detail_date', normal_date($transient_shipment_detail_date),format_date($transient_shipment_detail_date)),
+						
+				);
+				*/
+
 				$data[$key] = array(
 						form_transient_pair('transient_shipment_detail_route_from', $value['route_from'],$value['location_from_id']),
-						form_transient_pair('transient_shipment_detail_date',$value['tr_plan_detail_shipment_realization_date'],$value['tr_plan_detail_shipment_realization_date']),
-						
 						form_transient_pair('transient_shipment_detail_route_to', $value['route_to'],$value['location_to_id'],
 											array('transient_shipment_detail_route_id' =>$value['route_id'],$value['route_id'],
 												  'transient_tr_plan_detail_shipment_id' =>$value['tr_plan_detail_shipment_id'],$value['tr_plan_detail_shipment_id'],
@@ -281,6 +300,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 						form_transient_pair('transient_shipment_detail_qty',$value['tr_plan_detail_shipment_qty'],$value['tr_plan_detail_shipment_qty']),
 						form_transient_pair('transient_shipment_detail_total_price',$value['tr_plan_detail_shipment_total_price'],$value['tr_plan_detail_shipment_total_price']),
 						form_transient_pair('transient_shipment_detail_cost',$value['tr_plan_detail_shipment_cost'],$value['tr_plan_detail_shipment_cost']),
+						form_transient_pair('transient_shipment_detail_date', format_new_date($value['tr_plan_detail_shipment_realization_date']),$value['tr_plan_detail_shipment_realization_date'])
 						
 				);
 				
@@ -323,7 +343,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				
 					$data['index']							= $index;
 					$data['tr_plan_id'] 					= $row_id;
-					$data['transient_detail_code'] 			= array_shift($this->input->post('transient_detail_code'));;
+					//$data['transient_detail_code'] 			= array_shift($this->input->post('transient_detail_code'));;
 					$data['transient_detail_nopol'] 		= array_shift($this->input->post('transient_detail_nopol'));
 					$data['transient_detail_no'] 			= array_shift($this->input->post('transient_detail_no'));
 					$data['transient_detail_truck_id'] 		= array_shift($this->input->post('transient_detail_truck_id'));
@@ -340,7 +360,14 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					$data['transient_detail_cost_driver'] 	= array_shift($this->input->post('transient_detail_cost_driver'));
 					$data['transient_detail_cost_co_driver']= array_shift($this->input->post('transient_detail_cost_co_driver'));
 					$data['transient_detail_cost_lain'] 	= array_shift($this->input->post('transient_detail_cost_lain'));
-					$data['transient_detail_date']          = format_new_date(array_shift($this->input->post('transient_detail_date'))); 
+					if(array_shift($this->input->post('transient_detail_date')) == "0000-00-00"){
+						$detail_date = "";
+					}else{
+						$detail_date = format_new_date(array_shift($this->input->post('transient_detail_date')));
+					}
+					$data['transient_detail_date']          = $detail_date;
+					
+					$data['transient_detail_purchase_date']          = format_new_date(array_shift($this->input->post('transient_detail_purchase_date'))); 
 			}
 		
 			$this->render->add_form('app/tr_plan/transient_form_kulak', $data);
@@ -382,7 +409,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					$data['transient_shipment_detail_total_price'] 	= array_shift($this->input->post('transient_shipment_detail_total_price'));
 					$data['transient_shipment_detail_cost'] 		= array_shift($this->input->post('transient_shipment_detail_cost'));
 					$data['transient_tr_plan_detail_shipment_id'] 	= array_shift($this->input->post('transient_tr_plan_detail_shipment_id'));
-					$data['transient_shipment_detail_date'] 		= array_shift($this->input->post('transient_shipment_detail_date'));
+					$data['transient_shipment_detail_date'] 		= format_new_date(array_shift($this->input->post('transient_shipment_detail_date')));
 			}
 				
 		
@@ -395,6 +422,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 	{		
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules('i_date','Tanggal Pengambilan','trim|required|valid_date|sql_date');
+			$this->form_validation->set_rules('i_purchase_date','Tanggal Jatah','trim|required|valid_date|sql_date');
 			$this->form_validation->set_rules('i_truck_id', 'Truck', 'trim|required');
 			$this->form_validation->set_rules('i_spbe_id', 'SPBE', 'trim|required');
 			$this->form_validation->set_rules('i_qty', 'SPBE', 'trim|required|integer|min_value[0]');
@@ -419,6 +447,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			$transient_detail_no	= $this->input->post('i_no');
 			$transient_detail_nopol 	= $this->input->post('i_truck_nopol');
 			$transient_detail_date 	= $this->input->post('i_date');
+			$transient_detail_purchase_date 	= $this->input->post('i_purchase_date');
 			
 			$transient_detail_truck_id 	= $this->input->post('i_truck_id');
 			$transient_detail_driver 	= $this->input->post('i_driver_name');
@@ -442,11 +471,12 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 	
 			
 			$data = array(
-					form_transient_pair('transient_detail_no', $transient_detail_no,$transient_detail_no),
+						form_transient_pair('transient_detail_no', $transient_detail_no,$transient_detail_no),
+						form_transient_pair('transient_detail_spbe',$transient_detail_spbe_name,$transient_detail_spbe),
 						
-						form_transient_pair('transient_detail_code', $transient_detail_code,$transient_detail_code),
-						form_transient_pair('transient_detail_date', $transient_detail_date,$transient_detail_date),
-						
+						//form_transient_pair('transient_detail_code', $transient_detail_code,$transient_detail_code),
+						form_transient_pair('transient_detail_purchase_date', normal_date($transient_detail_purchase_date),format_date($transient_detail_purchase_date)),
+						form_transient_pair('transient_detail_date', normal_date($transient_detail_date), format_date($transient_detail_date)),
 						form_transient_pair('transient_detail_truck_id', $transient_detail_nopol,$transient_detail_truck_id,
 												array(
 													  'transient_detail_nopol'=>$transient_detail_nopol,$transient_detail_nopol,
@@ -458,7 +488,6 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 													  'transient_detail_plan_id'=>$transient_detail_plan_id,$transient_detail_plan_id
 													  )
 												),
-						form_transient_pair('transient_detail_spbe',$transient_detail_spbe_name,$transient_detail_spbe),
 						form_transient_pair('transient_detail_qty',	$transient_detail_qty,$transient_detail_qty,
 											array('transient_detail_purchase'=>$transient_detail_purchase,$transient_detail_purchase)
 											),	
@@ -478,7 +507,11 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 	function detail_form_action_shipment()
 	{		
 			$this->load->library('form_validation');
+<<<<<<< HEAD
+			$this->form_validation->set_rules('i_date','Tanggal Pengambilan','trim|required|valid_date|sql_date');
+=======
 			$this->form_validation->set_rules('i_date','Tanggal pengiriman','trim|required|sql_date|valid_date');
+>>>>>>> 540df724af4f79576c714c00fa783d410084a6d9
 			$this->form_validation->set_rules('i_route_id', 'Route', 'trim|required');
 			$this->form_validation->set_rules('i_qty', 'Jumlah Kirim', 'trim|required|integer');
 			$this->form_validation->set_rules('i_price', 'Harga Kirim', 'trim|required|integer');
@@ -519,7 +552,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 						form_transient_pair('transient_shipment_detail_qty',$transient_shipment_detail_qty,$transient_shipment_detail_qty),
 						form_transient_pair('transient_shipment_detail_total_price',$transient_shipment_detail_total_price,$transient_shipment_detail_total_price),
 						form_transient_pair('transient_shipment_detail_cost',$transient_shipment_detail_cost,$transient_shipment_detail_cost ),
-						form_transient_pair('transient_shipment_detail_date',$transient_shipment_detail_date,$transient_shipment_detail_date ),
+						form_transient_pair('transient_shipment_detail_date', normal_date($transient_shipment_detail_date),format_date($transient_shipment_detail_date)),
 						
 				);
 		

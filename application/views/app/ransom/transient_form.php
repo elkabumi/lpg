@@ -38,7 +38,11 @@ $(function(){
 <form class="subform_area">
 <div class="form_area_frame">
 <table width="100%" cellpadding="4" class="form_layout">
-
+	<tr>
+    <td width="196">Tanggal</td>
+    <td width="651"><input type="text" name="i_purchase_date" class="date_input" size="15" value="<?=$transient_detail_purchase_date?>" /> 
+   
+    </tr>
      <tr>
      <td req= "req">SPBE</td>
         <td><span class="lookup" id="lookup_spbe">
@@ -51,8 +55,7 @@ $(function(){
                 <input type="hidden" name="i_index" value="<?=$index?>" />
    
                 <input type="hidden" name="i_location_name" id="i_location_name" value="<?=$transient_detail_location_name?>"/>
-       			<input type="hidden" name="i_purchase_id" id="i_purchase_id" value="<?=$transient_detail_purchase_id?>"/>
-       		
+       			
        </td>
     </tr>
     <tr>
