@@ -120,10 +120,11 @@ class Ransom_model extends CI_Model{
 			$this->db->insert('tr_plan_purchases', $row);
 			$id_purchase = $this->db->insert_id();
 			$cost =$this->get_cost();
+
 			for($i=1; $i<= $row['tr_plan_purchase_qty']; $i++){
 				$row_detail['tr_plan_purchase_id'] = $id_purchase;
 				$row_detail['location_id'] = $row['location_id'];
-				$row_detail['tr_plan_detail_date_realization'] = $data['tr_plan_date'];
+				$row_detail['tr_plan_detail_date_realization'] = '';//$data['tr_plan_date'];
 				$row_detail['tr_plan_detail_qty']			 = 560;
 				$row_detail['tr_plan_detail_purchase'] 		 =$cost[0];
 				$row_detail['tr_plan_detail_total_purchase']=$cost[0] * 560;

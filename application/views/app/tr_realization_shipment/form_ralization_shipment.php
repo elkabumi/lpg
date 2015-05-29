@@ -56,7 +56,7 @@ $(function(){
 	<table width="100%" cellpadding="4" class="form_layout">
 	
     <tr>
-      <td width="196">Tanggal Realisasi Pengambilan </td>
+      <td width="196">Tanggal Realisasi Pengiriman </td>
    	 <td width="651">	<input type="text" name="i_date" class="date_input" size="15" value="<?=$tr_plan_detail_shipment_realization_date	?>" />
       
       </td>

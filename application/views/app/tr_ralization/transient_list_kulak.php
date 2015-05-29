@@ -24,7 +24,7 @@
 	<tbody> 	
 	</tbody>
 </table>
-<div class="command_table" style="text-align:left;">
+<div class="command_table" style="text-align:left; min-height:65px;">
  <table align="right">
           <tr>
             <td><span class="summary_total"> Total Harga</span></td>
@@ -40,3 +40,4 @@
 <div id="editor"></div>
 </form>
 </div>
+

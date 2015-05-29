@@ -11,8 +11,9 @@
             <th>Ke Pangakalan</th>
             <th>Jumlah Kirim</th>
             <th>Total Harga Kirim</th>
-            <th>BIaya Kirim</th>
-          	<th>Config</th>
+            <th>Biaya Kirim</th>
+          	<th>Status Realisasi</th>
+            <th>Config</th>
       </tr> 
 	</thead> 
 	<tbody> 	

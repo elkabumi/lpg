@@ -71,7 +71,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		$data['tr_plan_date'] 				= $this->input->post('i_date');
 		
 		// simpan transient Tebusan
-		$list_purchase_id		= ($this->input->post('transient_detail_purchase_id'));
+		$list_purchase_date		= ($this->input->post('transient_detail_purchase_date'));
 		$list_location_id		= ($this->input->post('transient_detail_location_id'));
 		$list_qty				= ($this->input->post('transient_detail_qty'));
 	
@@ -85,7 +85,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			foreach($list_location_id as $key => $value)
 			{
 			$items_purchase[] = array(
-					'tr_plan_purchase_id' => ($list_purchase_id[$key]),
+					'tr_plan_purchase_date' => ($list_purchase_date[$key]),
 					'location_id' => ($list_location_id[$key]),
 					'tr_plan_purchase_qty' => ($list_qty[$key]),
 			
@@ -93,6 +93,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			$check = 0;
 			$check_loaction = 0;
 			$loaction_id_original = $list_location_id[$key];
+			/*
 			foreach($list_location_id as $key_check => $value)
 				{
 			
@@ -106,6 +107,8 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				$get_data_location = $this->ransom_model->get_data_spbe($loaction_id_original);
 				send_json_error("Simpan gagal. SPBE  tidak boleh sama [ ".$get_data_location."]");
 			}
+			*/
+
 			}
 		}
 		$get_date=$this->ransom_model->cek_date($data['tr_plan_date'],$id);
@@ -135,7 +138,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		foreach($data as $key => $value) 
 			{
 				$data[$key] = array(
-						form_transient_pair('transient_detail_purchase_id', $value['location_id'],$value['tr_plan_purchase_id']),
+						form_transient_pair('transient_detail_purchase_date', format_new_date($value['tr_plan_purchase_date']), $value['tr_plan_purchase_date']),
 						form_transient_pair('transient_detail_location_name', $value['location_name'],$value['location_name'],
 												array(
 													  'transient_detail_location_id'=>$value['location_id'],$value['location_id'],
@@ -159,18 +162,21 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					
 					$data['index']							= '';
 					$data['tr_plan_id']						= $row_id ;
-					$data['transient_detail_purchase_id'] 	= '';
+					//$data['transient_detail_purchase_id'] 	= '';
 					$data['transient_detail_location_name'] = '';
 					$data['transient_detail_location_id'] 	= '';
 					$data['transient_detail_qty'] 			= '';
+					$data['transient_detail_purchase_date'] = '';
 		
+
 			} else {
 					$data['index']						= $index;
 					$data['tr_plan_id'] 				= $row_id;
-					$data['transient_detail_purchase_id'] 	= array_shift($this->input->post('transient_detail_purchase_id'));;
+					//$data['transient_detail_purchase_id'] 	= array_shift($this->input->post('transient_detail_purchase_id'));;
 					$data['transient_detail_location_name'] = array_shift($this->input->post('transient_detail_location_name'));
 					$data['transient_detail_location_id'] 	= array_shift($this->input->post('transient_detail_location_id'));
 					$data['transient_detail_qty'] 			= array_shift($this->input->post('transient_detail_qty'));
+					$data['transient_detail_purchase_date'] = format_new_date(array_shift($this->input->post('transient_detail_purchase_date')));
 					
 					
 					
@@ -182,24 +188,25 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 	function detail_form_action()
 	{		
 			$this->load->library('form_validation');
+
+			$this->form_validation->set_rules('i_purchase_date','Tanggal','trim|required|valid_date|sql_date');
 			$this->form_validation->set_rules('i_spbe_id', 'SPBE', 'trim|required');
 			$this->form_validation->set_rules('i_qty', 'Jumlah Tebusan', 'trim|required|integer|min_value[0]');
-		
 			$index = $this->input->post('i_index');		
 			// cek data berdasarkan kriteria
 			if ($this->form_validation->run() == FALSE) send_json_validate();
 		
-			$no 						= $this->input->post('i_index');
-			$transient_detail_location_id 	= $this->input->post('i_spbe_id');
+			$no 								= $this->input->post('i_index');
+			$transient_detail_location_id 		= $this->input->post('i_spbe_id');
 			$transient_detail_location_name 	= $this->input->post('i_location_name');
-			$transient_detail_purchase_id 	= $this->input->post('i_purchase_id');
-			$transient_detail_qty 	= $this->input->post('i_qty');
-			
+			//$transient_detail_purchase_id 	= $this->input->post('i_purchase_id');
+			$transient_detail_qty 				= $this->input->post('i_qty');
+			$transient_detail_purchase_date 	= $this->input->post('i_purchase_date');
 		
 			
 			$data = array(
 			
-				form_transient_pair('transient_detail_purchase_id', $no,$transient_detail_purchase_id),
+				form_transient_pair('transient_detail_purchase_date', format_new_date($transient_detail_purchase_date), $transient_detail_purchase_date),
 												
 				form_transient_pair('transient_detail_location_name', $transient_detail_location_name,$transient_detail_location_name,
 												array(

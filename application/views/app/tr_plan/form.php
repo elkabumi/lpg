@@ -65,7 +65,7 @@ $(function(){
 	 <input type="hidden" name="row_id" value="<?=$row_id?>" /></td>
    </tr>
       <tr>
-     <td>Tanggal Plan</td>
+     <td>Tanggal Tebusan</td>
      <td width="1%">:</td>
      <td><input name="i_date" type="text" id="i_date" value="<?=$tr_plan_date ?>" class="date_input" size="10"/>
      </td>

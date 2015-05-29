@@ -5,15 +5,14 @@
 	<thead>
 		<tr>
 
-       		<th>No</th>
-            	<th>Nomor DO</th>
-            <th>Tanggal Pengambilan</th>
-
-            <th>Truck Nopol</th>
+       		  <th>No</th>
             <th>SPBE</th>
+            <th>Tanggal Jatah</th>
+            <th>Tanggal Pengambilan</th>
+            <th>Truck Nopol</th>
             <th>Jumlah Kulak</th>
             <th>Total Harga Kulak</th>
-			<th>Biaya Sopir</th>
+			      <th>Biaya Sopir</th>
             <th>Biaya Kernet</th>
             <th>Biaya Lain-Lain</th>
             <th>Detail</th>
@@ -33,7 +32,7 @@
         </table>
       <!--<input type="button" id="add" value="Tambah"/>-->
 	<input type="button" id="edit" value="Revisi"/>
-    <input type="button" id="delete" value="Hapus"/>
+    
    
 </div>
 <div id="editor"></div>

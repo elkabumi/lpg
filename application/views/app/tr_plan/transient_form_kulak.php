@@ -136,15 +136,24 @@ $(function(){
 <form class="subform_area">
 <div class="form_area_frame">
 <table width="100%" cellpadding="4" class="form_layout">
-	 <tr>
+	 <!--<tr>
     	 <td width="196">Nomor DO</td>
     	 <td width="651"><input name="i_code" type="text" id="i_code" value="<?=$transient_detail_code ?>" size="10"/></td>
     </tr>
+-->
+ <tr>
+      <td>Tanggal Jatah  </td>
+   	  <td>
+      <input type="text" name="i_purchase_date" readonly size="15" value="<?=$transient_detail_purchase_date?>" />
+      
+      </td>
+        
+   </tr>
     <tr>
       <td>Tanggal Pengambilan  </td>
    	  <td>
       <input type="text" name="i_date" class="date_input" size="15" value="<?=$transient_detail_date?>" />
-       
+      
       </td>
         
    </tr>
