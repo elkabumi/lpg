@@ -262,7 +262,7 @@ class Global_model extends CI_Model
 	
 	
 	
-	function create_report($title, $content, $data = '', $data_detail = '') {
+	function create_report($title_file,$title,$content, $data = '', $data_detail = '') {
 		
 				$data['format'] =	header("Pragma: public");
 									header("Expires: 0");
@@ -270,12 +270,12 @@ class Global_model extends CI_Model
 									header("Content-type: application/force-download");
 								    header("Content-type: application/octet-stream");
 									header("Content-type: application/download");
-								    header("Content-Disposition: attachment; filename=$title.xls");
+								    header("Content-Disposition: attachment; filename=$title_file.xls");
 								    header("Content-transfer-encoding: binary");
-
+				$data['title'] = $title;
 	  			$this->load->view($content, $data);
-		
-		 /*if($type == 'pdf')
+		/*
+		if($type == 'pdf')
 		{
 			$this->load->library('html2pdf');
 		

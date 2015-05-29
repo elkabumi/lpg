@@ -45,7 +45,7 @@ $(function(){
 <form class="form_class" id="id_form_nya">	
 <div class="form_area">
 <div class="form_area_frame">
-		<table>
+		<table width="100%" cellpadding="4" class="form_layout">
         <tr>
           <td width="17%">Tanggal Realisasi</td>
           <td width="1%">:</td>
@@ -90,17 +90,8 @@ $(function(){
           <td width="17%">Kode Verifikasi</td>
           <td width="1%">:</td>
           <td width="82%"><input type="text" id="i_verifikasi" name="i_verifikasi" value="" /></td>
-        </tr>
-     </table>
-     </div>
-	<div class="command_bar">
-		<input type="button" id="submit" value="Simpan"/>
-		<input type="button" id="enable" value="Edit"/>
-	
-		<input type="button" id="cancel" value="Batal"/>
-	</div>
-</div>
-<!-- table contact -->
-
-</form>
-
+          </tr>
+ </table>
+    <table width="100%" cellpadding="1">
+    <tr>
+    <td>

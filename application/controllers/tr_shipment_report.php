@@ -60,8 +60,8 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 						),
 
 						form_transient_pair('transient_shipment_detail_qty',$value['tr_plan_detail_shipment_qty'],$value['tr_plan_detail_shipment_qty']),
-						form_transient_pair('transient_shipment_detail_total_price',$value['tr_plan_detail_shipment_total_price'],$value['tr_plan_detail_shipment_total_price']),
-						form_transient_pair('transient_shipment_detail_cost',$value['tr_plan_detail_shipment_cost'],$value['tr_plan_detail_shipment_cost']),
+						form_transient_pair('transient_shipment_detail_total_price',format_money($value['tr_plan_detail_shipment_total_price']),$value['tr_plan_detail_shipment_total_price']),
+						form_transient_pair('transient_shipment_detail_cost',format_money($value['tr_plan_detail_shipment_cost']),$value['tr_plan_detail_shipment_cost']),
 						//form_transient_pair('transient_shipment_detail_link',$link,$link),
 				
 				);
@@ -76,14 +76,10 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 	if($date){
 	   $this->load->model('global_model');
 	   
-	   $result = $this->tr_shipment_report_model->detail_table_loader_shipment($date);
+			$data['detail']  = $this->tr_shipment_report_model->detail_table_loader_shipment($date);
+			$date=format_new_date($date);
 			
-			if ($result) // cek dulu apakah data ditemukan 
-			{
-				$data = $result;
-			}
-	
-		   $this->global_model->create_report('Laporan_Penjualan_Harian', 'report/tr_shipment_report.php', $data,0);
+			$this->global_model->create_report('Laporan_Penjualan_Harian_'.$date.'','Laporan Penjualan Harian Tgl : '.$date.'', 'report/tr_shipment_report.php', $data);
 		}
 	}
 

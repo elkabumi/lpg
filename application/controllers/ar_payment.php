@@ -67,6 +67,9 @@
 			// List bayar
 			$this->render->add_view('app/ar_payment/transient_list');
 			$this->render->build('History Pembayaran');
+			
+			$this->render->add_form('app/ar_payment/form_save', $data);
+			$this->render->build('Detail');
 						
 			$this->render->show('Transaksi Pembayaran');
 		}
