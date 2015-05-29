@@ -13,6 +13,7 @@ class cost_type_model extends CI_Model{
 		
 		$this->db->select('*',1);
 		$this->db->from('tr_cost_types ');
+		$this->db->where('tr_cost_types_status', 1);
 		//query();
 		$query = $this->db->get();
 		foreach($query->result_array() as $row)

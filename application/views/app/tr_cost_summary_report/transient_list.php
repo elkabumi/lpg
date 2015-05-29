@@ -21,8 +21,7 @@
             <td><input id="tcd_total" value="" type="text" readonly="readonly" class="format_money" size="50" />
            </td>
           </tr>
-        </table>
-    
+  </table>
 </div>
 <div id="editor"></div>
 </form>

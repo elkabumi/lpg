@@ -67,11 +67,11 @@
 	 <tr>
         <th><?=$no?></th>
         <th><?=$item2['tr_cost_type_name']?></th>
-       	<th><?=tool_money_format($item2['get_total_cost'])?></th>
+       	<th><?=tool_money_format($item2['total_cost'])?></th>
  	</tr>
    
   <?php 
-  	 $total_cost+=$item2['get_total_cost'];
+  	 $total_cost+=$item2['total_cost'];
 	$no++; 
    endforeach; ?>
     <tr>

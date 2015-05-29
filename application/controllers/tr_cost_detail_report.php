@@ -67,7 +67,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				$data[$key] = array(
 						form_transient_pair('transient_cost_no', $no,$no),
 						form_transient_pair('transient_cost_category', $value['tr_cost_type_name'],$value['tr_cost_type_name']),
-						form_transient_pair('transient_cost_total', tool_money_format($value['tr_cost_price']),$value['tr_cost_price']),
+						form_transient_pair('transient_cost_total', tool_money_format($value['total']),$value['total']),
 						form_transient_pair('transient_cost_desc', $value['tr_cost_desc'],$value['tr_cost_desc']),
 						
 						//form_transient_pair('transient_shipment_detail_link',$link,$link),
@@ -85,8 +85,12 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 		$date = format_date($date);
 		$data['total_cost_driver_co'] = $this->tr_cost_detail_report_model->get_total_cost_driver_co($date);
-		$data['total_cost'] = $this->tr_cost_detail_report_model->get_total_cost($date);
 		
+		$data['total_cost_lain'] = $this->tr_cost_detail_report_model->get_total_cost($date);
+		$data['total_cost_shipment_lain'] = $this->tr_cost_detail_report_model->get_total_cost_shipment_lain($date);
+		$data['total_cost_shipment_route'] = $this->tr_cost_detail_report_model->get_total_cost_shipment_route($date);
+		
+		$data['total_cost'] = $data['total_cost_lain'] +$data['total_cost_shipment_lain'] +$data['total_cost_shipment_route'];
 		send_json_message('Satuan', $data);
 	}		
 	function report($date = 0){

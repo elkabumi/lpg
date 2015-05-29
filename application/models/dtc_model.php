@@ -908,6 +908,7 @@ class Dtc_model extends CI_Model
 		
 		// hitung total record
 		$this->db->select('COUNT(1) AS total', 1); // pastikan ada AS total nya, 1 bila isinya adalah function (dalam hal ini COUNT)
+		$this->db->where('tr_cost_types_status', 1);
 		$query	= $this->db->get('tr_cost_types'); 
 		$row 	= $query->row_array(); // fungsi ci untuk mengambil 1 row saja dari query
 		$total 	= $row['total'];	
@@ -915,6 +916,7 @@ class Dtc_model extends CI_Model
 		
 		// proses query sesuai dengan parameter
 		$this->db->select('*', 1); // ambil seluruh data
+		$this->db->where('tr_cost_type_id <>', 999);
 		$this->db->order_by($order_by);
 		$query = $this->db->get('tr_cost_types', $limit, $offset);
 		

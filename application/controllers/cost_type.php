@@ -72,7 +72,8 @@ class Cost_type extends CI_Controller{
 		if($this->form_validation->run() == FALSE) send_json_validate();
 		
 		$data['tr_cost_type_name'] 				= $this->input->post('i_name');
-		$data['tr_cost_type_desc'] 			= $this->input->post('i_description');
+		$data['tr_cost_type_desc'] 				= $this->input->post('i_description');
+		$data['	tr_cost_types_status'] 			= 0;
 	
 		
 		if(empty($id)){

@@ -37,7 +37,7 @@ class Tr_cost_summary_report_model extends CI_Model{
 		// buat array kosong
 		$sql = "
 		SELECT *
-		FROM tr_cost_types ";
+		FROM tr_cost_types";
 		
 
 		$query = $this->db->query($sql);
@@ -46,7 +46,13 @@ class Tr_cost_summary_report_model extends CI_Model{
 		$result = array(); // inisialisasi variabel. biasakanlah, untuk mencegah warning dari php.
 		foreach($query->result_array() as $row)
 		{	
-			$row['get_total_cost'] = $this->get_total_cost_detail($row['tr_cost_type_id'],$date_1,$date_2);
+			if($row['tr_cost_types_status'] == 1){
+				$row['total_cost'] = $this->get_total_cost_detail($row['tr_cost_type_id'],$date_1,$date_2);
+			}else if($row['tr_cost_types_status'] == 0){
+				$row['total_shipment_lain'] = $this->get_total_cost_shipment_lain($date_1,$date_2);
+				$row['total_shipment_route'] = $this->get_total_cost_shipment_route($date_1,$date_2);
+				$row['total_cost']  = $row['total_shipment_lain']  +  $row['total_shipment_route'];
+			}
 			$result[] = format_html($row);
 		}
 		return $result;
@@ -130,6 +136,38 @@ class Tr_cost_summary_report_model extends CI_Model{
 		foreach ($query->result_array() as $row)
 		$result = format_html($row);
 		return $result['total_cost'];
+	}
+	
+	
+	function get_total_cost_shipment_lain($date1,$date2)
+	{
+		$sql = "
+			SELECT SUM(tr_plan_detail_cost_lain) AS cost_shipment_lain
+						FROM tr_plan_details
+						where tr_plan_detail_date_realization between '".$date1."'  AND '".$date2."' and  tr_plan_detail_status_realization = '1'
+				";
+	
+		$query = $this->db->query($sql);
+		//query();
+		$result = null;
+		foreach ($query->result_array() as $row)
+		$result = format_html($row);
+		return $result['cost_shipment_lain'];
+	}
+	function get_total_cost_shipment_route($date1,$date2)
+	{
+		$sql = "
+			SELECT SUM(tr_plan_detail_shipment_cost) AS cost_shipment_route
+						FROM  tr_plan_detail_shipments
+						where 	tr_plan_detail_shipment_realization_date between '".$date1."'  AND '".$date2."'  and tr_plan_detail_shipment_status_realization = '1'
+				";
+	
+		$query = $this->db->query($sql);
+		//query();
+		$result = null;
+		foreach ($query->result_array() as $row)
+		$result = format_html($row);
+		return $result['cost_shipment_route'];
 	}
 	
 }
