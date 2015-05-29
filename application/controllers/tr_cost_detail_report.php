@@ -97,7 +97,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			$data['detail_cost_lain']  = $this->tr_cost_detail_report_model->detail_table_loader2($date);
 			$date=format_new_date($date);
 			
-			$this->global_model->create_report('Laporan_Biaya_Harian_'.$date.'', 'report/tr_cost_detail_report.php', $data);
+			$this->global_model->create_report('Laporan_Biaya_Harian_'.$date.'','Laporan Biaya Harian Tgl : '.$date.'', 'report/tr_cost_detail_report.php', $data);
 		}
 	}
 

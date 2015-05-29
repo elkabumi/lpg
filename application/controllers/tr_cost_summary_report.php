@@ -78,18 +78,6 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		send_json(make_datatables_list($data)); 
 		}
 	}
-	function report($date = 0,$date_2 = 0){
-	if($date and $date_2){
-	   $this->load->model('global_model');
-	   
-			$data['detail_cost_driver']  = $this->tr_cost_summary_report_model->detail_table_loader($date,$date_2);
-			$data['detail_cost_lain']  = $this->tr_cost_summary_report_model->detail_table_loader2($date,$date_2);
-			$date=format_new_date($date);
-			$date_2=format_new_date($date_2);
-			
-			$this->global_model->create_report('Laporan_Biaya_summary_'.$date.'_s/d_'.$date_2.'', 'report/tr_cost_summary_report.php', $data);
-		}
-	}
 	function get_total_cost()
 	{
 		$date 	= $this->input->post('date');
@@ -103,6 +91,19 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		$data['total_cost'] = $this->tr_cost_summary_report_model->get_total_cost($date1,$date2);
 	
 		send_json_message('Satuan', $data);
+	}
+	
+	function report($date = 0,$date_2 = 0){
+	if($date and $date_2){
+	   $this->load->model('global_model');
+	   
+			$data['detail_cost_driver']  = $this->tr_cost_summary_report_model->detail_table_loader($date,$date_2);
+			$data['detail_cost_lain']  = $this->tr_cost_summary_report_model->detail_table_loader2($date,$date_2);
+			$date=format_new_date($date);
+			$date_2=format_new_date($date_2);
+			
+			$this->global_model->create_report('Laporan_Biaya_summary_'.$date.'_s/d_'.$date_2.'','Laporan Biaya summary Tgl : '.$date.' s/d '.$date_2.'', 'report/tr_cost_summary_report.php', $data);
+		}
 	}
 	
 				

@@ -179,7 +179,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			$data['title'] = "Laporan Pembelian tanggal ".$date1[2]."/".$date1[1]."/".$date1[0]; 
 	
 		$this->load->model('global_model');
-	  	$this->global_model->create_report('pembelian_report', 'report/realization_report.php', $data);
+	  	$this->global_model->create_report('pembelian_report','pembelian_report', 'report/realization_report.php', $data);
 		
 
 	}
