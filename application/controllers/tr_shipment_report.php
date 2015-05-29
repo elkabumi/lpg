@@ -79,7 +79,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			$data['detail']  = $this->tr_shipment_report_model->detail_table_loader_shipment($date);
 			$date=format_new_date($date);
 			
-			$this->global_model->create_report('Laporan_Penjualan_Harian_'.$date.'', 'report/tr_shipment_report.php', $data);
+			$this->global_model->create_report('Laporan_Penjualan_Harian_'.$date.'','Laporan Penjualan Harian Tgl : '.$date.'', 'report/tr_shipment_report.php', $data);
 		}
 	}
 

@@ -58,8 +58,6 @@ $(function(){
 	
 	});
 	$('#print3').click(function(){
-		if(confirm("Download Laporan Biaya?") == true){
-			
 			var date_1 		= ($('input[name="i_date_1"]').val()) ? $('input[name="i_date_1"]').val() : "0";
 			var date_2 		= ($('input[name="i_date_2"]').val()) ? $('input[name="i_date_2"]').val() : "0";
 			if(date_1 == 0){
@@ -84,7 +82,6 @@ $(function(){
 			
 			}
 			//alert(id);
-		}
 	}
 	});
 	createDatePicker();
