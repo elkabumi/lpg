@@ -24,8 +24,8 @@ class Cost extends CI_Controller{
 		
 		
 		$this->render->add_form('app/cost/form', $data);
-		$this->render->build('Biaya');
-		$this->render->show('Biaya');
+		$this->render->build('Harga');
+		$this->render->show('Harga');
 		
 	}
 	/*function table_controller(){

@@ -478,7 +478,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 	function detail_form_action_shipment()
 	{		
 			$this->load->library('form_validation');
-			$this->form_validation->set_rules('i_date','Tanggal Pengambilan','trim|required|sql_date|valid_date');
+			$this->form_validation->set_rules('i_date','Tanggal pengiriman','trim|required|sql_date|valid_date');
 			$this->form_validation->set_rules('i_route_id', 'Route', 'trim|required');
 			$this->form_validation->set_rules('i_qty', 'Jumlah Kirim', 'trim|required|integer');
 			$this->form_validation->set_rules('i_price', 'Harga Kirim', 'trim|required|integer');

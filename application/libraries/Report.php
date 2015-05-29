@@ -94,8 +94,8 @@ class Report
 		$param['branch'] = '';
 		if($view_url=='')$content = '';
 		else $content = $ci->load->view($view_url, $view_param, true);
-		//if($this->is_branch)
-		//	if($ci->access->branch_id == 1)	$param['branch'] = $ci->load->view('common/branch_view', null, true);
+		if($this->is_branch)
+			if($ci->access->branch_id == 1)	$param['branch'] = $ci->load->view('common/branch_view', null, true);
 		if($this->is_branch)
 		{
 			$ci->load->model('global_model');
