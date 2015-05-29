@@ -105,6 +105,9 @@
 			// List bayar
 			$this->render->add_view('app/tr_payment/transient_list_bayar');
 			$this->render->build('Data Sparepart');
+			
+			$this->render->add_form('app/tr_payment/form_detail_save', $data);
+			$this->render->build('Registrasi');
 						
 			$this->render->show('Transaksi');
 		}
