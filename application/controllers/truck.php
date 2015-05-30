@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 <?php
-=======
-	<?php
->>>>>>> 540df724af4f79576c714c00fa783d410084a6d9
+
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class truck extends CI_Controller{
