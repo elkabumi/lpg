@@ -50,9 +50,13 @@ $(function(){
            </td>
           </tr>
         </table>
+        <? 
+		if($tr_plan_detail_shipment_status_id == 0){
+		?>
       <input type="button" id="add" value="Tambah"/>
 	<input type="button" id="edit" value="Revisi"/>
     <input type="button" id="delete" value="Hapus"/>
+    <? } ?>
 </div>
 <div id="editor"></div>
 </form>

@@ -43,8 +43,11 @@
 				
 				$sort_id = 0;
 				foreach($data as $key => $value) 
-				{	
-				$link = "<a href=".site_url('tr_payment/form/'.$value['tr_plan_detail_shipment_id'])." class='link_input'> Bayar </a>";
+				{
+					if($value['tr_plan_detail_shipment_status_id'] != 1){	
+					$link = "<a href=".site_url('tr_payment/form/'.$value['tr_plan_detail_shipment_id'])." class='link_input'> Bayar </a>";
+					}else{
+					$link = "<a href=".site_url('tr_payment/form/'.$value['tr_plan_detail_shipment_id'])." class='link_input'> View </a>";
 				$realisasi_date = format_new_date($value['tr_plan_detail_shipment_realization_date']);
 				$data[$key] = array(
 			
@@ -135,8 +138,10 @@
 			$data['broken_total']  				= $this->input->post('i_broken_total');
 			$data['broken_status'] 				= $this->input->post('i_status');
 			
-			$code = $this->tr_payment_model->read_code();
-			if($kode_verifikasi != $code){
+			$pass = md5($kode_verifikasi);
+			$user_id = $this->access->user_id;
+			$code = $this->tr_payment_model->read_code($user_id);
+			if($pass != $code){
 				send_json_error("Simpan gagal,kode verifikasi salah");
 				}
 			// simpan transient biaya Route

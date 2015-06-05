@@ -97,8 +97,10 @@
 			$data['broken_total']  				= $this->input->post('i_broken_total');
 			$data['broken_status'] 				= $this->input->post('i_status');
 			
-			$code = $this->ar_payment_model->read_code();
-			if($kode_verifikasi != $code){
+			$pass = md5($kode_verifikasi);
+			$user_id = $this->access->user_id;
+			$code = $this->tr_payment_model->read_code($user_id);
+			if($pass != $code){
 				send_json_error("Simpan gagal,kode verifikasi salah");
 				}
 			// simpan transient biaya Route

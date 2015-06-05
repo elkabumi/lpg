@@ -169,7 +169,7 @@ class tr_payment_model extends CI_Model{
 		// buat array kosong
 		$result = array(); 	
 		if($date_1 != 0){
-			$where = "WHERE a.tr_plan_detail_shipment_realization_date = '".$date_1."' AND a.tr_plan_detail_shipment_status_id = 0 and tr_plan_detail_shipment_status_realization = 1";
+			$where = "WHERE a.tr_plan_detail_shipment_realization_date = '".$date_1."' AND tr_plan_detail_shipment_status_realization = 1";
 		}else{
 			$where = '';
 		}
@@ -219,7 +219,7 @@ class tr_payment_model extends CI_Model{
 	
 	function read_bayar($id)
 	{
-		$sql = "SELECT tr_plan_detail_shipment_total_paid
+		$sql = "SELECT tr_plan_detail_shipment_total_price
 				FROM tr_plan_detail_shipments
 				where tr_plan_detail_shipment_id = $id";
 		$query = $this->db->query($sql); // parameter limit harus 1
@@ -227,19 +227,19 @@ class tr_payment_model extends CI_Model{
 		
 		$result = null;
         foreach ($query->result_array() as $row) $result = format_html($row);
-        return $result['tr_plan_detail_shipment_total_paid'];
+        return $result['tr_plan_detail_shipment_total_price'];
 	}
 	
-	function read_code()
+	function read_code($user_id)
 	{
-		$sql = "SELECT code
-				FROM codes";
+		$sql = "SELECT user_password 
+				FROM users";
 		$query = $this->db->query($sql); // parameter limit harus 1
 		//query($query);
 		
 		$result = null;
         foreach ($query->result_array() as $row) $result = format_html($row);
-        return $result['code'];
+        return $result['user_password'];
 	}
 	
 	
