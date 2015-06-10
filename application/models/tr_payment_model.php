@@ -174,10 +174,14 @@ class tr_payment_model extends CI_Model{
 			$where = '';
 		}
 		$sql = "
-		select a.* , d.location_name
+		select a.* , d.location_name,e.tr_plan_detail_date_realization,g.tr_plan_date,e.tr_plan_detail_code,h.truck_nopol,(select z.location_name from locations z where z.location_id = f.location_id) as nama_spbe,(select z.employee_name from employees z where z.employee_id = e.driver_id) as sopir,(select z.employee_name from employees z where z.employee_id = e.co_driver_id) as kernet
 		from tr_plan_detail_shipments a
 		left join routes c on a.route_id = c.route_id
 		left join locations d on c.location_to_id = d.location_id
+		join tr_plan_details e on e.tr_plan_detail_id = a.tr_plan_detail_id
+		join tr_plan_purchases f on f.tr_plan_purchase_id = e.tr_plan_purchase_id
+		join tr_plans g on g.tr_plan_id = f.tr_plan_id
+		left join trucks h on h.truck_id = e.truck_id
 		".$where."";
 		
 		

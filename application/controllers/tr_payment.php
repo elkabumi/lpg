@@ -46,16 +46,30 @@
 				{
 					if($value['tr_plan_detail_shipment_status_id'] != 1){	
 					$link = "<a href=".site_url('tr_payment/form/'.$value['tr_plan_detail_shipment_id'])." class='link_input'> Bayar </a>";
+					$status = "<p align='center' style='color:#F00;'><strong>BELUM LUNAS</strong></p>";
 					}else{
 					$link = "<a href=".site_url('tr_payment/form/'.$value['tr_plan_detail_shipment_id'])." class='link_input'> View </a>";
-				$realisasi_date = format_new_date($value['tr_plan_detail_shipment_realization_date']);
+					$status = "<p align='center' style='color:#00C;'><strong>LUNAS</strong></p>";
+					}
+					
+				$tanggal_tebusan = format_new_date($value['tr_plan_date']);
+				$tanggal_jatah = format_new_date($value['tr_plan_detail_date_realization']);
+				$tanggal_pengiriman = format_new_date($value['tr_plan_detail_shipment_realization_date']);
 				$data[$key] = array(
 			
-						form_transient_pair('transient_tr_plan_detail_shipment_realization_date', $realisasi_date),
-						form_transient_pair('transient_tr_plan_detail_shipment_qty',$value['location_name']),
+						form_transient_pair('transient_tr_plan__date', $tanggal_tebusan),
+						form_transient_pair('transient_tr_plan_detail_realization_date', $tanggal_jatah),
+						form_transient_pair('transient_tr_plan_detail_shipment_realization_date', $tanggal_pengiriman),
+						form_transient_pair('transient_tr_plan_detail_code',$value['tr_plan_detail_code']),
+						form_transient_pair('transient_truck_nopol',$value['truck_nopol']),
+						form_transient_pair('transient_nama_spbe',$value['nama_spbe']),
+						form_transient_pair('transient_sopir',$value['sopir']),
+						form_transient_pair('transient_kernet',$value['kernet']),
+						form_transient_pair('transient_location_name',$value['location_name']),
 						form_transient_pair('transient_tr_plan_detail_shipment_qty',$value['tr_plan_detail_shipment_qty']),
 						form_transient_pair('transient_tr_plan_detail_shipment_total_price', tool_money_format($value['tr_plan_detail_shipment_total_price']),$value['tr_plan_detail_shipment_total_price']),
 						form_transient_pair('transient_tr_plan_detail_shipment_total_paid', tool_money_format($value['tr_plan_detail_shipment_total_paid']),$value['tr_plan_detail_shipment_total_paid']),
+						form_transient_pair('transient_config', $status),
 						form_transient_pair('transient_config', $link)
 						
 					);
