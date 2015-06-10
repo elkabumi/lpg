@@ -1,7 +1,5 @@
 <?php
-
 class tr_payment_model extends CI_Model{
-
 	function __construct(){
 		
 	}
@@ -42,7 +40,6 @@ class tr_payment_model extends CI_Model{
 		if ($limit > 0) {
 			$limit = " limit $limit offset $offset";
 		};	
-
 		$sql = "
 		select a.*,b.*,c.*,e.location_name
 		from tr_plan_detail_shipments a
@@ -53,7 +50,6 @@ class tr_payment_model extends CI_Model{
  		$where  $order_by
 			
 			";
-
 		$query_total = $this->db->query($sql);
 		$total = $query_total->num_rows();
 		
@@ -169,15 +165,19 @@ class tr_payment_model extends CI_Model{
 		// buat array kosong
 		$result = array(); 	
 		if($date_1 != 0){
-			$where = "WHERE a.tr_plan_detail_shipment_realization_date = '".$date_1."' AND a.tr_plan_detail_shipment_status_id = 0 and tr_plan_detail_shipment_status_realization = 1";
+			$where = "WHERE a.tr_plan_detail_shipment_realization_date = '".$date_1."' AND tr_plan_detail_shipment_status_realization = 1";
 		}else{
 			$where = '';
 		}
 		$sql = "
-		select a.* , d.location_name
+		select a.* , d.location_name,e.tr_plan_detail_date_realization,g.tr_plan_date,e.tr_plan_detail_code,h.truck_nopol,(select z.location_name from locations z where z.location_id = f.location_id) as nama_spbe,(select z.employee_name from employees z where z.employee_id = e.driver_id) as sopir,(select z.employee_name from employees z where z.employee_id = e.co_driver_id) as kernet
 		from tr_plan_detail_shipments a
 		left join routes c on a.route_id = c.route_id
 		left join locations d on c.location_to_id = d.location_id
+		join tr_plan_details e on e.tr_plan_detail_id = a.tr_plan_detail_id
+		join tr_plan_purchases f on f.tr_plan_purchase_id = e.tr_plan_purchase_id
+		join tr_plans g on g.tr_plan_id = f.tr_plan_id
+		left join trucks h on h.truck_id = e.truck_id
 		".$where."";
 		
 		
@@ -219,7 +219,7 @@ class tr_payment_model extends CI_Model{
 	
 	function read_bayar($id)
 	{
-		$sql = "SELECT tr_plan_detail_shipment_total_paid
+		$sql = "SELECT tr_plan_detail_shipment_total_price
 				FROM tr_plan_detail_shipments
 				where tr_plan_detail_shipment_id = $id";
 		$query = $this->db->query($sql); // parameter limit harus 1
@@ -227,19 +227,19 @@ class tr_payment_model extends CI_Model{
 		
 		$result = null;
         foreach ($query->result_array() as $row) $result = format_html($row);
-        return $result['tr_plan_detail_shipment_total_paid'];
+        return $result['tr_plan_detail_shipment_total_price'];
 	}
 	
-	function read_code()
+	function read_code($user_id)
 	{
-		$sql = "SELECT code
-				FROM codes";
+		$sql = "SELECT user_password 
+				FROM users";
 		$query = $this->db->query($sql); // parameter limit harus 1
 		//query($query);
 		
 		$result = null;
         foreach ($query->result_array() as $row) $result = format_html($row);
-        return $result['code'];
+        return $result['user_password'];
 	}
 	
 	

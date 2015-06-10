@@ -94,12 +94,14 @@ class Tr_plan_model extends CI_Model{
 	}
 	function read_plan_id($id){
 		$this->db->select('a.*,b.truck_nopol,c.employee_name AS driver_name,d.employee_name AS co_driver_name
-					, e.location_name', 1);
+					, e.location_name,g.tr_plan_date', 1);
 		$this->db->where('a.tr_plan_detail_id', $id);
 		$this->db->join('trucks b', 'b.truck_id = a.truck_id');
 		$this->db->join('employees c', 'c.employee_id = a.driver_id');
 		$this->db->join('employees d', 'd.employee_id = a.co_driver_id');
 		$this->db->join('locations e', 'e.location_id = a.location_id');
+		$this->db->join('tr_plan_purchases f', 'a.tr_plan_purchase_id = f.tr_plan_purchase_id');
+		$this->db->join('tr_plans g', 'f.tr_plan_id = g.tr_plan_id');
 		$this->db->where('tr_plan_detail_id', $id);
 		$query = $this->db->get('tr_plan_details a', 1);
 	
@@ -252,6 +254,7 @@ class Tr_plan_model extends CI_Model{
 		$this->db->join('locations e', 'e.location_id = g.location_id');
 		
 		$this->db->where('a.tr_plan_date', $date);
+		$this->db->order_by('g.tr_plan_detail_no');
 		$query = $this->db->get(); debug();
 		//query();
 		foreach($query->result_array() as $row)
@@ -375,10 +378,11 @@ class Tr_plan_model extends CI_Model{
 	}
 	function get_total_kirim($id)
 	{
-		$sql = "SELECT SUM(c.tr_plan_detail_shipment_qty) AS kirim
+		$sql = "SELECT SUM(d.tr_plan_detail_shipment_qty) AS kirim
 				FROM tr_plans a
-				JOIN tr_plan_details b ON b.tr_plan_id = a.tr_plan_id
-				JOIN tr_plan_detail_shipments c ON c.tr_plan_detail_id = c.tr_plan_detail_id
+				JOIN tr_plan_purchases b ON b.tr_plan_id = a.tr_plan_id
+				JOIN tr_plan_details c ON c.tr_plan_purchase_id = b.tr_plan_purchase_id
+				JOIN tr_plan_detail_shipments d ON d.tr_plan_detail_id = c.tr_plan_detail_id
 				WHERE a.tr_plan_id = $id
 				";
 		
@@ -388,6 +392,21 @@ class Tr_plan_model extends CI_Model{
 		foreach ($query->result_array() as $row) $result = format_html($row);
 		return $result['kirim'];
 	}
-	
+	function get_detail_kirim($id)
+	{
+		$sql = "SELECT COUNT(d.tr_plan_detail_shipment_id) AS id_kirim
+				FROM tr_plans a
+				JOIN tr_plan_purchases b ON b.tr_plan_id = a.tr_plan_id
+				JOIN tr_plan_details c ON c.tr_plan_purchase_id = b.tr_plan_purchase_id
+				JOIN tr_plan_detail_shipments d ON d.tr_plan_detail_id = c.tr_plan_detail_id
+				WHERE c.tr_plan_detail_id = $id
+				";
+		
+		$query = $this->db->query($sql);
+		//query();
+		$result = null;
+		foreach ($query->result_array() as $row) $result = format_html($row);
+		return $result['id_kirim'];
+	}
 	
 }

@@ -7,6 +7,9 @@
 		<tr>
      	    <th>Tanggal Pengambilan</th>
        		<th>Tanggal Kirim</th>
+            <th>Truck</th>
+       		<th>Sopir</th>
+            <th>Kernet</th>
             <th>Dari</th>
             <th>Ke Pangakalan</th>
             <th>Jumlah Kirim</th>

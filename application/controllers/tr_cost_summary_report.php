@@ -106,7 +106,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			$date=format_new_date($date);
 			$date_2=format_new_date($date_2);
 			
-			$this->global_model->create_report('Laporan_Biaya_summary_'.$date.'_s/d_'.$date_2.'','Laporan Biaya summary Tgl : '.$date.' s/d '.$date_2.'', 'report/tr_cost_summary_report.php', $data);
+			$this->global_model->create_report('Laporan_Biaya_summary_'.$date.'_s/d_'.$date_2.'','Laporan Biaya summary Tgl : '.$date.'  s/d   '.$date_2.'', 'report/tr_cost_summary_report.php', $data);
 		}
 	}
 	

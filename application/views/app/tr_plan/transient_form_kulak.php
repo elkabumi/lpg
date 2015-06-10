@@ -32,6 +32,15 @@ $(function(){
 		component_id	: "#lookup_truck_co_driver",
 		filter_by		: [{id : "p1", label : "Kode"},{id : "p2", label : "Nama"},{id : "p3", label : "posisi"}]
 	});
+		createLookUp({
+		table_id		: "#lookup_table_truck_co_driver2",
+		table_width		: 400,
+		listSource 		: "lookup/employee_table_control/",
+		dataSource		: "lookup/employee_lookup_id",
+		column_id 		: 0,
+		component_id	: "#lookup_truck_co_driver2",
+		filter_by		: [{id : "p1", label : "Kode"},{id : "p2", label : "Nama"},{id : "p3", label : "posisi"}]
+	});
 	createLookUp({
 		table_id		: "#lookup_table_spbe",
 		table_width		: 400,
@@ -234,6 +243,19 @@ $(function(){
 				
 				
       </tr>
+          <tr>
+     		<td width="196">Kernet Tambahan</td>
+        	<td  width="651"> 
+        	<span class="lookup" id="lookup_truck_co_driver2">
+				<input type="hidden" name="i_co_driver_add_id"  class="com_id" value="<?=$transient_detail_co_driver_add_id?>" />
+				<input type="text" class="com_input"/>
+				<div class="iconic_base iconic_search com_popup"></div>
+                 <span class="com_desc"></span>
+			</span>
+       		</td>
+    
+        </td>
+     </tr> 
        <tr>
      <td req= "req">SPBE</td>
         <td><span class="lookup" id="lookup_spbe">
@@ -324,6 +346,25 @@ $(function(){
 </div>
 <div id="">
 	<table id="lookup_table_truck_co_driver" cellpadding="0" cellspacing="0" border="0" class="display" > 
+		<thead>
+			<tr>
+			<th>ID</th>
+				<th>NIK </th>
+				<th>Nama</th>
+            	<th>Posisi</th>
+			</tr> 
+		</thead> 
+		<tbody> 	
+		</tbody>
+	</table>
+	<div id="panel">
+		<input type="button" id="choose" value="Pilih Data"/>
+		<input type="button" id="refresh" value="Refresh"/>
+		<input type="button" id="cancel" value="Cancel" />
+	</div>	
+</div>
+<div id="">
+	<table id="lookup_table_truck_co_driver2" cellpadding="0" cellspacing="0" border="0" class="display" > 
 		<thead>
 			<tr>
 			<th>ID</th>

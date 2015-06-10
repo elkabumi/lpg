@@ -13,10 +13,12 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		function index(){
 				
 				$data = array();
-				$data['row_id'] = '';
-				$data['tr_plan_date'] = '';
-				$this->load->helper('form');
+					$data['row_id'] = '';
+					$data['date'] =0;
+					$data['tr_plan_date'] = '';
 				
+				
+				$this->load->helper('form');
 				$this->render->add_form('app/tr_plan/form', $data);
 				$this->render->build('Plan');
 				
@@ -26,7 +28,31 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				$this->render->add_form('app/tr_plan/form_save', $data);
 				$this->render->build('Plan');
 				$this->render->show('Plan');
-		}	
+		}
+		function form($date=0){
+				
+				$data = array();
+				if($date==0){
+					$data['row_id'] = '';
+					$data['date'] =0;
+					$data['tr_plan_date'] = '';
+				
+				}else{
+					$data['row_id'] = '';
+					$data['date'] = $date;
+					$data['tr_plan_date'] = format_new_date($date);
+				}
+				$this->load->helper('form');
+				$this->render->add_form('app/tr_plan/form', $data);
+				$this->render->build('Plan');
+				
+				$this->render->add_view('app/tr_plan/transient_list_kulak');
+				$this->render->build('Detail Plan');
+				
+				$this->render->add_form('app/tr_plan/form_save', $data);
+				$this->render->build('Plan');
+				$this->render->show('Plan');
+		}
 		function form_plan($id){
 
 		
@@ -84,6 +110,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		$list_td_driver_id		= ($this->input->post('transient_detail_driver_id'));
 		$list_td_co_driver		= ($this->input->post('transient_detail_co_driver'));
 		$list_td_co_driver_id 	= ($this->input->post('transient_detail_co_driver_id'));
+		$list_td_co_driver_add_id 	= ($this->input->post('transient_detail_co_driver_add_id'));
 		$list_td_plan_id		= ($this->input->post('transient_detail_plan_id'));
 		$list_td_spbe			= ($this->input->post('transient_detail_spbe'));
 		$list_td_qty 			= ($this->input->post('transient_detail_qty'));
@@ -110,6 +137,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					'tr_plan_truck_driver_type' => ($list_td_driver_type[$key]),
 					'driver_id' => ($list_td_driver_id[$key]),
 					'co_driver_id' => ($list_td_co_driver_id[$key]),
+					'co_driver_additional_id' => ($list_td_co_driver_add_id[$key]),
 					//'tr_plan_detail_code' => ($list_td_code[$key]),
 					'tr_plan_detail_qty' => ($list_td_qty[$key]),
 					'tr_plan_detail_purchase' => ($list_td_purchase[$key]),
@@ -139,10 +167,10 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		
 		$id = $this->input->post('row_id');
 			
-		if($is_delete){
+		/*if($is_delete){
 			$is_proses_error = $this->tr_plan_model->delete($id);
 			send_json_action($is_proses_error, "Data telah dihapus");
-		}
+		}*/
 		
 		$this->load->library('form_validation');
 		/*
@@ -216,20 +244,52 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				
 				$sort_id = 0;
 				$no=1;
+				$div1 = "<span class='active'>";
+				$div2 = "</div>";
 				foreach($data as $key => $value) 
 				{
-				if(!$value['truck_id']){
-					$detail='';
-				}else{
-					$detail="<a href='".site_url('tr_plan/form_plan/'.$value['tr_plan_detail_id'])."' class='link_input' style='color:#fff;'>detail </a>";
-				}
+					if(!$value['truck_id']){
+						$detail='';
+					}else{
+						$detail="<a href='".site_url('tr_plan/form_plan/'.$value['tr_plan_detail_id'])."' class='link_input' style='color:#fff;'>detail </a>";
+					}
+					$detail_kirim = $this->tr_plan_model->get_detail_kirim($value['tr_plan_detail_id']);
+					//send_json($detail_kirim);
+					if($detail_kirim > 0){
+						 $no = $div1.$value['tr_plan_detail_no'].$div2 ;
+						 $location = $div1.$value['location_name'].$div2;
+						 $plan_purchase_date = $div1.format_new_date($value['tr_plan_purchase_date']).$div2;
+						 $date_realization = $div1.format_new_date($value['tr_plan_detail_date_realization']).$div2;
+						 $nopol = $div1.$value['truck_nopol'].$div2;
+						 $qty = $div1.$value['tr_plan_detail_qty'].$div2;
+						 $total_purchase = $div1.tool_money_format($value['tr_plan_detail_total_purchase']).$div2;
+						 
+						 $cost_driver = $div1.tool_money_format($value['tr_plan_detail_cost_driver']).$div2;
+						 $cost_co_driver = $div1.tool_money_format($value['tr_plan_detail_cost_co_driver']).$div2;
+						 
+						 $cost_lain = $div1.tool_money_format($value['tr_plan_detail_cost_lain']).$div2;
+					}else{
+						 $no = $value['tr_plan_detail_no'];
+						 $location = $value['location_name'];
+						 $plan_purchase_date = $value['tr_plan_purchase_date'];
+						 $date_realization = $value['tr_plan_detail_date_realization'];
+						 $nopol = $value['truck_nopol'];
+						 $qty = $value['tr_plan_detail_qty'];
+						 $total_purchase = tool_money_format($value['tr_plan_detail_total_purchase']);
+						 
+						 $cost_driver = tool_money_format($value['tr_plan_detail_cost_driver']);
+						 $cost_co_driver = tool_money_format($value['tr_plan_detail_cost_co_driver']);
+						 $cost_lain = tool_money_format($value['tr_plan_detail_cost_lain']);
+						 
+						
+					}
 				$data[$key] = array(
-						form_transient_pair('transient_detail_no', $no,$no),
+						form_transient_pair('transient_detail_no', $no,$value['tr_plan_detail_no']),
 						//form_transient_pair('transient_detail_code', $value['tr_plan_detail_code'],$value['tr_plan_detail_code']),
-						form_transient_pair('transient_detail_spbe',$value['location_name'],$value['location_id']),
-						form_transient_pair('transient_detail_purchase_date', format_new_date($value['tr_plan_purchase_date']), $value['tr_plan_purchase_date']),
-						form_transient_pair('transient_detail_date', format_new_date($value['tr_plan_detail_date_realization']), $value['tr_plan_detail_date_realization']),
-						form_transient_pair('transient_detail_truck_id', $value['truck_nopol'],$value['truck_id'],
+						form_transient_pair('transient_detail_spbe',$location,$value['location_id']),
+						form_transient_pair('transient_detail_purchase_date', $plan_purchase_date, $value['tr_plan_purchase_date']),
+						form_transient_pair('transient_detail_date', $date_realization, $value['tr_plan_detail_date_realization']),
+						form_transient_pair('transient_detail_truck_id', $nopol,$value['truck_id'],
 												array(
 													  'transient_detail_nopol'=>$value['truck_nopol'],$value['truck_nopol'],
 													  'transient_detail_driver_type'=>$value['tr_plan_truck_driver_type'],$value['tr_plan_truck_driver_type'],
@@ -237,17 +297,18 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 													  'transient_detail_driver_id'=>$value['driver_id'],$value['driver_id'],
 													  'transient_detail_co_driver'=>$value['co_driver_name'],$value['co_driver_name'],
 													  'transient_detail_co_driver_id'=>$value['co_driver_id'],$value['co_driver_id'],
+													  'transient_detail_co_driver_add_id'=>$value['co_driver_additional_id'],$value['co_driver_additional_id'],
 													  'transient_detail_plan_id'=>$value['tr_plan_detail_id'],$value['tr_plan_detail_id']
 													  )
 												),
 						
-						form_transient_pair('transient_detail_qty',	$value['tr_plan_detail_qty'],$value['tr_plan_detail_qty'],
+						form_transient_pair('transient_detail_qty',	$qty,$value['tr_plan_detail_qty'],
 											array('transient_detail_purchase'=>$value['tr_plan_detail_purchase'],$value['tr_plan_detail_purchase'])
 											),	
-						form_transient_pair('transient_detail_total', tool_money_format($value['tr_plan_detail_total_purchase']),$value['tr_plan_detail_total_purchase']),
-						form_transient_pair('transient_detail_cost_driver',tool_money_format($value['tr_plan_detail_cost_driver']),$value['tr_plan_detail_cost_driver']),
-						form_transient_pair('transient_detail_cost_co_driver',tool_money_format($value['tr_plan_detail_cost_co_driver']),$value['tr_plan_detail_cost_co_driver']),
-						form_transient_pair('transient_detail_cost_lain',tool_money_format($value['tr_plan_detail_cost_lain']),$value['tr_plan_detail_cost_lain']),
+						form_transient_pair('transient_detail_total', $total_purchase,$value['tr_plan_detail_total_purchase']),
+						form_transient_pair('transient_detail_cost_driver',$cost_driver,$value['tr_plan_detail_cost_driver']),
+						form_transient_pair('transient_detail_cost_co_driver',$cost_co_driver,$value['tr_plan_detail_cost_co_driver']),
+						form_transient_pair('transient_detail_cost_lain',$cost_lain,$value['tr_plan_detail_cost_lain']),
 						form_transient_pair('transient_detail', $detail, $detail),
 		
 				);
@@ -327,6 +388,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					$data['transient_detail_driver_id'] 	= '';
 					$data['transient_detail_co_driver'] 	= '';
 					$data['transient_detail_co_driver_id'] 	= '';
+					$data['transient_detail_co_driver_add_id']  = '';
 					$data['transient_detail_plan_id'] 		= '';
 					$data['transient_detail_spbe'] 			= '';
 					$data['transient_detail_qty'] 			= '';
@@ -352,6 +414,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 					$data['transient_detail_driver_id'] 	= array_shift($this->input->post('transient_detail_driver_id'));
 					$data['transient_detail_co_driver'] 	= array_shift($this->input->post('transient_detail_co_driver'));
 					$data['transient_detail_co_driver_id'] 	= array_shift($this->input->post('transient_detail_co_driver_id'));
+					$data['transient_detail_co_driver_add_id']  = array_shift($this->input->post('transient_detail_co_driver_add_id'));
 					$data['transient_detail_plan_id'] 		= array_shift($this->input->post('transient_detail_plan_id'));
 					$data['transient_detail_spbe'] 			= array_shift($this->input->post('transient_detail_spbe'));
 					$data['transient_detail_qty'] 			= array_shift($this->input->post('transient_detail_qty'));
@@ -451,6 +514,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			
 			$transient_detail_truck_id 	= $this->input->post('i_truck_id');
 			$transient_detail_driver 	= $this->input->post('i_driver_name');
+			$transient_detail_co_driver 	= $this->input->post('i_co_driver_name');
 			if($transient_detail_driver_type == '0'){
 				$transient_detail_driver_id 	= $this->input->post('i_driver_id');
 				$transient_detail_co_driver_id 	= $this->input->post('i_co_driver_id');
@@ -458,7 +522,9 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				$transient_detail_driver_id 	= $this->input->post('i_driver_id2');
 				$transient_detail_co_driver_id 	= $this->input->post('i_co_driver_id2');
 			}
-			$transient_detail_co_driver 	= $this->input->post('i_co_driver_name');
+			$transient_detail_co_driver_add_id 	= $this->input->post('i_co_driver_add_id');
+			
+			
 			$transient_detail_plan_id 	= $this->input->post('i_plan_id');
 			$transient_detail_spbe 	= $this->input->post('i_spbe_id');
 			$transient_detail_spbe_name 	= $this->input->post('i_location_name');
@@ -485,7 +551,8 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 													  'transient_detail_driver_id'=>$transient_detail_driver_id,$transient_detail_driver_id,
 													  'transient_detail_co_driver'=>$transient_detail_co_driver,$transient_detail_co_driver,
 													  'transient_detail_co_driver_id'=>$transient_detail_co_driver_id,$transient_detail_co_driver_id,
-													  'transient_detail_plan_id'=>$transient_detail_plan_id,$transient_detail_plan_id
+													  'transient_detail_co_driver_add_id'=>$transient_detail_co_driver_add_id,$transient_detail_co_driver_add_id,
+													 	'transient_detail_plan_id'=>$transient_detail_plan_id,$transient_detail_plan_id
 													  )
 												),
 						form_transient_pair('transient_detail_qty',	$transient_detail_qty,$transient_detail_qty,
@@ -507,11 +574,8 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 	function detail_form_action_shipment()
 	{		
 			$this->load->library('form_validation');
-<<<<<<< HEAD
 			$this->form_validation->set_rules('i_date','Tanggal Pengambilan','trim|required|valid_date|sql_date');
-=======
-			$this->form_validation->set_rules('i_date','Tanggal pengiriman','trim|required|sql_date|valid_date');
->>>>>>> 540df724af4f79576c714c00fa783d410084a6d9
+
 			$this->form_validation->set_rules('i_route_id', 'Route', 'trim|required');
 			$this->form_validation->set_rules('i_qty', 'Jumlah Kirim', 'trim|required|integer');
 			$this->form_validation->set_rules('i_price', 'Harga Kirim', 'trim|required|integer');

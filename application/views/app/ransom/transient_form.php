@@ -66,9 +66,9 @@ $(function(){
 </table>
 </div>
 <div class="command_bar">
-	<input type="button" id="submit" value="Save" />
-	<input type="reset" id="reset"  value="Reset" />
-	<input type="button" id="cancel" value="Cancel"  />
+	<input type="button" id="submit" value="Save"/>
+	<input type="reset" id="reset"  value="Reset"/>
+	<input type="button" id="cancel" value="Cancel" />
 </div>
 </form>
 
