@@ -488,8 +488,8 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			$this->form_validation->set_rules('i_purchase_date','Tanggal Jatah','trim|required|valid_date|sql_date');
 			$this->form_validation->set_rules('i_truck_id', 'Truck', 'trim|required');
 			$this->form_validation->set_rules('i_spbe_id', 'SPBE', 'trim|required');
-			$this->form_validation->set_rules('i_qty', 'SPBE', 'trim|required|integer|min_value[0]');
-			$this->form_validation->set_rules('i_purchase', 'Harga satuan', 'trim|required|integer|min_value[0]');
+			$this->form_validation->set_rules('i_qty', 'SPBE', 'trim|required|numeric|min_value[0]');
+			$this->form_validation->set_rules('i_purchase', 'Harga satuan', 'trim|required|numeric|min_value[0]');
 			
 			//type sopir / kernet
 			$transient_detail_driver_type	= $this->input->post('i_drive_type');
@@ -574,7 +574,8 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 	function detail_form_action_shipment()
 	{		
 			$this->load->library('form_validation');
-			$this->form_validation->set_rules('i_date','Tanggal Pengambilan','trim|required|valid_date|sql_date');
+			$this->form_validation->set_rules('i_date','Tanggal pengiriman','trim|required|valid_date|sql_date');
+
 
 			$this->form_validation->set_rules('i_route_id', 'Route', 'trim|required');
 			$this->form_validation->set_rules('i_qty', 'Jumlah Kirim', 'trim|required|integer');
