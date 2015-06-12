@@ -31,7 +31,7 @@
           </tr>
         </table>
       <!--<input type="button" id="add" value="Tambah"/>-->
-	<input type="button" id="edit" value="Revisi"/>
+	<input type="button" id="edit" value="Proses Pengambilan"/>
     
    
 </div>

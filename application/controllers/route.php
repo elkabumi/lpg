@@ -65,7 +65,7 @@ class Route extends CI_Controller{
 		
 		$this->form_validation->set_rules('i_from_id','Dari Lokasi', 'trim|required');
 		$this->form_validation->set_rules('i_to_id','Ke Lokasi', 'trim|required');
-		$this->form_validation->set_rules('i_description','Keterangan', 'trim|required');
+		//$this->form_validation->set_rules('i_description','Keterangan', 'trim|required');
 		
 		if($this->form_validation->run() == FALSE) send_json_validate();
 		
@@ -76,7 +76,15 @@ class Route extends CI_Controller{
 		if($data['location_from_id'] == $data['location_to_id']){
 			send_json_error('Simpan Gagal.Dari Lokasi dan ke Lokasi Tidak Boleh sama');
 		}
+
+/*
+		$get_route=$this->route_model->cek_route($data['location_from_id'],$data['location_to_id']);
+		if($get_route == '1'){
+				send_json_error('Simpan Gagal.Route Sudah Ada');
 		
+		}
+*/
+
 		// simpan transient biaya Route
 		$list_name_biaya	= ($this->input->post('transient_rd_name'));
 		$list_biaya  =  	($this->input->post('transient_rd_price'));
