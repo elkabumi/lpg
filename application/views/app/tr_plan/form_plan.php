@@ -42,7 +42,7 @@ $(function(){
 <tr>
     <td width="196">Nama SPBE	</td>
     <td width="651">
-    <input name="i_spbe" type="text" id="i_spbe" value="<?=$location_name ?>" size="10"/></td>
+    <input name="i_spbe" type="text" id="i_spbe" value="<?=$location_name ?>" size="10"/>
    </td>
 </tr>
 <tr>

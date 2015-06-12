@@ -8,8 +8,8 @@ $(function(){
 	});
 	var otb = createTableFormTransient({
 		id 				: "#transient_contact",
-		listSource 		: "tr_realization_shipment/detail_table_loader_shipment/0",
-		formSource 		: "tr_realization_shipment/detail_form_shipment/<?=$row_id?>",
+		listSource 		: "tr_realization_shipment/detail_table_loader_shipment/<?=$date?>",
+		formSource 		: "tr_realization_shipment/detail_form_shipment/<?=$date?>",
 		controlTarget	: "tr_realization_shipment/detail_form_action_shipment",
 		onAdd		: function (){perhitungan();},	
 		onTargetLoad: function (){perhitungan();} 
@@ -23,9 +23,11 @@ $(function(){
 			}else{
 					var explode  = date.split('/');
 					var new_date  = explode[2]+"-"+explode[1]+"-"+explode[0];
-				
+					window.location.href = site_url + "tr_realization_shipment/index/"+new_date;
+					/*
 					otb.fnSettings().sAjaxSource = site_url + "tr_realization_shipment/detail_table_loader_shipment/"+new_date;
 					otb.fnReloadAjax();
+					*/
 			}
 	
 	});

@@ -11,19 +11,27 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			 	$this->access->user_page();
 			}
 		
-		function index(){
+		function index($date=0){
 				
 				$data = array();
-				$data['row_id'] = '';
-				$data['tr_plan_detail_date_realization'] = '';
+				if($date==0){
+					$data['row_id'] = '';
+					$data['date'] =	0;
+					$data['tr_plan_detail_date_realization'] = '';
+				
+				}else{
+					$data['row_id'] = '';
+					$data['date'] = $date;
+					$data['tr_plan_detail_date_realization'] = format_new_date($date);
+				}
 				$this->load->helper('form');
 				$this->render->add_form('app/tr_realization_shipment/form', $data);
 				$this->render->build('Realisasi Kirim');
 				$this->render->add_view('app/tr_realization_shipment/transient_list_shipment');
 				$this->render->build('Detail Kirim');
 				$this->render->show('Realisasi Kirim');
-	}	
-	function form($id){
+		}	
+		function form($id){
 			$result = $this->tr_realization_shipment_model->read_id($id);
 			if($result){
 				$data = $result;
@@ -36,7 +44,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		$this->render->add_form('app/tr_realization_shipment/form_ralization_shipment', $data);
 		$this->render->build('Realisasi Kirim');
 		$this->render->show('Realisasi Kirim');
-	}
+		}
 	
 	
 	
@@ -59,6 +67,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		
 		$data['tr_plan_detail_shipment_realization_date'] 			= $this->input->post('i_date');
 		$data['tr_plan_detail_shipment_status_realization'] 			= $this->input->post('i_status_type');
+		$date_back									 			= $this->input->post('date_back');
 		
 		//send_json($data['tr_plan_detail_shipment_realization_date']);
 		
@@ -67,7 +76,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			send_json_action($error, "Data telah ditambah", "Data gagal ditambah");
 		}else{
 		$error = $this->tr_realization_shipment_model->update($id,$data);
-			send_json_action($error, "Data telah direvisi", "Data gagal direvisi");		
+			send_json_action($error, "Data telah direvisi", "Data gagal direvisi",	$date_back);		
 		}
 		
 	}
@@ -96,6 +105,10 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				
 				$data[$key] = array(
 						form_transient_pair('transient_detail_date', format_new_date($value['tr_plan_detail_date_realization']),$value['tr_plan_detail_date_realization']),
+						form_transient_pair('transient_detail_truck_id', $value['truck_nopol'],$value['truck_nopol']),
+						form_transient_pair('transient_detail_driver', $value['driver_name'],$value['driver_name']),
+						form_transient_pair('transient_detail_co_driver', $value['co_driver_name'],$value['co_driver_name']),
+						
 						form_transient_pair('transient_shipment_detail_date', format_new_date($value['tr_plan_detail_shipment_realization_date']),$value['tr_plan_detail_shipment_realization_date']),
 						
 						form_transient_pair('transient_shipment_detail_route_from', $value['route_from'],$value['location_from_id']),

@@ -25,7 +25,7 @@ class truck extends CI_Controller{
 	
 	function form($id = 0){
 		$data = array();
-		if($id==0){
+		if($id == 0){
 			$data['row_id']				= '';
 			//$data['truck_code']			= format_code('trucks','truck_code','S',7);
 			$data['driver_id']			= '';

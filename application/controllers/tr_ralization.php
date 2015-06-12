@@ -10,21 +10,29 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 			 	$this->access->user_page();
 			}
 		
-	function index(){
+	function index($date=0){
 				
 				$data = array();
-				$data['row_id'] = '';
-				$data['tr_plan_detail_date_realization'] = '';
-				$this->load->helper('form');
+				if($date==0){
+					$data['row_id'] = '';
+					$data['date'] =0;
+					$data['tr_plan_date'] = '';
 				
-				$this->render->add_form('app/Tr_ralization/form', $data);
+				}else{
+					$data['row_id'] = '';
+					$data['date'] = $date;
+					$data['tr_plan_date'] = format_new_date($date);
+				}$this->load->helper('form');
+				
+				$this->render->add_form('app/tr_ralization/form', $data);
 				$this->render->build('Realisasi Plan');
 				
-				$this->render->add_view('app/Tr_ralization/transient_list_kulak');
+				$this->render->add_view('app/tr_ralization/transient_list_kulak');
 				$this->render->build('Detail Plan');
 			
 				$this->render->show('Realisasi Plan');
-		}	
+	}	
+	
 	function form($id){
 			$result = $this->tr_ralization_model->read_id($id);
 			if($result){
@@ -62,6 +70,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		$data['tr_plan_detail_code'] 			= $this->input->post('i_code');
 		$data['tr_plan_detail_date_realization'] 			= $this->input->post('i_date');
 		$data['tr_plan_detail_status_realization'] 			= $this->input->post('i_status_type');
+		$date_back											= $this->input->post('date_back');
 		//send_json($data['tr_plan_detail_status_realization']);
 		if(empty($id)){
 			$error = $this->tr_ralization_model->create($data,$items_plan_detail);
@@ -69,7 +78,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 		}else{
 		
 			$error = $this->tr_ralization_model->update($id,$data);
-			send_json_action($error, "Data telah direvisi", "Data gagal direvisi");		
+			send_json_action($error, "Data telah direvisi", "Data gagal direvisi",$date_back);		
 		}
 		
 	}
@@ -95,11 +104,13 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 				$link = "<a href=".site_url('tr_ralization/form/'.$value['tr_plan_detail_id'])." class='link_input'> Proses </a>";
 			
 				$data[$key] = array(
-						form_transient_pair('transient_detail_no', $no,$no),
+						form_transient_pair('transient_detail_no', $value['tr_plan_detail_no'],$value['tr_plan_detail_no']),
 						form_transient_pair('transient_detail_date_tebusan', format_new_date($value['tr_plan_date']),$value['tr_plan_date']),
 						form_transient_pair('transient_detail_code', $value['tr_plan_detail_code'],$value['tr_plan_detail_code']),
 						form_transient_pair('transient_detail_date', format_new_date($value['tr_plan_detail_date_realization']),$value['tr_plan_detail_date_realization']),
 						form_transient_pair('transient_detail_truck_id', $value['truck_nopol'],$value['truck_id']),
+						form_transient_pair('transient_detail_driver', $value['driver_name'],$value['driver_name']),
+						form_transient_pair('transient_detail_co_driver', $value['co_driver_name'],$value['co_driver_name']),
 						form_transient_pair('transient_detail_spbe',$value['location_name'],$value['location_id']),
 						form_transient_pair('transient_detail_qty',	$value['tr_plan_detail_qty'],$value['tr_plan_detail_qty']),	
 						form_transient_pair('transient_detail_total', tool_money_format($value['tr_plan_detail_total_purchase']),$value['tr_plan_detail_total_purchase']),

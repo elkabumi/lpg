@@ -622,6 +622,12 @@ class Dtc_model extends CI_Model
 		$query = $this->db->get('employees a', $limit, $offset);
 		
 		$data = array(); // inisialisasi variabel. biasakanlah, untuk mencegah warning dari php.
+		$data[] = array(
+				0, 
+				'', 
+				'',
+				''
+			); 
 		foreach($query->result_array() as $row) {
 			
 			
