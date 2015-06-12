@@ -11,15 +11,19 @@
 			}
 			
 			
-			function index(){
+			function index($date=0){
 				
 			$data = array();
-			
-				$data['row_id'] = '';
-				$data['date_1'] = '';
-				$data['date_2'] = '';
+				if($date==0){
+					$data['row_id'] = '';
+					$data['date'] =0;
+					$data['tr_plan_detail_shipment_realization_date'] = '';
 				
-			
+				}else{
+					$data['row_id'] = '';
+					$data['date'] = $date;
+					$data['tr_plan_detail_shipment_realization_date'] = format_new_date($date);
+				}
 				$this->load->helper('form');
 					
 				$this->render->add_form('app/tr_payment/form', $data);
@@ -110,7 +114,6 @@
 			if($result){
 				$data = $result;
 				$data['row_id'] = $tr_plan_detail_shipment_id;
-				$data['tr_plan_detail_shipment_realization_date'] = format_new_date($data['tr_plan_detail_shipment_realization_date']);
 				
 			}
 				

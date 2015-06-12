@@ -3,14 +3,14 @@ $(function(){
 
 	createForm({
 		id 				: "#id_form_nya", 
-		actionTarget	: "tr_payment/form_action",
+		actionTarget	: "tr_payment/form_action/<?=$row_id?>",
 		backPage		: "tr_payment",
-		nextPage		: "tr_payment/form"
+		nextPage		: "tr_payment/form/<?=$date?>"
 	});
 	
 	var otb = createTableFormTransient({
 		id 				: "#transient_detail",
-		listSource 		: "tr_payment/detail_table_loader/0/0/0/0/0",
+		listSource 		: "tr_payment/detail_table_loader/<?=$date?>",
 		formSource 		: "tr_payment/detail_form/<?=$row_id?>",
 		controlTarget	: "tr_payment/detail_form_action",
 	});
@@ -44,7 +44,7 @@ $(function(){
       <tr>
      <td>Tanggal Pengiriman</td>
      <td width="1%">:</td>
-     <td><input name="i_date_1" type="text" id="i_date_1" value="<?=$date_1 ?>" class="date_input" size="10"/></td>
+     <td><input name="i_date_1" type="text" id="i_date_1" value="<?=$tr_plan_detail_shipment_realization_date ?>" class="date_input" size="10"/></td>
      </tr>
   
    </table>

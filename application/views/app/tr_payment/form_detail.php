@@ -5,7 +5,7 @@ $(function(){
 		id 				: "#id_form_nya", 
 		actionTarget	: "tr_payment/form_action",
 		backPage		: "tr_payment",
-		nextPage		: "tr_payment/form/<?=$row_id?>"
+		nextPage		: "tr_payment/index"
 	});
 	
 	$('input[name="i_status"]').change(function(){
