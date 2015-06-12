@@ -545,6 +545,7 @@ background: #0E9E81;
 	border-bottom-right-radius:3px;
 	border-bottom-left-radius:3px;
 	text-align:left;
+	min-height: 65px;
 }
 .command_table input
 {
