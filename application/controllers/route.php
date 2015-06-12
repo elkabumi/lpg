@@ -76,11 +76,7 @@ class Route extends CI_Controller{
 		if($data['location_from_id'] == $data['location_to_id']){
 			send_json_error('Simpan Gagal.Dari Lokasi dan ke Lokasi Tidak Boleh sama');
 		}
-		$get_route=$this->route_model->cek_route($data['location_from_id'],$data['location_to_id']);
-		if($get_route == '1'){
-				send_json_error('Simpan Gagal.Route Sudah Ada');
 		
-		}
 		// simpan transient biaya Route
 		$list_name_biaya	= ($this->input->post('transient_rd_name'));
 		$list_biaya  =  	($this->input->post('transient_rd_price'));
@@ -104,6 +100,11 @@ class Route extends CI_Controller{
 			$error = $this->route_model->create($data,$items_biaya);
 			send_json_action($error, "Data telah ditambah", "Data gagal ditambah");
 		}else{
+			$get_route=$this->route_model->cek_route($data['location_from_id'],$data['location_to_id']);
+			if($get_route == '1'){
+				send_json_error('Simpan Gagal.Route Sudah Ada');
+		
+			}
 			$error = $this->route_model->update($id, $data,$items_biaya);
 			send_json_action($error, "Data telah direvisi", "Data gagal direvisi");
 		}

@@ -69,7 +69,7 @@ $(function(){
        <tr>
           <td width="17%">Tagihan</td>
           <td width="1%">:</td>
-          <td width="82%"><input readonly="readonly" type="text" id="i_spk_no" name="i_spk_no"  value="<?=$tr_plan_detail_shipment_total_price?>" /></td>
+          <td width="82%"><input readonly="readonly" type="text" id="i_tagiahn" name="i_tagiahn"  value="<?=$tr_plan_detail_shipment_total_price?>" /></td>
         </tr>
         <tr>
           <td width="17%">Dibayar</td>

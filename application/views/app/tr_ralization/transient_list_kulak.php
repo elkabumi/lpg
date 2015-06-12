@@ -11,6 +11,8 @@
             <th>Tanggal Pengambilan</th>
 
             <th>Truck Nopol</th>
+            <th>Sopir</th>
+            <th>Kernet</th>
             <th>SPBE</th>
             <th>Jumlah Kulak</th>
             <th>Total Harga Kulak</th>

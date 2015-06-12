@@ -82,11 +82,12 @@ class Tr_realization_shipment_model extends CI_Model{
 	}
 	
 	function read_id($id){
-		$this->db->select('a.*,b.*,c.location_name AS route_from,d.location_name AS route_to', 1);
+		$this->db->select('a.*,b.*,c.location_name AS route_from,d.location_name AS route_to,e.tr_plan_detail_date_realization', 1);
 		$this->db->from('tr_plan_detail_shipments a');
 		$this->db->join('routes b', 'b.route_id = a.route_id');
 		$this->db->join('locations c', 'c.location_id = b.location_from_id');
 		$this->db->join('locations d', 'd.location_id = b.location_to_id');
+		$this->db->join('tr_plan_details e', 'e.tr_plan_detail_id = a.tr_plan_detail_id');
 		$this->db->where('a.tr_plan_detail_shipment_id', $id);
 		$query = $this->db->get(); debug();
 		$result = null;
@@ -132,7 +133,8 @@ class Tr_realization_shipment_model extends CI_Model{
 	{
 		// buat array kosong
 		$result = array(); 		
-		$this->db->select('a.*,b.*,c.location_name AS route_from,d.location_name AS route_to,g.tr_plan_detail_date_realization', 1);
+		$this->db->select('a.*,b.*,c.location_name AS route_from,d.location_name AS route_to,g.tr_plan_detail_date_realization
+		,j.truck_nopol,k.employee_name AS driver_name,l.employee_name AS co_driver_name', 1);
 		$this->db->from('tr_plan_detail_shipments a');
 		$this->db->join('routes b', 'b.route_id = a.route_id');
 		$this->db->join('locations c', 'c.location_id = b.location_from_id');
@@ -140,10 +142,13 @@ class Tr_realization_shipment_model extends CI_Model{
 		$this->db->join('tr_plan_details g', 'a.tr_plan_detail_id = g.tr_plan_detail_id');
 		$this->db->join('tr_plan_purchases h', 'g.tr_plan_purchase_id = h.tr_plan_purchase_id');
 		$this->db->join('tr_plans i', 'i.tr_plan_id = h.tr_plan_id');
+		$this->db->join('trucks j', 'j.truck_id = g.truck_id','left');
+		$this->db->join('employees k', 'k.employee_id = g.driver_id','left');
+		$this->db->join('employees l', 'l.employee_id = g.co_driver_id','left');
 		$this->db->where('g.tr_plan_detail_date_realization', $date);
 		$this->db->where('g.tr_plan_detail_status_realization', 1);
 		$query = $this->db->get(); debug();
-		//query();
+	//	query();
 		foreach($query->result_array() as $row)
 		{
 			$result[] = format_html($row);

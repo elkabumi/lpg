@@ -85,12 +85,14 @@ class Tr_ralization_model extends CI_Model{
 
 	function read_id($id){
 		$this->db->select('a.*,b.truck_nopol,c.employee_name AS driver_name,d.employee_name AS co_driver_name
-					, e.location_name', 1);
+					, e.location_name,g.tr_plan_date', 1);
 		$this->db->where('a.tr_plan_detail_id', $id);
 		$this->db->join('trucks b', 'b.truck_id = a.truck_id');
 		$this->db->join('employees c', 'c.employee_id = a.driver_id');
 		$this->db->join('employees d', 'd.employee_id = a.co_driver_id');
 		$this->db->join('locations e', 'e.location_id = a.location_id');
+		$this->db->join('tr_plan_purchases f', 'a.tr_plan_purchase_id = f.tr_plan_purchase_id');
+		$this->db->join('tr_plans g', 'f.tr_plan_id = g.tr_plan_id');
 		$this->db->where('tr_plan_detail_id', $id);
 		$query = $this->db->get('tr_plan_details a', 1);
 	
@@ -169,6 +171,7 @@ class Tr_ralization_model extends CI_Model{
 		$this->db->join('employees d', 'd.employee_id = g.co_driver_id','left');
 		$this->db->join('locations e', 'e.location_id = g.location_id');
 		
+		$this->db->order_by('g.tr_plan_detail_no');
 		$this->db->where('a.tr_plan_date', $date);
 		$this->db->where('g.truck_id <>', 0);
 		$query = $this->db->get(); debug();

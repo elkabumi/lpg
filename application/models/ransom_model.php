@@ -116,13 +116,26 @@ class Ransom_model extends CI_Model{
 		$index = 0;
 		foreach($items_purchase as $row)
 		{		
+			
+			$date_purchase = explode("/", $row['tr_plan_purchase_date']);
+			$date_purchase_month  = 	$date_purchase['1'];
+			$date_purchase_year   = 	$date_purchase['0'];	
+			$start_nomer_urut =$this->get_start_nomer($date_purchase_year,$date_purchase_month);
+			if($start_nomer_urut == ''){
+				$start_nomer_urut =1;
+			}else{
+				$start_nomer_urut +=1;
+			}
 			$row['tr_plan_id'] = $id;
 			$this->db->insert('tr_plan_purchases', $row);
 			$id_purchase = $this->db->insert_id();
 			$cost =$this->get_cost();
-
+			
 			for($i=1; $i<= $row['tr_plan_purchase_qty']; $i++){
+				
+				
 				$row_detail['tr_plan_purchase_id'] = $id_purchase;
+				$row_detail['tr_plan_detail_no'] = $start_nomer_urut;
 				$row_detail['location_id'] = $row['location_id'];
 				$row_detail['tr_plan_detail_date_realization'] = '';//$data['tr_plan_date'];
 				$row_detail['tr_plan_detail_qty']			 = 560;
@@ -131,6 +144,7 @@ class Ransom_model extends CI_Model{
 				$row_detail['tr_plan_detail_cost_driver'] 	 =$cost[1];
 				$row_detail['tr_plan_detail_cost_co_driver'] =$cost[2];
 				$this->db->insert('tr_plan_details', $row_detail);	
+				$start_nomer_urut++;
 			}
 			$index++;
 		}
@@ -139,8 +153,8 @@ class Ransom_model extends CI_Model{
 		$data_market['market_code'] = $data['supplier_code'];
 		$data_market['market_name'] = $data['supplier_name'];
 		$this->db->insert('markets', $data_market);
-		*/
 		
+		*/
 		$this->access->log_insert($id, "Tebusan [".$id."]");
 		$this->db->trans_complete();
 		return $this->db->trans_status();
@@ -206,6 +220,21 @@ class Ransom_model extends CI_Model{
 			$result[] = format_html($row);
 		}
 		return $result;
+	}
+	function get_start_nomer($year,$month)
+	{
+		$sql = "SELECT MAX(c.tr_plan_detail_no) AS no_urut
+			 	FROM tr_plans a
+				JOIN tr_plan_purchases b ON a.tr_plan_id = b.tr_plan_id
+				JOIN tr_plan_details c ON c.tr_plan_purchase_id  = b.tr_plan_purchase_id
+			WHERE YEAR(tr_plan_purchase_date) = ".$year." AND MONTH(tr_plan_purchase_date) = ".$month."
+			";
+		
+		$query = $this->db->query($sql);
+		
+		$result = null;
+		foreach ($query->result_array() as $row) $result = format_html($row);
+		return $result['no_urut'];
 	}
 	function load_data_spbe($id)
 	{

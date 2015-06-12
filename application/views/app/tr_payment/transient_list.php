@@ -4,11 +4,19 @@
 	<thead>
 		<tr>
 			
-            <th>Tanggal</th>
+            <th>Tanggal Tebusan</th>
+            <th>Tanggal Jatah</th>
+            <th>Tanggal Pengiriman</th>
+            <th>No DO</th>
+            <th>Nopol</th>
+            <th>SPBE</th>
+            <th>Sopir</th>
+            <th>Kernet</th>
             <th>Pangkalan</th>
     		<th>Jumlah</th>
             <th>Tagihan</th>
             <th>Dibayar</th>
+            <th>Status</th>
       		<th>Config</th>
            
 		</tr> 

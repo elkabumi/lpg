@@ -246,16 +246,16 @@ class ar_payment_model extends CI_Model{
         return $result['tr_plan_detail_shipment_total_paid'];
 	}
 	
-	function read_code()
+	function read_code($user_id)
 	{
-		$sql = "SELECT code
-				FROM codes";
+		$sql = "SELECT user_password 
+				FROM users";
 		$query = $this->db->query($sql); // parameter limit harus 1
 		//query($query);
 		
 		$result = null;
         foreach ($query->result_array() as $row) $result = format_html($row);
-        return $result['code'];
+        return $result['user_password'];
 	}
 	
 	

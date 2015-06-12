@@ -42,7 +42,7 @@ $(function(){
 	 <input type="hidden" name="row_id" value="<?=$row_id?>" /></td>
    </tr>
       <tr>
-     <td>Tanggal Realisasi</td>
+     <td>Tanggal Pengiriman</td>
      <td width="1%">:</td>
      <td><input name="i_date_1" type="text" id="i_date_1" value="<?=$date_1 ?>" class="date_input" size="10"/></td>
      </tr>
