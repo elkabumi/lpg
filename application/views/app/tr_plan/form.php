@@ -56,7 +56,7 @@ $(function(){
 	createDatePicker();
 	//updateAll(); 
 });
-</script>z
+</script>
 
 <form class="form_class" id="id_form_nya">	
 <div class="form_area">
